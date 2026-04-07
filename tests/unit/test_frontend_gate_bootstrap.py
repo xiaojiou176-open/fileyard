@@ -202,6 +202,13 @@ def test_bootstrap_env_prebuilt_restore_clears_existing_runtime_venv_contents() 
     assert 'python3 -m venv "$target"' in script
 
 
+def test_requirements_pip_lock_keeps_pip_at_or_above_the_current_security_floor() -> None:
+    lock = (_repo_root() / "tooling" / "requirements-pip.lock.txt").read_text(encoding="utf-8")
+
+    assert "pip==26.0.1" in lock
+    assert "pip==25.0.1" not in lock
+
+
 def test_restore_prebuilt_tree_replaces_existing_contents_without_file_exists_conflicts(tmp_path: Path) -> None:
     script = _repo_root() / "tooling" / "scripts" / "restore_prebuilt_tree.py"
     src = tmp_path / "src"
