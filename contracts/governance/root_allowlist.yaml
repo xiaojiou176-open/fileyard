@@ -1,5 +1,6 @@
 version: 1
 canonical_tracked_entries:
+  - .clusterfuzzlite
   - .devcontainer
   - .env.example
   - .github
@@ -43,6 +44,7 @@ local_only_tracking:
     - .serena
 entry_purposes:
   .agents: repo-local execution plans and governance control boards
+  .clusterfuzzlite: ClusterFuzzLite build and run entrypoints
   .devcontainer: devcontainer and runtime image sources
   .env: local-only runtime secret file that must remain untracked
   .env.example: runtime env template
