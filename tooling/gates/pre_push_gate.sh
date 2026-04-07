@@ -2,11 +2,12 @@
 set -euo pipefail
 
 # Pre-push gate: lightweight local verification before pushing to remote.
-# Design principle: Complete in <90s for typical changes.
+# Design principle: default mode should stay lightweight enough for routine push feedback.
 #
 # Layer responsibilities:
 #   Pre-Commit (<15s): formatting, syntax, security (staged files only)
-#   Pre-Push (<90s): incremental lint, minimal secret scan, commit governance
+#   Pre-Push standard (<30s): minimal local burn + changed-only secret scan + commit governance
+#   Pre-Push strict (<90s): local fast lane + mutation canary
 #   CI (full): all checks, multi-version matrix, full security scan
 #
 # Modes:
@@ -125,31 +126,21 @@ step() {
 
 case "$MODE" in
   standard)
-    echo "🚦 pre-push policy(mode=standard): fast lane + changed-only secret scan + commit governance."
-    echo "   Expected time: <60s for typical changes."
-    step fast-lane bash "$ROOT/gates/local_quality_gate.sh" fast
-    step feature-state-layout "$VENV/bin/python" "$ROOT/scripts/check_feature_state_layout.py" --root "$REPO_ROOT"
-    step strategy-pack-registry "$VENV/bin/python" "$ROOT/scripts/check_strategy_pack_registry.py" --root "$REPO_ROOT"
-    step watch-sources-contract "$VENV/bin/python" "$ROOT/scripts/check_watch_sources_contract.py"
-    step mcp-surface "$VENV/bin/python" "$ROOT/scripts/check_mcp_surface.py"
+    echo "🚦 pre-push policy(mode=standard): prepush-lite lane + changed-only secret scan + commit governance."
+    echo "   Expected time: <30s for typical changes."
+    step prepush-lite bash "$ROOT/gates/local_quality_gate.sh" prepush-lite
     step legacy-sweep "$VENV/bin/python" "$ROOT/scripts/check_active_legacy_sweep.py" --root "$REPO_ROOT"
     step secret-scan-changed bash "$ROOT/gates/secret_scan.sh" --changed-only "$REPO_ROOT"
-    step sensitive-surface bash "$ROOT/gates/sensitive_surface_gate.sh" --mode auto
     step tracked-tests-integrity check_tracked_tests_integrity
     step atomic-commit "$VENV/bin/python" "$ROOT/scripts/check_atomic_commits.py" --pre-push-auto ${RANGE_FLAGS[@]+"${RANGE_FLAGS[@]}"}
     step commit-message "$VENV/bin/python" "$ROOT/scripts/check_commit_message.py" --pre-push-auto ${RANGE_FLAGS[@]+"${RANGE_FLAGS[@]}"}
     ;;
   strict)
-    echo "🚦 pre-push policy(mode=strict): standard + mutation canary."
+    echo "🚦 pre-push policy(mode=strict): fast lane + changed-only secret scan + commit governance + mutation canary."
     echo "   Expected time: <90s for typical changes."
     step fast-lane bash "$ROOT/gates/local_quality_gate.sh" fast
-    step feature-state-layout "$VENV/bin/python" "$ROOT/scripts/check_feature_state_layout.py" --root "$REPO_ROOT"
-    step strategy-pack-registry "$VENV/bin/python" "$ROOT/scripts/check_strategy_pack_registry.py" --root "$REPO_ROOT"
-    step watch-sources-contract "$VENV/bin/python" "$ROOT/scripts/check_watch_sources_contract.py"
-    step mcp-surface "$VENV/bin/python" "$ROOT/scripts/check_mcp_surface.py"
     step legacy-sweep "$VENV/bin/python" "$ROOT/scripts/check_active_legacy_sweep.py" --root "$REPO_ROOT"
     step secret-scan-changed bash "$ROOT/gates/secret_scan.sh" --changed-only "$REPO_ROOT"
-    step sensitive-surface bash "$ROOT/gates/sensitive_surface_gate.sh" --mode auto
     step tracked-tests-integrity check_tracked_tests_integrity
     step atomic-commit "$VENV/bin/python" "$ROOT/scripts/check_atomic_commits.py" --pre-push-auto ${RANGE_FLAGS[@]+"${RANGE_FLAGS[@]}"}
     step commit-message "$VENV/bin/python" "$ROOT/scripts/check_commit_message.py" --pre-push-auto ${RANGE_FLAGS[@]+"${RANGE_FLAGS[@]}"}
@@ -159,13 +150,8 @@ case "$MODE" in
     echo "🚦 pre-push policy(mode=full): strict + full quality gate."
     echo "   Expected time: 5-15min (use sparingly)."
     step fast-lane bash "$ROOT/gates/local_quality_gate.sh" fast
-    step feature-state-layout "$VENV/bin/python" "$ROOT/scripts/check_feature_state_layout.py" --root "$REPO_ROOT"
-    step strategy-pack-registry "$VENV/bin/python" "$ROOT/scripts/check_strategy_pack_registry.py" --root "$REPO_ROOT"
-    step watch-sources-contract "$VENV/bin/python" "$ROOT/scripts/check_watch_sources_contract.py"
-    step mcp-surface "$VENV/bin/python" "$ROOT/scripts/check_mcp_surface.py"
     step legacy-sweep "$VENV/bin/python" "$ROOT/scripts/check_active_legacy_sweep.py" --root "$REPO_ROOT"
     step secret-scan-changed bash "$ROOT/gates/secret_scan.sh" --changed-only "$REPO_ROOT"
-    step sensitive-surface bash "$ROOT/gates/sensitive_surface_gate.sh" --mode auto
     step tracked-tests-integrity check_tracked_tests_integrity
     step atomic-commit "$VENV/bin/python" "$ROOT/scripts/check_atomic_commits.py" --pre-push-auto ${RANGE_FLAGS[@]+"${RANGE_FLAGS[@]}"}
     step commit-message "$VENV/bin/python" "$ROOT/scripts/check_commit_message.py" --pre-push-auto ${RANGE_FLAGS[@]+"${RANGE_FLAGS[@]}"}
@@ -176,8 +162,8 @@ case "$MODE" in
     echo "Usage: bash tooling/gates/pre_push_gate.sh [standard|strict|full]" >&2
     echo "" >&2
     echo "Modes:" >&2
-    echo "  standard (default): fast lane + changed-only secret scan + commit governance (<60s)" >&2
-    echo "  strict: standard + mutation canary (<90s)" >&2
+    echo "  standard (default): prepush-lite lane + changed-only secret scan + commit governance (<30s)" >&2
+    echo "  strict: fast lane + changed-only secret scan + commit governance + mutation canary (<90s)" >&2
     echo "  full: strict + full quality gate (5-15min)" >&2
     echo "" >&2
     echo "Set MOVI_PRE_PUSH_MODE env var to change default." >&2

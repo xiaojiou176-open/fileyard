@@ -46,7 +46,7 @@
         "contracts/governance/governance.defaults.env": "cddb6b33f746b32509f8a49af1f11bef945d0eeaf060028da41c726127d68660",
         "pyproject.toml": "d12c2c415c3900d81c888e91d3a8ec1af88af96a701c6de801c37a1e52b4a495",
         "package.json": "19ed161b16378601fc42d4baa05b7225fc57a47cfdee28a64131fd57d3cd1efc",
-        ".env.example": "e87d8f2d9d6e07b4b0b068de0d86a29a153e603b1015f9dd0b70e94867207792"
+        ".env.example": "32a60792624cd36eb5992b34d9c67c6e6e2a0971a45f3a48370f3b0b720b0aa8"
       },
       "output_hash": "35f928f34d5157b2764465e28ea00c4e234354342d4d26cc1164f9231eebf20d"
     },
@@ -89,7 +89,7 @@
         "contracts/governance/governance.defaults.env": "cddb6b33f746b32509f8a49af1f11bef945d0eeaf060028da41c726127d68660",
         "pyproject.toml": "d12c2c415c3900d81c888e91d3a8ec1af88af96a701c6de801c37a1e52b4a495",
         "package.json": "19ed161b16378601fc42d4baa05b7225fc57a47cfdee28a64131fd57d3cd1efc",
-        ".env.example": "e87d8f2d9d6e07b4b0b068de0d86a29a153e603b1015f9dd0b70e94867207792"
+        ".env.example": "32a60792624cd36eb5992b34d9c67c6e6e2a0971a45f3a48370f3b0b720b0aa8"
       },
       "output_hash": "ffb36e9c2b3fa2651083ac92db5bf8b3d825345632c09ca8a1f4256c896a408c"
     },
@@ -141,7 +141,7 @@
         "contracts/governance/governance.defaults.env": "cddb6b33f746b32509f8a49af1f11bef945d0eeaf060028da41c726127d68660",
         "pyproject.toml": "d12c2c415c3900d81c888e91d3a8ec1af88af96a701c6de801c37a1e52b4a495",
         "package.json": "19ed161b16378601fc42d4baa05b7225fc57a47cfdee28a64131fd57d3cd1efc",
-        ".env.example": "e87d8f2d9d6e07b4b0b068de0d86a29a153e603b1015f9dd0b70e94867207792"
+        ".env.example": "32a60792624cd36eb5992b34d9c67c6e6e2a0971a45f3a48370f3b0b720b0aa8"
       },
       "output_hash": "b12f14d83eedfaf64a31d9b1d02339671513f2f1cef9e6773bbfdf4db5cc1356"
     },
@@ -210,7 +210,7 @@
         "contracts/governance/governance.defaults.env": "cddb6b33f746b32509f8a49af1f11bef945d0eeaf060028da41c726127d68660",
         "pyproject.toml": "d12c2c415c3900d81c888e91d3a8ec1af88af96a701c6de801c37a1e52b4a495",
         "package.json": "19ed161b16378601fc42d4baa05b7225fc57a47cfdee28a64131fd57d3cd1efc",
-        ".env.example": "e87d8f2d9d6e07b4b0b068de0d86a29a153e603b1015f9dd0b70e94867207792"
+        ".env.example": "32a60792624cd36eb5992b34d9c67c6e6e2a0971a45f3a48370f3b0b720b0aa8"
       },
       "output_hash": "c0cb776be4feeaa4d6517d934e2d4f541ae1a04d66350c7bd82da6b009f710b4"
     },

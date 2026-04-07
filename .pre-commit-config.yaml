@@ -4,7 +4,8 @@
 #
 # Layer responsibilities:
 #   Pre-Commit (<15s): formatting, syntax, security (staged files only), commit hygiene
-#   Pre-Push (<90s): incremental lint, incremental type check, commit governance
+#   Pre-Push standard (<30s): minimal local burn, changed-only secret scan, commit governance
+#   Pre-Push strict (<90s): local fast lane, incremental validation, mutation canary
 #   CI (full): all checks, multi-version matrix, full security scan
 #
 # Developers can bypass with --no-verify; CI provides full coverage as safety net.
