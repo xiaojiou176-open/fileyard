@@ -700,7 +700,7 @@ def render_ci_governance_summary_block(output_path: str, repo_root: Path = REPO_
         "- **Shared-pool-only required jobs**: " + (", ".join(shared_pool_only_jobs) if shared_pool_only_jobs else "None"),
         (
             "- **Side workflows**: `pre-commit` bootstraps directly on hosted runners, while "
-            "`live-integration` and `mutation-weekly` reuse `reusable-build-runtime-image.yml`; "
+            "`live-integration` and `mutation-manual` reuse `reusable-build-runtime-image.yml`; "
             "runtime image build keeps provenance artifact wiring when the platform supports attestations."
         ),
         "- **Drift / evidence surfaces**: `nightly-drift-audit.yml`, `collect_ci_run_metrics.py`, `generate_ci_evidence_bundle.py`.",

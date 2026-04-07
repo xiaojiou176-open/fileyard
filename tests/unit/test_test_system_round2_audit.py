@@ -126,7 +126,7 @@ def test_weekly_mutation_workflow_covers_core_python_modules() -> None:
     repo_root = _repo_root()
     weekly = (repo_root / ".github" / "workflows" / "mutation-weekly.yml").read_text(encoding="utf-8")
 
-    _assert_contains(weekly, "name: mutation-weekly", "weekly mutation workflow header")
+    _assert_contains(weekly, "name: mutation-manual", "manual mutation workflow header")
     _assert_contains(weekly, "python-mutmut:", "weekly mutmut job")
     _assert_contains(weekly, "matrix:", "weekly mutmut matrix")
     _assert_contains(weekly, "max-parallel: 3", "weekly mutmut parallelism cap")
@@ -152,7 +152,7 @@ def test_weekly_mutation_workflow_covers_core_python_modules() -> None:
     _assert_contains(weekly, "--max-suspicious 0", "weekly mutmut suspicious threshold")
     _assert_contains(weekly, "--min-killed 1", "weekly mutmut min killed threshold")
     _assert_contains(weekly, "--require-non-empty-sample", "weekly mutmut non-empty sample threshold")
-    _assert_contains(weekly, "mutation-weekly-diagnostics-${{ matrix.module }}", "weekly mutmut per-module artifacts")
+    _assert_contains(weekly, "mutation-manual-diagnostics-${{ matrix.module }}", "manual mutmut per-module artifacts")
 
     test_paths = _extract_weekly_mutation_test_paths(weekly)
     assert test_paths, "weekly mutation workflow must define at least one tests: path"
@@ -168,11 +168,11 @@ def test_weekly_mutation_workflow_uses_hash_locked_mutmut_install() -> None:
     _assert_contains(weekly, "name: mutation-image-contract", "weekly mutation image contract artifact")
     _assert_contains(weekly, "Load CI runtime image from contract", "weekly mutation image contract load step")
     _assert_contains(weekly, 'echo "MOVI_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"', "weekly image env export")
-    _assert_contains(weekly, "bash tooling/scripts/container_exec.sh --label mutation-weekly --", "weekly mutation run via container_exec")
+    _assert_contains(weekly, "bash tooling/scripts/container_exec.sh --label mutation-manual --", "manual mutation run via container_exec")
     _assert_contains(
         weekly,
-        "bash tooling/scripts/container_exec.sh --label mutation-weekly-report --",
-        "weekly mutation report via container_exec",
+        "bash tooling/scripts/container_exec.sh --label mutation-manual-report --",
+        "manual mutation report via container_exec",
     )
     _assert_contains(dev_shell, "-r requirements-dev.lock.txt", "dev shell forwards to dev lock")
     _assert_contains(dev_lock, "mutmut==2.5.1", "dev lock includes mutmut pin")

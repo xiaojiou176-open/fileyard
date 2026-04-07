@@ -1,16 +1,14 @@
-name: mutation-weekly
+name: mutation-manual
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 3 * * 1"
 
 permissions:
   contents: read
   packages: read
 
 concurrency:
-  group: mutation-weekly-${{ github.ref }}
+  group: mutation-manual-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -102,7 +100,7 @@ jobs:
           MATRIX_TESTS: ${{ matrix.tests }}
         run: |
           set -euo pipefail
-          bash tooling/scripts/container_exec.sh --label mutation-weekly -- bash -lc '
+          bash tooling/scripts/container_exec.sh --label mutation-manual -- bash -lc '
             set -euo pipefail
             $HOME/.cache/movi-organizer/venv/default/bin/mutmut run \
               --paths-to-mutate "${MATRIX_MUTATE_PATH}" \
@@ -114,7 +112,7 @@ jobs:
           MATRIX_MODULE: ${{ matrix.module }}
         run: |
           set -euo pipefail
-          bash tooling/scripts/container_exec.sh --label mutation-weekly-report -- bash -lc '
+          bash tooling/scripts/container_exec.sh --label mutation-manual-report -- bash -lc '
             set -euo pipefail
             $HOME/.cache/movi-organizer/venv/default/bin/mutmut results | tee ".runtime-cache/logs/mutmut-results-${MATRIX_MODULE}.txt"
             $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_mutation_report.py \
@@ -130,7 +128,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: mutation-weekly-diagnostics-${{ matrix.module }}
+          name: mutation-manual-diagnostics-${{ matrix.module }}
           path: |
             .runtime-cache/logs/
             .runtime-cache/test/mutation/.mutmut-cache
@@ -218,7 +216,7 @@ jobs:
       - name: Run cargo-mutants
         if: steps.detect_rs.outputs.has_rs == 'true'
         env:
-          XDG_CACHE_HOME: ${{ runner.temp }}/organizer-mutation-weekly-xdg-cache
+          XDG_CACHE_HOME: ${{ runner.temp }}/organizer-mutation-manual-xdg-cache
         run: |
           set -euo pipefail
           cargo mutants --in-place

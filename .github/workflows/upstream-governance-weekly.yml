@@ -1,16 +1,13 @@
-name: upstream-governance-weekly
+name: upstream-governance-manual
 
 on:
   workflow_dispatch:
-  merge_group:
-  schedule:
-    - cron: "30 5 * * 1"
 
 permissions:
   contents: read
 
 concurrency:
-  group: upstream-governance-weekly-${{ github.ref }}
+  group: upstream-governance-manual-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -60,6 +57,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: upstream-governance-weekly
+          name: upstream-governance-manual
           path: .runtime-cache/logs/
           if-no-files-found: warn

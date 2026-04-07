@@ -2262,9 +2262,9 @@ jobs:
     mutation_workflow = repo / "mutation-weekly.yml"
     mutation_workflow.write_text(
         """
-name: mutation-weekly
+name: mutation-manual
 concurrency:
-  group: mutation-weekly-${{ github.ref }}
+  group: mutation-manual-${{ github.ref }}
   cancel-in-progress: true
 permissions:
   contents: read
@@ -2367,7 +2367,7 @@ jobs:
     mutation_workflow = repo / "mutation-weekly.yml"
     mutation_workflow.write_text(
         """
-name: mutation-weekly
+name: mutation-manual
 jobs:
   rust-cargo-mutants:
     runs-on: [self-hosted, shared-pool]
@@ -2397,7 +2397,7 @@ def test_ci_workflow_hardening_gate_allows_local_actions_in_mutation_weekly_work
     mutation_workflow = repo / "mutation-weekly.yml"
     mutation_workflow.write_text(
         """
-name: mutation-weekly
+name: mutation-manual
 permissions:
   contents: read
 jobs:
@@ -2772,11 +2772,11 @@ jobs:
     mutation_workflow = repo / "mutation-weekly.yml"
     mutation_workflow.write_text(
         """
-name: mutation-weekly
+name: mutation-manual
 permissions:
   contents: read
 concurrency:
-  group: mutation-weekly-${{ github.ref }}
+  group: mutation-manual-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   build-ci-image:
@@ -3191,11 +3191,11 @@ jobs:
     mutation_workflow = repo / "mutation-weekly.yml"
     mutation_workflow.write_text(
         """
-name: mutation-weekly
+name: mutation-manual
 permissions:
   contents: read
 concurrency:
-  group: mutation-weekly-${{ github.ref }}
+  group: mutation-manual-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   build-ci-image:
@@ -3408,11 +3408,11 @@ jobs:
     mutation_workflow = repo / "mutation-weekly.yml"
     mutation_workflow.write_text(
         """
-name: mutation-weekly
+name: mutation-manual
 permissions:
   contents: read
 concurrency:
-  group: mutation-weekly-${{ github.ref }}
+  group: mutation-manual-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   build-ci-image:

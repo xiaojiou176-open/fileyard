@@ -298,7 +298,7 @@ Public readiness gates:
 - **Supplemental gates**: `webui-build-test` (frontend correctness), `functional-gate` (critical smoke), `test` (Python version parity)
 - **Dual failure-domain required jobs**: None
 - **Shared-pool-only required jobs**: None
-- **Side workflows**: `pre-commit` bootstraps directly on hosted runners, while `live-integration` and `mutation-weekly` reuse `reusable-build-runtime-image.yml`; runtime image build keeps provenance artifact wiring when the platform supports attestations.
+- **Side workflows**: `pre-commit` bootstraps directly on hosted runners, while `live-integration` and `mutation-manual` reuse `reusable-build-runtime-image.yml`; runtime image build keeps provenance artifact wiring when the platform supports attestations.
 - **Drift / evidence surfaces**: `nightly-drift-audit.yml`, `collect_ci_run_metrics.py`, `generate_ci_evidence_bundle.py`.
 - **Local auxiliary evidence**: `npm run ci:local` writes repo-local CI metrics, a repo-local evidence bundle, and governed upstream receipts under the repo-local runtime cache directory; these are local derived reports, not Branch Protection truth. Read `truth.truth_class`, `truth.remote_traceability`, and `truth.authoritative_terminal_receipt` before treating the bundle as anything stronger. Older pass receipts remain historical audit evidence only; current closeout wording must follow the latest canonical terminal receipt.
 - **Developer fallback**: use `bash tooling/gates/pre_push_gate.sh` (`standard/strict/full`) for fast local feedback before remote CI.

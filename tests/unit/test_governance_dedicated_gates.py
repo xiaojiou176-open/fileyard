@@ -228,12 +228,10 @@ def test_governance_wiring_includes_new_dedicated_gates() -> None:
 
     for needle in (
         "check_root_public_surface.py",
-        "check_upstream_receipts.py",
         "check_no_private_upstream_coupling.py",
         "check_done_signal_claims.py",
         "check_docs_fragment_completeness.py",
         "check_snapshot_scope_labels.py",
-        "check_gate_log_correlation.py",
         "check_collaboration_surface.py",
         "check_local_only_tracking.py",
         "check_sensitive_surface.py",
@@ -245,3 +243,13 @@ def test_governance_wiring_includes_new_dedicated_gates() -> None:
         assert needle in local_quality
         assert needle in quality
         assert needle in score
+
+    assert "check_upstream_receipts.py" in verify
+    assert "check_upstream_receipts.py" not in local_quality
+    assert "check_upstream_receipts.py" in quality
+    assert "check_upstream_receipts.py" in score
+
+    assert "check_gate_log_correlation.py" in verify
+    assert "check_gate_log_correlation.py" not in local_quality
+    assert "check_gate_log_correlation.py" in quality
+    assert "check_gate_log_correlation.py" in score
