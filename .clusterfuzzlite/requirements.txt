@@ -1,0 +1,2 @@
+atheris==2.3.0 \
+    --hash=sha256:cf1fdf5fa220a41a2f262b32363fc566549502b2cb0addf4e1baad5531c0e825

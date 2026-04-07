@@ -2,8 +2,6 @@
 set -euo pipefail
 
 cd "$SRC/movi-organizer"
-
-python3 -m pip install --disable-pip-version-check atheris
-python3 -m pip install --disable-pip-version-check .
+export PYTHONPATH="${PYTHONPATH:-$SRC/movi-organizer}"
 
 compile_python_fuzzer tests/fuzz/fuzz_safe_join.py
