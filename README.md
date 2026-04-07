@@ -2,7 +2,7 @@
 
 Movi is a review-first local file organizer and workbench for messy photos, screenshots, documents, and audio. It lets AI assist with the manifest first, then lets you inspect, label, and approve the plan before deterministic `apply` or `rollback` touches your files.
 
-[Safe First Look](#safe-first-look) · [10-Second Tour](#10-second-tour) · [Browser Surface](#browser-surface) · [Movi MCP v1](docs/mcp.md) · [Codex Integration](docs/codex_mcp.md) · [Claude Code Integration](docs/claude_code_mcp.md) · [Developer Guide](docs/developer_guide.md) · [Docs](docs/index.md) · [Releases](https://github.com/xiaojiou176-open/movi-organizer/releases) · [Discussions](https://github.com/xiaojiou176-open/movi-organizer/discussions) · [Security](SECURITY.md)
+[Safe First Look](#safe-first-look) · [10-Second Tour](#10-second-tour) · [Good Fit / Not A Fit](#good-fit--not-a-fit) · [Public Proof](docs/public_proof.md) · [Docs](docs/index.md) · [Browser Surface](#browser-surface) · [Releases](https://github.com/xiaojiou176-open/movi-organizer/releases) · [Discussions](https://github.com/xiaojiou176-open/movi-organizer/discussions) · [Security](SECURITY.md) · [Movi MCP v1](docs/mcp.md) · [Codex Integration](docs/codex_mcp.md) · [Claude Code Integration](docs/claude_code_mcp.md) · [Developer Guide](docs/developer_guide.md)
 
 ![Movi overview showing mixed files flowing into manifest review and organized output](docs/assets/storefront/hero-movi-overview.svg)
 
@@ -10,7 +10,7 @@ Movi is a **review-first local AI file organizer**. It turns a chaotic intake fo
 
 Public maintenance posture: limited-maintenance open source.
 
-Current proof posture: reproducible smoke-tier evidence with upgrade packs for recorded manual baselines and human rubric review. It is not public-grade headline proof yet.
+Current proof posture: reproducible smoke-tier evidence with a live release trail, Pages front door, and repo-side safety gates. It is not public-grade headline proof yet, and the current proof routes are kept explicit in [Public Proof](docs/public_proof.md) instead of being buried in operator-only docs.
 
 ## Why Movi Exists
 
@@ -32,6 +32,17 @@ Think of it like moving house: AI makes the packing list, but the moving crew st
 - **Rollback-ready workflow**: the same manifest chain supports recovery when a batch needs to be undone.
 - **Local-first runtime**: your folders, manifests, and reports stay under your chosen workspace root.
 - **Operator-grade guardrails**: quality gates, structured logs, and release runbooks exist for people who need deeper operational truth.
+
+## Public Proof At A Glance
+
+If you are asking, "is this a real product surface or just a careful README," the shortest honest answer is:
+
+- **Public source repo + GitHub Releases**: the release trail is public on [GitHub Releases](https://github.com/xiaojiou176-open/movi-organizer/releases).
+- **Live Pages front door**: the current public landing route is [xiaojiou176-open.github.io/movi-organizer](https://xiaojiou176-open.github.io/movi-organizer/).
+- **Review-first proof, not autonomy theater**: the repo ships a fixture-backed safe first look, dry-run apply, rollback boundaries, and a real MCP surface that still stays behind review-safe semantics.
+- **Honest boundary language**: Movi does not claim hosted SaaS, zero-review file mutation, or public benchmark-grade proof that the repo has not actually earned yet.
+
+If you want the full outsider-facing proof map, open [Public Proof](docs/public_proof.md). If you want the shortest hands-on route, stay on this page and run [Safe First Look](#safe-first-look).
 
 ## Product Surface Baseline
 
@@ -155,7 +166,7 @@ If you want the public release storyline instead of the repo history, start with
 - **The manifest is the source of truth**: review happens before file mutation.
 - **`apply` and `rollback` stay deterministic**: AI helps plan, not execute arbitrary moves.
 - **Safety language is explicit**: `dry-run`, `allowed-root`, and manifest validation are first-class, not buried extras.
-- **Governance truth is documented**: deeper runtime, release, and platform boundaries are kept in operator docs instead of being silently implied.
+- **Proof routes are explicit**: live release, Pages, and deeper operator truth routes are linked directly instead of being hidden in internal-only notes.
 
 ## Brand And Landing Notes
 
@@ -221,25 +232,16 @@ Container-first default:
 
 If review-first cleanup is the workflow you keep wishing existed, star the repo so you can find Movi again when the next messy folder lands.
 
-## Operator And Governance References
+## Proof And Truth Routes
 
+- Public-facing proof map: [docs/public_proof.md](docs/public_proof.md)
 - Detailed operator route: [docs/usage.md](docs/usage.md)
 - Architecture and execution boundaries: [docs/architecture.md](docs/architecture.md)
 - Public release and platform boundary: [docs/open_source_runbook.md](docs/open_source_runbook.md)
 - Third-party notices: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
 
-## Deeper Operator Truth Surfaces
-
 Delivery-complete truth for the current snapshot still depends on fresh gate evidence, not on static prose.
-Treat `bash tooling/gates/quality_gate.sh` as the delivery-complete receipt for the current snapshot.
-Treat repository docs as guidance, not as live platform state.
-
-## Minimal Truth Routes
-
-- Overview and fastest first look: [README.md](README.md)
-- Detailed operator guide: [docs/usage.md](docs/usage.md)
-- Architecture and execution boundaries: [docs/architecture.md](docs/architecture.md)
-- Public release and platform boundary: [docs/open_source_runbook.md](docs/open_source_runbook.md)
+Treat `bash tooling/gates/quality_gate.sh` as the delivery-complete receipt for the current snapshot, and treat repository docs as guidance rather than a live platform dashboard.
 
 Public readiness gates:
 

@@ -11,16 +11,16 @@ Movi is a review-first local file organizer and workbench for messy photos, scre
 
 - New here: read the public overview in [README.md](../README.md)
 - Want the fastest safe first look: follow [Quickstart](./quickstart.md)
+- Want the shortest outsider-facing trust map: open [Public Proof](./public_proof.md)
 - Need the full operator route: open [Operator Guide](./usage.md)
-- Want the agent/developer extension surface: open [Movi MCP v1](./mcp.md) and [Developer Guide](./developer_guide.md)
-- Want a client-specific MCP route: open [Movi MCP For Codex](./codex_mcp.md) or [Movi MCP For Claude Code](./claude_code_mcp.md)
-- Need the shortest builder route for MCP vs Web API vs generated client: open [Developer Guide](./developer_guide.md)
 - Need system wiring: open [Architecture](./architecture.md)
 - Need release or GitHub-facing boundary rules: open [Open Source Runbook](./open_source_runbook.md)
 - Need the naming baseline: open [Brand Positioning](./brand_positioning.md)
 - Need the search-intent map: open [SEO Landing Map](./seo_landing_map.md)
 - Want the search-intent landing page first: open [Review-First AI File Organizer](./review_first_ai_file_organizer.md)
 - Need a use-case landing page first: open [Photo Organizer](./photo_organizer.md), [Screenshot Organizer](./screenshot_organizer.md), or [Receipt Organizer](./receipt_organizer.md)
+- Want the agent/developer extension surface after you understand the product story: open [Movi MCP v1](./mcp.md) and [Developer Guide](./developer_guide.md)
+- Want a client-specific MCP route: open [Movi MCP For Codex](./codex_mcp.md) or [Movi MCP For Claude Code](./claude_code_mcp.md)
 
 ## What Makes Movi Different
 
@@ -56,6 +56,7 @@ This Navigation map is intentionally search-before-write friendly: pick the shor
 ## Next Doors
 
 - [Quickstart / safe first look](./quickstart.md)
+- [Public Proof](./public_proof.md)
 - [FAQ](./faq.md)
 - [Movi MCP v1](./mcp.md)
 - [Movi MCP For Codex](./codex_mcp.md)
