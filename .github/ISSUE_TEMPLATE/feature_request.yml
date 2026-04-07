@@ -1,0 +1,54 @@
+name: Feature request
+description: Suggest a workflow or product improvement for Movi
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for roadmap suggestions, workflow improvements, or product ideas.
+        Please read `SUPPORT.md` first and keep the request grounded in a real cleanup workflow.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the feature request in one or two clear sentences.
+      placeholder: Add a reviewed batch rename preset for recurring receipt folders.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What real workflow pain does this request solve?
+      placeholder: I repeat the same receipt cleanup flow every month and the current path still needs too many manual edits.
+    validations:
+      required: true
+  - type: textarea
+    id: smallest_useful_change
+    attributes:
+      label: Smallest useful version
+      description: Describe the smallest version of this feature that would already help.
+      placeholder: A naming preset plus one saved view would already remove most of the manual cleanup work.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Share examples, failing workflows, screenshots, or command output when relevant.
+      placeholder: |
+        Folder example: ~/cleanup-batch/receipts
+        Current friction: I manually rewrite the same destination names every run.
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations
+      options:
+        - label: I checked `SUPPORT.md` first.
+          required: true
+        - label: I understand this is a limited-maintenance repository and not every roadmap request will be accepted.
+          required: true

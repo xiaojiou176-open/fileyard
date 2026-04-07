@@ -1,0 +1,41 @@
+name: trivy-fs
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches:
+      - main
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: trivy-fs-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  trivy-fs:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: true
+          persist-credentials: false
+      - name: Run Trivy filesystem scan
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          exit-code: "1"
+          ignore-unfixed: true
+          severity: HIGH,CRITICAL
+          format: table
+          hide-progress: true
+          skip-dirs: .git,.runtime-cache,node_modules,dist,build,.venv,.cache,__pycache__
+          version: v0.69.3

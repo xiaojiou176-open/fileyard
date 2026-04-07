@@ -1,0 +1,43 @@
+name: zizmor
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches:
+      - main
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zizmor-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  zizmor:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: true
+          persist-credentials: false
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@71321a20a9ded102f6e9ce5718a2fcec2c4f70d8 # v0.5.2
+        with:
+          inputs: >-
+            .github/workflows/nightly-drift-audit.yml
+            .github/workflows/upstream-governance-weekly.yml
+            .github/workflows/zizmor.yml
+            .github/workflows/trivy-fs.yml
+            .github/workflows/trufflehog.yml
+          persona: auditor
+          min-severity: high
+          advanced-security: "false"
+          annotations: "true"
+          version: v1.22.0

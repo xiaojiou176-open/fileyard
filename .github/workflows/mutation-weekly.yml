@@ -1,0 +1,227 @@
+name: mutation-weekly
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 1"
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: mutation-weekly-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-ci-image:
+    uses: ./.github/workflows/reusable-build-runtime-image.yml
+    secrets: inherit # pragma: allowlist secret
+    with:
+      artifact-name: mutation-image-contract
+      image-tag-prefix: mutation
+
+  python-mutmut:
+    needs: [build-ci-image]
+    timeout-minutes: 90
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - module: core_utils
+            mutate_path: packages/domain/core_utils.py
+            tests: tests/unit/test_core_utils.py tests/unit/test_core_utils_more.py tests/unit/test_core_utils_timezone_and_truncate.py
+          - module: manifest_store
+            mutate_path: packages/infrastructure/manifest_store.py
+            tests: tests/unit/test_manifest_metadata.py tests/unit/test_manifest_store.py tests/unit/test_manifest_store_more.py
+          - module: config_loader
+            mutate_path: packages/infrastructure/config_loader.py
+            tests: tests/unit/test_config_loader.py tests/unit/test_config_loader_validate.py tests/unit/test_config_loader_strict_validation.py
+          - module: apply_command
+            mutate_path: packages/application/apply_command.py
+            tests: tests/unit/test_apply_changes.py tests/unit/test_apply_changes_more.py
+          - module: pipeline_config
+            mutate_path: packages/domain/pipeline_config.py
+            tests: tests/unit/test_pipeline_config_durability.py
+          - module: cli_app
+            mutate_path: apps/cli/cli_app.py
+            tests: tests/unit/test_cli_app.py
+          - module: gemini_client
+            mutate_path: packages/infrastructure/gemini_client.py
+            tests: tests/unit/test_gemini_client_parse.py tests/unit/test_gemini_client_more.py
+          - module: logging_utils
+            mutate_path: packages/observability/logging_utils.py
+            tests: tests/unit/test_logging_utils.py
+          - module: analyze_media
+            mutate_path: packages/application/analyze_media.py
+            tests: tests/unit/test_analyze_media_sanitize.py tests/unit/test_analyze_media_more_paths.py
+          - module: reporting
+            mutate_path: packages/application/reporting.py
+            tests: tests/unit/test_reporting.py
+    steps:
+      - name: Clear stale git metadata before checkout
+        run: |
+          set -euo pipefail
+          if [ -d "$GITHUB_WORKSPACE/.git" ]; then
+            rm -rf "$GITHUB_WORKSPACE/.git"
+          fi
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+          persist-credentials: false
+      - name: Self-hosted workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: mutation-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        env:
+          GHCR_LOGIN_TOKEN: ${{ github.token }}
+          GHCR_LOGIN_ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/movi-docker-config"
+          mkdir -p "$DOCKER_CONFIG_DIR"
+          printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
+          export DOCKER_CONFIG="$DOCKER_CONFIG_DIR"
+          printf '%s' "$GHCR_LOGIN_TOKEN" | docker login ghcr.io -u "$GHCR_LOGIN_ACTOR" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          docker pull "$IMAGE_REF"
+          echo "MOVI_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Prepare artifacts dir
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Run mutmut (python)
+        env:
+          MATRIX_MUTATE_PATH: ${{ matrix.mutate_path }}
+          MATRIX_TESTS: ${{ matrix.tests }}
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label mutation-weekly -- bash -lc '
+            set -euo pipefail
+            $HOME/.cache/movi-organizer/venv/default/bin/mutmut run \
+              --paths-to-mutate "${MATRIX_MUTATE_PATH}" \
+              --tests-dir tests/unit \
+              --runner "$HOME/.cache/movi-organizer/venv/default/bin/python -m pytest -q ${MATRIX_TESTS}"
+          '
+      - name: Mutation fail gate (no survived mutants)
+        env:
+          MATRIX_MODULE: ${{ matrix.module }}
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label mutation-weekly-report -- bash -lc '
+            set -euo pipefail
+            $HOME/.cache/movi-organizer/venv/default/bin/mutmut results | tee ".runtime-cache/logs/mutmut-results-${MATRIX_MODULE}.txt"
+            $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_mutation_report.py \
+              --input ".runtime-cache/logs/mutmut-results-${MATRIX_MODULE}.txt" \
+              --max-survived 0 \
+              --max-timed-out 0 \
+              --max-suspicious 0 \
+              --min-killed 1 \
+              --require-non-empty-sample \
+              --json-output ".runtime-cache/logs/mutmut-summary-${MATRIX_MODULE}.json"
+          '
+      - name: Upload mutation diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: mutation-weekly-diagnostics-${{ matrix.module }}
+          path: |
+            .runtime-cache/logs/
+            .runtime-cache/test/mutation/.mutmut-cache
+          if-no-files-found: warn
+
+  js-stryker:
+    needs: [build-ci-image]
+    timeout-minutes: 45
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clear stale git metadata before checkout
+        run: |
+          set -euo pipefail
+          if [ -d "$GITHUB_WORKSPACE/.git" ]; then
+            rm -rf "$GITHUB_WORKSPACE/.git"
+          fi
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+          persist-credentials: false
+      - name: Self-hosted workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: mutation-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        env:
+          GHCR_LOGIN_TOKEN: ${{ github.token }}
+          GHCR_LOGIN_ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/movi-docker-config"
+          mkdir -p "$DOCKER_CONFIG_DIR"
+          printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
+          export DOCKER_CONFIG="$DOCKER_CONFIG_DIR"
+          printf '%s' "$GHCR_LOGIN_TOKEN" | docker login ghcr.io -u "$GHCR_LOGIN_ACTOR" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          docker pull "$IMAGE_REF"
+          echo "MOVI_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Run Stryker (js/ts)
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label js-stryker -- bash -lc '
+            set -euo pipefail
+            if [ -f stryker.config.json ] || [ -f stryker.config.mjs ] || [ -f stryker.config.cjs ]; then
+              npx stryker run
+            else
+              echo "No Stryker config found. Skip js-stryker job."
+            fi
+          '
+
+  rust-cargo-mutants:
+    timeout-minutes: 45
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clear stale git metadata before checkout
+        run: |
+          set -euo pipefail
+          if [ -d "$GITHUB_WORKSPACE/.git" ]; then
+            rm -rf "$GITHUB_WORKSPACE/.git"
+          fi
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+          persist-credentials: false
+      - name: Self-hosted workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Skip when no Rust sources
+        id: detect_rs
+        run: |
+          set -euo pipefail
+          if git ls-files | grep -E '\.rs$' >/dev/null; then
+            echo "has_rs=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_rs=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: taiki-e/install-action@dc65498be417cee56d567a702cfefe9337cf8ea6
+        if: steps.detect_rs.outputs.has_rs == 'true'
+      - name: Run cargo-mutants
+        if: steps.detect_rs.outputs.has_rs == 'true'
+        env:
+          XDG_CACHE_HOME: ${{ runner.temp }}/organizer-mutation-weekly-xdg-cache
+        run: |
+          set -euo pipefail
+          cargo mutants --in-place
+      - name: No Rust sources
+        if: steps.detect_rs.outputs.has_rs != 'true'
+        run: echo "No Rust sources detected. Skip rust-cargo-mutants."

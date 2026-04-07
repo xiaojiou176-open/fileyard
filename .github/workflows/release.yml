@@ -1,0 +1,151 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: Release tag / version string (for example v4.0.1)
+        required: true
+        type: string
+      publish_mode:
+        description: Release stage (`bundle-only` builds assets only, `draft` updates the draft release, `publish` publishes immediately)
+        required: false
+        default: draft
+        type: choice
+        options:
+          - bundle-only
+          - draft
+          - publish
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: release-${{ github.workflow }}-${{ github.ref }}-${{ inputs.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  release-bundle:
+    timeout-minutes: 45
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: read
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: true
+          persist-credentials: false
+
+      - name: Validate release tag policy
+        env:
+          RELEASE_REQUIRED_BRANCH: main
+          RELEASE_TAG_NAME: ${{ inputs.tag_name }}
+          RELEASE_PUBLISH_MODE: ${{ inputs.publish_mode }}
+        run: |
+          set -euo pipefail
+          bash tooling/ci/validate_release_tag.sh "$RELEASE_TAG_NAME" "$RELEASE_PUBLISH_MODE"
+
+      - name: Bootstrap governed runtime
+        run: |
+          set -euo pipefail
+          bash tooling/runtime/bootstrap_env.sh
+
+      - name: Fresh repo-side verification before release assets
+        env:
+          MOVI_ALLOW_HOST_EXECUTION: "1"
+          GH_TOKEN: ${{ secrets.RELEASE_AUDIT_TOKEN || github.token }}
+        run: |
+          set -euo pipefail
+          bash tooling/gates/public_readiness_gate.sh release
+          bash tooling/gates/platform_alignment_gate.sh
+          bash tooling/gates/quality_gate.sh
+
+      - name: Build governed release bundle
+        env:
+          RELEASE_TAG_NAME: ${{ inputs.tag_name }}
+        run: |
+          set -euo pipefail
+          bash tooling/ci/build_release_bundle.sh "$RELEASE_TAG_NAME" .runtime-cache/release-assets
+
+      - name: Upload release bundle artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: release-bundle-${{ inputs.tag_name }}
+          path: .runtime-cache/release-assets/
+          if-no-files-found: error
+          overwrite: true
+
+      - name: Attest release bundle assets
+        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a
+        with:
+          subject-path: .runtime-cache/release-assets/*
+
+      - name: Materialize release tag on remote
+        if: inputs.publish_mode != 'bundle-only'
+        env:
+          RELEASE_TAG_APPLY: "1"
+          RELEASE_TAG_NAME: ${{ inputs.tag_name }}
+        run: |
+          set -euo pipefail
+          bash tooling/ci/materialize_release_tag.sh "$RELEASE_TAG_NAME" "$GITHUB_SHA"
+
+      - name: Create or update GitHub Release
+        if: inputs.publish_mode != 'bundle-only'
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_AUDIT_TOKEN || github.token }}
+          RELEASE_TAG_NAME: ${{ inputs.tag_name }}
+          RELEASE_PUBLISH_MODE: ${{ inputs.publish_mode }}
+        run: |
+          set -euo pipefail
+          TAG="$RELEASE_TAG_NAME"
+          MODE="$RELEASE_PUBLISH_MODE"
+          TITLE="Release ${TAG}"
+          NOTES=".runtime-cache/release-assets/release-draft.md"
+          PRERELEASE_ARGS=()
+          case "$TAG" in
+            *-alpha.*|*-beta.*|*-rc.*) PRERELEASE_ARGS+=(--prerelease) ;;
+          esac
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" .runtime-cache/release-assets/* --clobber
+            if [ "$MODE" = "publish" ]; then
+              gh release edit "$TAG" --title "$TITLE" --notes-file "$NOTES" --draft=false --verify-tag --target "$GITHUB_SHA" "${PRERELEASE_ARGS[@]}"
+            else
+              gh release edit "$TAG" --title "$TITLE" --notes-file "$NOTES" --draft=true --verify-tag --target "$GITHUB_SHA" "${PRERELEASE_ARGS[@]}"
+            fi
+          else
+            CREATE_ARGS=("$TAG" .runtime-cache/release-assets/* --title "$TITLE" --notes-file "$NOTES" --target "$GITHUB_SHA" --verify-tag)
+            if [ "$MODE" = "publish" ]; then
+              :
+            else
+              CREATE_ARGS+=(--draft)
+            fi
+            gh release create "${CREATE_ARGS[@]}" "${PRERELEASE_ARGS[@]}"
+          fi
+
+      - name: Post-publish verification
+        if: inputs.publish_mode != 'bundle-only'
+        env:
+          RELEASE_VERIFY_SUMMARY_OUT: .runtime-cache/logs/release-publish/summary.json
+          GH_TOKEN: ${{ secrets.RELEASE_AUDIT_TOKEN || github.token }}
+          RELEASE_TAG_NAME: ${{ inputs.tag_name }}
+          RELEASE_PUBLISH_MODE: ${{ inputs.publish_mode }}
+        run: |
+          set -euo pipefail
+          bash tooling/ci/verify_release_publish.sh "$RELEASE_TAG_NAME" "$RELEASE_PUBLISH_MODE" .runtime-cache/release-assets
+
+      - name: Upload release verification artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: release-verification-${{ inputs.tag_name }}
+          path: |
+            .runtime-cache/logs/platform-alignment/
+            .runtime-cache/logs/public-readiness/
+            .runtime-cache/logs/release-publish/
+          if-no-files-found: error
+          overwrite: true

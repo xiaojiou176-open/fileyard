@@ -1,0 +1,57 @@
+name: Bug report
+description: Report a reproducible repository bug
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please read `SUPPORT.md` first and include fresh command output when possible.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the bug in one or two clear sentences.
+      placeholder: The apply step stops after manifest validation when the input root contains spaces.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: List the smallest set of steps, inputs, and commands needed to reproduce the problem.
+      placeholder: |
+        1. Run `bash tooling/runtime/bootstrap_env.sh`
+        2. Run `python -m ...`
+        3. Observe the failing step
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Paste the relevant command lines, exit codes, log snippets, screenshots, or trace IDs.
+      placeholder: |
+        Command: bash tooling/gates/pre_push_gate.sh
+        Exit code: 1
+        Key output: ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Share your OS, execution mode (host/container/CI), version or commit, and whether valid credentials were available.
+      placeholder: macOS 15, host run, main@abcdef1, no live credentials
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations
+      options:
+        - label: I checked `SUPPORT.md` and this issue is inside the repository support boundary.
+          required: true
+        - label: I removed secrets and private data from the report.
+          required: true

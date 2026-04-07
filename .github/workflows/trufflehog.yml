@@ -1,0 +1,44 @@
+name: trufflehog
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches:
+      - main
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: trufflehog-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  trufflehog:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: true
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Run TruffleHog
+        if: github.event_name != 'merge_group'
+        uses: trufflesecurity/trufflehog@6bd2d14f7a4bc1e569fa3550efa7ec632a4fa67b # v3.94.2
+        with:
+          path: ./
+          version: 3.94.2
+      - name: Run TruffleHog (merge group diff)
+        if: github.event_name == 'merge_group'
+        uses: trufflesecurity/trufflehog@6bd2d14f7a4bc1e569fa3550efa7ec632a4fa67b # v3.94.2
+        with:
+          path: ./
+          base: origin/main
+          head: ${{ github.sha }}
+          version: 3.94.2

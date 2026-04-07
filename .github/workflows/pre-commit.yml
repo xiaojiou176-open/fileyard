@@ -1,0 +1,104 @@
+name: pre-commit
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: pre-commit-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
+
+jobs:
+  pre-commit-hosted-primary:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    outputs:
+      entered: ${{ steps.entry.outputs.entered }}
+    steps:
+      - id: entry
+        name: Entry sentinel
+        run: echo "entered=true" >> "$GITHUB_OUTPUT"
+      - name: Clear stale git metadata before checkout
+        run: |
+          set -euo pipefail
+          if [ -d "$GITHUB_WORKSPACE/.git" ]; then
+            rm -rf "$GITHUB_WORKSPACE/.git"
+          fi
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Self-hosted workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Bootstrap governed runtime
+        run: |
+          set -euo pipefail
+          bash tooling/runtime/bootstrap_env.sh
+      - name: Run pre-commit hooks
+        run: |
+          set -euo pipefail
+          ~/.cache/movi-organizer/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
+
+  pre-commit-hosted-retry:
+    needs: [pre-commit-hosted-primary]
+    if: (always() && needs.pre-commit-hosted-primary.result != 'success') && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clear stale git metadata before checkout
+        run: |
+          set -euo pipefail
+          if [ -d "$GITHUB_WORKSPACE/.git" ]; then
+            rm -rf "$GITHUB_WORKSPACE/.git"
+          fi
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Self-hosted workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Bootstrap governed runtime
+        run: |
+          set -euo pipefail
+          bash tooling/runtime/bootstrap_env.sh
+      - name: Run pre-commit hooks
+        run: |
+          set -euo pipefail
+          ~/.cache/movi-organizer/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
+
+  pre-commit:
+    needs: [pre-commit-hosted-primary, pre-commit-hosted-retry]
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Resolve hosted retry result
+        run: |
+          set -euo pipefail
+          primary_result='${{ needs.pre-commit-hosted-primary.result }}'
+          fallback_result='${{ needs.pre-commit-hosted-retry.result }}'
+          echo "primary_result=${primary_result}"
+          echo "fallback_result=${fallback_result}"
+
+          if [ "$primary_result" = "success" ]; then
+            echo "✅ pre-commit passed on primary lane."
+            exit 0
+          fi
+
+          if [ "$fallback_result" = "success" ]; then
+            echo "✅ pre-commit hosted retry passed."
+            exit 0
+          fi
+
+          echo "❌ pre-commit gate failed. No valid fallback success path."
+          exit 1
