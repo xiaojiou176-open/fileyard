@@ -76,7 +76,7 @@
       "source_hashes": {
         "contracts/api/web_api.openapi.yaml": "c97830844b65fd8f76cd23688187ca8648835d787d1819045882dea01e1d7b64"
       },
-      "output_hash": "ffb36e9c2b3fa2651083ac92db5bf8b3d825345632c09ca8a1f4256c896a408c"
+      "output_hash": "560ad547242b0c1b25a236d2f2ad7028b0fb644bb243027844d8e1731d36a0da"
     },
     {
       "id": "root-runtime-topology",
@@ -91,7 +91,7 @@
         "package.json": "19ed161b16378601fc42d4baa05b7225fc57a47cfdee28a64131fd57d3cd1efc",
         ".env.example": "32a60792624cd36eb5992b34d9c67c6e6e2a0971a45f3a48370f3b0b720b0aa8"
       },
-      "output_hash": "ffb36e9c2b3fa2651083ac92db5bf8b3d825345632c09ca8a1f4256c896a408c"
+      "output_hash": "560ad547242b0c1b25a236d2f2ad7028b0fb644bb243027844d8e1731d36a0da"
     },
     {
       "id": "root-ci-governance-summary",
@@ -106,7 +106,7 @@
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3",
         "package.json": "19ed161b16378601fc42d4baa05b7225fc57a47cfdee28a64131fd57d3cd1efc"
       },
-      "output_hash": "ffb36e9c2b3fa2651083ac92db5bf8b3d825345632c09ca8a1f4256c896a408c"
+      "output_hash": "560ad547242b0c1b25a236d2f2ad7028b0fb644bb243027844d8e1731d36a0da"
     },
     {
       "id": "root-release-identity",
@@ -117,7 +117,7 @@
       "source_hashes": {
         "pyproject.toml": "d12c2c415c3900d81c888e91d3a8ec1af88af96a701c6de801c37a1e52b4a495"
       },
-      "output_hash": "ffb36e9c2b3fa2651083ac92db5bf8b3d825345632c09ca8a1f4256c896a408c"
+      "output_hash": "560ad547242b0c1b25a236d2f2ad7028b0fb644bb243027844d8e1731d36a0da"
     },
     {
       "id": "script-readme-web-api-routes",

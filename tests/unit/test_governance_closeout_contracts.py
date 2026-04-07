@@ -283,6 +283,89 @@ def test_gate_log_correlation_gate_validates_summary_and_artifacts(tmp_path: Pat
     assert proc.returncode == 0, proc.stdout + proc.stderr
 
 
+def test_gate_log_correlation_can_skip_missing_optional_gate_summaries(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    (repo / "contracts" / "runtime").mkdir(parents=True)
+    (repo / ".runtime-cache" / "logs" / "quality-gate").mkdir(parents=True)
+    (repo / "contracts" / "runtime" / "gate_log_schema.yaml").write_text(
+        "\n".join(
+            [
+                "version: 1",
+                "required_gates:",
+                "  - gate_name: quality-gate",
+                "    summary_path: .runtime-cache/logs/quality-gate/summary.json",
+                "    bridge_log_step_name: logging-contract",
+                "    bridge_required_event_fields:",
+                "      - gate_run_id",
+                "      - gate_name",
+                "  - gate_name: platform-alignment",
+                "    summary_path: .runtime-cache/logs/platform-alignment/summary.json",
+                "required_top_level_fields:",
+                "  - gate_run_id",
+                "  - gate_name",
+                "  - status",
+                "  - started_at",
+                "  - ended_at",
+                "  - duration_ms",
+                "  - steps",
+                "required_step_fields:",
+                "  - step_name",
+                "  - status",
+                "  - started_at",
+                "  - ended_at",
+                "  - duration_ms",
+                "  - artifact_log_path",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (repo / ".runtime-cache" / "logs" / "quality-gate" / "step.log").write_text(
+        "\n".join(
+            [
+                '{"event":"report.generate.start","gate_run_id":"quality-gate-1","gate_name":"quality-gate"}',
+                '{"event":"report.generate.fail","gate_run_id":"quality-gate-1","gate_name":"quality-gate"}',
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (repo / ".runtime-cache" / "logs" / "quality-gate" / "summary.json").write_text(
+        "{\n"
+        '  "gate_run_id": "quality-gate-1",\n'
+        '  "gate_name": "quality-gate",\n'
+        '  "status": "pass",\n'
+        '  "started_at": "2026-03-16T13:00:00Z",\n'
+        '  "ended_at": "2026-03-16T13:00:01Z",\n'
+        '  "duration_ms": 1000,\n'
+        '  "steps": [\n'
+        "    {\n"
+        '      "step_name": "logging-contract",\n'
+        '      "status": "pass",\n'
+        '      "started_at": "2026-03-16T13:00:00Z",\n'
+        '      "ended_at": "2026-03-16T13:00:01Z",\n'
+        '      "duration_ms": 1000,\n'
+        '      "artifact_log_path": ".runtime-cache/logs/quality-gate/step.log"\n'
+        "    }\n"
+        "  ]\n"
+        "}\n",
+        encoding="utf-8",
+    )
+
+    proc = _run(
+        [
+            sys.executable,
+            str(REPO_ROOT / "tooling" / "scripts" / "check_gate_log_correlation.py"),
+            "--root",
+            str(repo),
+            "--allow-missing-gate",
+            "platform-alignment",
+        ],
+        repo,
+    )
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+
+
 def test_gate_log_correlation_can_target_single_gate_with_custom_summary_path(tmp_path: Path) -> None:
     repo = tmp_path / "repo"
     (repo / "contracts" / "runtime").mkdir(parents=True)

@@ -87,8 +87,6 @@ def main() -> int:
         failures.append("local_quality_gate.sh must keep docs fragment completeness gate")
     if "check_snapshot_scope_labels.py" not in local_quality:
         failures.append("local_quality_gate.sh must keep snapshot scope labels gate")
-    if "check_gate_log_correlation.py" not in local_quality:
-        failures.append("local_quality_gate.sh must keep gate log correlation gate")
     if "check_hotspot_budget.py" not in local_quality:
         failures.append("local_quality_gate.sh must keep hotspot budget gate")
     if "check_mcp_surface.py" not in local_quality:

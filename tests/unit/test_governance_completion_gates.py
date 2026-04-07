@@ -175,7 +175,7 @@ def test_governance_wiring_includes_cold_start_and_root_change_control_gates() -
     assert "check_snapshot_scope_labels.py" in quality
     assert "check_gate_log_correlation.py" in verify
     assert "check_gate_log_correlation.py" in score
-    assert "check_gate_log_correlation.py" in local_quality
+    assert "check_gate_log_correlation.py" not in local_quality
     assert "check_gate_log_correlation.py" in quality
     assert "check_positioning_claims.py" in verify
     assert "check_positioning_claims.py" in score

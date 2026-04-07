@@ -51,6 +51,10 @@ docs:
     layer: human-authored
     scope: strict
     command_smoke: false
+  - path: docs/public_proof.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
   - path: docs/brand_positioning.md
     layer: human-authored
     scope: strict

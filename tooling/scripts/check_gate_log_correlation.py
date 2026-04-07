@@ -35,6 +35,12 @@ def main() -> int:
     parser.add_argument("--root", default=".")
     parser.add_argument("--contract", default="contracts/runtime/gate_log_schema.yaml")
     parser.add_argument("--gate", action="append", default=[], help="Only validate the named gate(s) from the contract")
+    parser.add_argument(
+        "--allow-missing-gate",
+        action="append",
+        default=[],
+        help="Gate name(s) that may be skipped when their summary file does not exist",
+    )
     parser.add_argument("--summary-path", help="Override the summary path when validating a single gate")
     args = parser.parse_args()
 
@@ -52,6 +58,7 @@ def main() -> int:
         missing = selected_gates.difference(str(gate.get("gate_name", "")).strip() for gate in gates if isinstance(gate, dict))
         if missing:
             raise SystemExit(f"unknown gate(s) requested: {', '.join(sorted(missing))}")
+    allow_missing_gates = {item.strip() for item in args.allow_missing_gate if item and item.strip()}
     if args.summary_path and len(gates) != 1:
         raise SystemExit("--summary-path requires exactly one selected gate")
 
@@ -67,6 +74,8 @@ def main() -> int:
             issues.append(f"invalid required_gates entry: {gate!r}")
             continue
         if not summary_path.exists():
+            if gate_name in allow_missing_gates:
+                continue
             issues.append(f"{gate_name}: missing summary file: {summary_path.relative_to(root)}")
             continue
         try:

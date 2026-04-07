@@ -243,6 +243,15 @@ If review-first cleanup is the workflow you keep wishing existed, star the repo 
 Delivery-complete truth for the current snapshot still depends on fresh gate evidence, not on static prose.
 Treat `bash tooling/gates/quality_gate.sh` as the delivery-complete receipt for the current snapshot, and treat repository docs as guidance rather than a live platform dashboard.
 
+## Minimal Truth Routes
+
+If you only want the shortest honest map of what is true right now, follow these four routes:
+
+- **Public proof map**: [docs/public_proof.md](docs/public_proof.md)
+- **Current release and platform boundary**: [docs/open_source_runbook.md](docs/open_source_runbook.md)
+- **Detailed operator route**: [docs/usage.md](docs/usage.md)
+- **System wiring and contracts**: [docs/architecture.md](docs/architecture.md)
+
 Public readiness gates:
 
 - `bash tooling/gates/public_readiness_gate.sh repo`
