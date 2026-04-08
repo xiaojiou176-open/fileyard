@@ -15,6 +15,7 @@ shipped yet.
 | GitHub repository | Published | The canonical public source and collaboration surface is `xiaojiou176-open/movi-organizer`. |
 | GitHub Releases | Published | GitHub Releases is the canonical release trail for this repository. |
 | GitHub Pages | Published | GitHub Pages is the current public front door and discovery page. |
+| Submission manifest | Published in-repo | [`manifest.yaml`](./manifest.yaml) is the repo-owned summary of current published vs submission-ready-unlisted surfaces. |
 
 ## Current Ready But Not Registry-Published
 
@@ -23,6 +24,8 @@ shipped yet.
 | Source install from this repository | Ready | The repository ships Python package metadata and console entrypoints such as `movi-organizer`, `movi-web-api`, and `movi-mcp`. |
 | Movi MCP v1 stdio server | Ready | The MCP surface is a local-first stdio integration that can be launched from this repository or an installed environment. |
 | Codex / Claude Code setup docs | Ready | The repository ships setup pages for Codex and Claude Code, but those docs describe local wiring, not a separate public distribution channel. |
+| Skills / agent bundle shelf | Submission-ready-unlisted | The repository now ships repo-owned skill bundle examples and install/proof notes without claiming a live skills registry listing. |
+| OpenClaw / ClawHub bundle | Submission-ready-unlisted | The repository now ships an OpenClaw-facing bundle and proof note without claiming a live catalog entry. |
 
 ## Surfaces We Do Not Currently Claim As Published
 
@@ -31,8 +34,8 @@ shipped yet.
 | PyPI | Not published | This repository does not currently claim an official PyPI release surface. |
 | npm package | Not published | The root Node surface is a repo control surface, not a published npm package. |
 | MCP registry | Not published | `Movi MCP v1` is documented as a local-first stdio surface, not a registry-published listing. |
-| Skills registry | Not published | No official skills-registry distribution claim is made here. |
-| Plugin marketplace | Not published | Strategy Packs are templates, not a plugin marketplace. |
+| Skills registry | Not published | A repo-owned skills bundle exists, but no live registry listing is claimed. |
+| Plugin marketplace | Not published | Agent/plugin bundle readiness exists, but no browser or plugin marketplace listing is claimed. |
 | Chrome Web Store | Not published | No official Chrome Web Store distribution claim is made here. |
 
 ## Current Reading Rule
@@ -42,6 +45,8 @@ Use the surfaces above in this order:
 1. GitHub repository for the public source of truth
 2. GitHub Releases for release history
 3. GitHub Pages for the current public landing route
+4. `manifest.yaml` for the repo-owned submission summary
+5. `examples/skills/README.md` and `examples/openclaw/README.md` for unlisted bundle surfaces
 
 If you need to answer a stricter question such as "is the current head verified
 as a published release," do not infer that from a tag alone. Use the release

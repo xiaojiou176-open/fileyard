@@ -5,6 +5,7 @@ canonical_tracked_entries:
   - .env.example
   - .github
   - .gitignore
+  - .nvmrc
   - .pre-commit-config.yaml
   - AGENTS.md
   - CHANGELOG.md
@@ -22,6 +23,8 @@ canonical_tracked_entries:
   - apps
   - contracts
   - docs
+  - examples
+  - manifest.yaml
   - ops
   - package-lock.json
   - package.json
@@ -52,6 +55,7 @@ entry_purposes:
   .env.example: runtime env template
   .github: CI workflows and automation
   .gitignore: repository hygiene ignore contract
+  .nvmrc: local Node major-line pin for operator and CI parity
   .pre-commit-config.yaml: local hook contract
   .runtime-cache: the only repo-side runtime noise root
   .serena: repo-local Serena caches and project metadata that must remain untracked
@@ -71,6 +75,8 @@ entry_purposes:
   apps: repo entry applications
   contracts: machine-enforced contracts and governance truth
   docs: repo-level human documentation
+  examples: submission-ready public bundle examples and install packets
+  manifest.yaml: top-level submission manifest for public distribution truth
   ops: operational collateral
   package-lock.json: root workspace node lock
   package.json: root workspace scripts
@@ -83,6 +89,7 @@ required_non_empty_dirs:
   - apps
   - contracts
   - docs
+  - examples
   - ops
   - packages
   - tests

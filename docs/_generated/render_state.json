@@ -45,7 +45,7 @@
         "ops/compose/docker-compose.yml": "9f3f0a6047c30cc93374b41a2b0acbf5563b5b461812efac90e4e6e9da9a693c",
         "contracts/governance/governance.defaults.env": "cddb6b33f746b32509f8a49af1f11bef945d0eeaf060028da41c726127d68660",
         "pyproject.toml": "d12c2c415c3900d81c888e91d3a8ec1af88af96a701c6de801c37a1e52b4a495",
-        "package.json": "19ed161b16378601fc42d4baa05b7225fc57a47cfdee28a64131fd57d3cd1efc",
+        "package.json": "4b9bfb8aac66c5c9101b56af866932d5a27a2b1b912b01439905155a09cd6827",
         ".env.example": "32a60792624cd36eb5992b34d9c67c6e6e2a0971a45f3a48370f3b0b720b0aa8"
       },
       "output_hash": "35f928f34d5157b2764465e28ea00c4e234354342d4d26cc1164f9231eebf20d"
@@ -58,14 +58,14 @@
       "block_id": null,
       "source_hashes": {
         "contracts/governance/done_signal_policy.yaml": "16e2fc2add45a68406d6a6077ed7b912fe2406905bf1ff68e967bceeda4bd83c",
-        "contracts/governance/public_readiness_policy.yaml": "1207163d53fb898d20faee2a65d66ee9f29fedd29115364497d9c5ec03c3a7eb",
+        "contracts/governance/public_readiness_policy.yaml": "eacf27c9d50b2c4295abddecddc23c83f9302140cf82bbd26cd0070cf18ce835",
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3",
         ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
         ".github/workflows/pre-commit.yml": "ed0082256d36108f1bdb3d6c66f6f9805295a4f7f738465b0092d0b3fe0199ed",
         ".github/workflows/live-integration.yml": "87a1d413bc8d92d2103b5d4a6e19cfcb85fdb30e9e753b88a3267607a41d2b92",
         ".github/workflows/mutation-manual.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
       },
-      "output_hash": "774d8eaecbd42c0759da5b26cdfede0e5255f9e9d7c35b5d0e163ff9e58935c7"
+      "output_hash": "b87dbaba30da2a7478fb1870192748b312367579f91832025a2be12458f9ccba"
     },
     {
       "id": "root-web-api-routes",
@@ -76,7 +76,7 @@
       "source_hashes": {
         "contracts/api/web_api.openapi.yaml": "c97830844b65fd8f76cd23688187ca8648835d787d1819045882dea01e1d7b64"
       },
-      "output_hash": "0f570bc328a43eff72145d98195fe8a906244ad34388f46d0cfc9a50fefa6c70"
+      "output_hash": "c0edfeff801744050b9f8e0b7661f30a4ab0f6667c5d987e24ac7eb1ad56f869"
     },
     {
       "id": "root-runtime-topology",
@@ -88,10 +88,10 @@
         "ops/compose/docker-compose.yml": "9f3f0a6047c30cc93374b41a2b0acbf5563b5b461812efac90e4e6e9da9a693c",
         "contracts/governance/governance.defaults.env": "cddb6b33f746b32509f8a49af1f11bef945d0eeaf060028da41c726127d68660",
         "pyproject.toml": "d12c2c415c3900d81c888e91d3a8ec1af88af96a701c6de801c37a1e52b4a495",
-        "package.json": "19ed161b16378601fc42d4baa05b7225fc57a47cfdee28a64131fd57d3cd1efc",
+        "package.json": "4b9bfb8aac66c5c9101b56af866932d5a27a2b1b912b01439905155a09cd6827",
         ".env.example": "32a60792624cd36eb5992b34d9c67c6e6e2a0971a45f3a48370f3b0b720b0aa8"
       },
-      "output_hash": "0f570bc328a43eff72145d98195fe8a906244ad34388f46d0cfc9a50fefa6c70"
+      "output_hash": "c0edfeff801744050b9f8e0b7661f30a4ab0f6667c5d987e24ac7eb1ad56f869"
     },
     {
       "id": "root-ci-governance-summary",
@@ -104,9 +104,9 @@
         ".github/workflows/reusable-build-runtime-image.yml": "0b79722ad922ec45ce8eb62c2466834855aebb9915f86a8ff65a25b71ebf5793",
         ".github/workflows/nightly-drift-audit.yml": "485f3ee338c8c951e92047ff1bf600379eebb8a3265c1ded542bd95caad7770c",
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3",
-        "package.json": "19ed161b16378601fc42d4baa05b7225fc57a47cfdee28a64131fd57d3cd1efc"
+        "package.json": "4b9bfb8aac66c5c9101b56af866932d5a27a2b1b912b01439905155a09cd6827"
       },
-      "output_hash": "0f570bc328a43eff72145d98195fe8a906244ad34388f46d0cfc9a50fefa6c70"
+      "output_hash": "c0edfeff801744050b9f8e0b7661f30a4ab0f6667c5d987e24ac7eb1ad56f869"
     },
     {
       "id": "root-release-identity",
@@ -117,7 +117,7 @@
       "source_hashes": {
         "pyproject.toml": "d12c2c415c3900d81c888e91d3a8ec1af88af96a701c6de801c37a1e52b4a495"
       },
-      "output_hash": "0f570bc328a43eff72145d98195fe8a906244ad34388f46d0cfc9a50fefa6c70"
+      "output_hash": "c0edfeff801744050b9f8e0b7661f30a4ab0f6667c5d987e24ac7eb1ad56f869"
     },
     {
       "id": "script-readme-web-api-routes",
@@ -140,7 +140,7 @@
         "ops/compose/docker-compose.yml": "9f3f0a6047c30cc93374b41a2b0acbf5563b5b461812efac90e4e6e9da9a693c",
         "contracts/governance/governance.defaults.env": "cddb6b33f746b32509f8a49af1f11bef945d0eeaf060028da41c726127d68660",
         "pyproject.toml": "d12c2c415c3900d81c888e91d3a8ec1af88af96a701c6de801c37a1e52b4a495",
-        "package.json": "19ed161b16378601fc42d4baa05b7225fc57a47cfdee28a64131fd57d3cd1efc",
+        "package.json": "4b9bfb8aac66c5c9101b56af866932d5a27a2b1b912b01439905155a09cd6827",
         ".env.example": "32a60792624cd36eb5992b34d9c67c6e6e2a0971a45f3a48370f3b0b720b0aa8"
       },
       "output_hash": "4203a15a1ce623a972a6ba31f6a28f55eaa4520db960e7529b165e1bb550e2b3"
@@ -156,7 +156,7 @@
         ".github/workflows/reusable-build-runtime-image.yml": "0b79722ad922ec45ce8eb62c2466834855aebb9915f86a8ff65a25b71ebf5793",
         ".github/workflows/nightly-drift-audit.yml": "485f3ee338c8c951e92047ff1bf600379eebb8a3265c1ded542bd95caad7770c",
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3",
-        "package.json": "19ed161b16378601fc42d4baa05b7225fc57a47cfdee28a64131fd57d3cd1efc"
+        "package.json": "4b9bfb8aac66c5c9101b56af866932d5a27a2b1b912b01439905155a09cd6827"
       },
       "output_hash": "4203a15a1ce623a972a6ba31f6a28f55eaa4520db960e7529b165e1bb550e2b3"
     },
@@ -179,7 +179,7 @@
       "block_id": "script-readme-governance-truth",
       "source_hashes": {
         "contracts/governance/done_signal_policy.yaml": "16e2fc2add45a68406d6a6077ed7b912fe2406905bf1ff68e967bceeda4bd83c",
-        "contracts/governance/public_readiness_policy.yaml": "1207163d53fb898d20faee2a65d66ee9f29fedd29115364497d9c5ec03c3a7eb",
+        "contracts/governance/public_readiness_policy.yaml": "eacf27c9d50b2c4295abddecddc23c83f9302140cf82bbd26cd0070cf18ce835",
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3",
         ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
         ".github/workflows/pre-commit.yml": "ed0082256d36108f1bdb3d6c66f6f9805295a4f7f738465b0092d0b3fe0199ed",
@@ -209,7 +209,7 @@
         "ops/compose/docker-compose.yml": "9f3f0a6047c30cc93374b41a2b0acbf5563b5b461812efac90e4e6e9da9a693c",
         "contracts/governance/governance.defaults.env": "cddb6b33f746b32509f8a49af1f11bef945d0eeaf060028da41c726127d68660",
         "pyproject.toml": "d12c2c415c3900d81c888e91d3a8ec1af88af96a701c6de801c37a1e52b4a495",
-        "package.json": "19ed161b16378601fc42d4baa05b7225fc57a47cfdee28a64131fd57d3cd1efc",
+        "package.json": "4b9bfb8aac66c5c9101b56af866932d5a27a2b1b912b01439905155a09cd6827",
         ".env.example": "32a60792624cd36eb5992b34d9c67c6e6e2a0971a45f3a48370f3b0b720b0aa8"
       },
       "output_hash": "c0cb776be4feeaa4d6517d934e2d4f541ae1a04d66350c7bd82da6b009f710b4"
@@ -222,7 +222,7 @@
       "block_id": "architecture-governance-truth",
       "source_hashes": {
         "contracts/governance/done_signal_policy.yaml": "16e2fc2add45a68406d6a6077ed7b912fe2406905bf1ff68e967bceeda4bd83c",
-        "contracts/governance/public_readiness_policy.yaml": "1207163d53fb898d20faee2a65d66ee9f29fedd29115364497d9c5ec03c3a7eb",
+        "contracts/governance/public_readiness_policy.yaml": "eacf27c9d50b2c4295abddecddc23c83f9302140cf82bbd26cd0070cf18ce835",
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3",
         ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
         ".github/workflows/pre-commit.yml": "ed0082256d36108f1bdb3d6c66f6f9805295a4f7f738465b0092d0b3fe0199ed",
@@ -239,7 +239,7 @@
       "block_id": "open-source-platform-truth",
       "source_hashes": {
         "contracts/governance/done_signal_policy.yaml": "16e2fc2add45a68406d6a6077ed7b912fe2406905bf1ff68e967bceeda4bd83c",
-        "contracts/governance/public_readiness_policy.yaml": "1207163d53fb898d20faee2a65d66ee9f29fedd29115364497d9c5ec03c3a7eb",
+        "contracts/governance/public_readiness_policy.yaml": "eacf27c9d50b2c4295abddecddc23c83f9302140cf82bbd26cd0070cf18ce835",
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3",
         ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
         ".github/workflows/pre-commit.yml": "ed0082256d36108f1bdb3d6c66f6f9805295a4f7f738465b0092d0b3fe0199ed",

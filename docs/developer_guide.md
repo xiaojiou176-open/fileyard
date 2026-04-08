@@ -103,7 +103,7 @@ This is the shortest accurate ecosystem map for the current repo:
 | Cursor / generic MCP clients | secondary | real MCP surface exists, but the repo does not need to brand them as the headline |
 | OpenHands | comparison / ecosystem only | real API + MCP substrate exists, but no dedicated first-party setup page or product flow is shipped |
 | OpenCode | comparison / ecosystem only | same honest boundary as OpenHands |
-| OpenClaw | not a front-door binding today | current repo does not ship a dedicated integration surface or branded flow for it |
+| OpenClaw | submission-ready-unlisted | current repo ships a dedicated bundle and install/proof note, but still does not claim a live listing |
 
 If you want the client-specific landing page first:
 

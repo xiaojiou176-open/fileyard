@@ -1,6 +1,8 @@
 version: 1
 default_branch: main
+accepted_code_scanning_rules_contract: contracts/governance/code_scanning_alert_allowlist.yaml
 required_repo_surface_files:
+  - .nvmrc
   - LICENSE
   - NOTICE
   - THIRD_PARTY_NOTICES.md
@@ -8,6 +10,7 @@ required_repo_surface_files:
   - CONTRIBUTING.md
   - DISTRIBUTION.md
   - INTEGRATIONS.md
+  - manifest.yaml
   - SUPPORT.md
   - CODE_OF_CONDUCT.md
   - .github/CODEOWNERS
@@ -24,6 +27,9 @@ required_repo_surface_files:
   - docs/mcp.md
   - docs/developer_guide.md
   - docs/review_first_ai_file_organizer.md
+  - examples/skills/README.md
+  - examples/skills/SKILL.md
+  - examples/openclaw/README.md
 required_package_scripts:
   - release:draft
   - security:history-scan

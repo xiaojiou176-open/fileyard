@@ -32,6 +32,10 @@ entries:
     owner: repo
     change_class: hygiene
     approval_rule: architecture-review
+  .nvmrc:
+    owner: repo
+    change_class: public-config
+    approval_rule: architecture-review
   .pre-commit-config.yaml:
     owner: repo
     change_class: policy
@@ -111,6 +115,14 @@ entries:
   docs:
     owner: repo
     change_class: canonical-root
+    approval_rule: architecture-review
+  examples:
+    owner: repo
+    change_class: canonical-root
+    approval_rule: architecture-review
+  manifest.yaml:
+    owner: repo
+    change_class: public-doc
     approval_rule: architecture-review
   ops:
     owner: repo

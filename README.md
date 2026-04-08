@@ -2,7 +2,7 @@
 
 Movi is a review-first local file organizer and workbench for messy photos, screenshots, documents, and audio. It lets AI assist with the manifest first, then lets you inspect, label, and approve the plan before deterministic `apply` or `rollback` touches your files.
 
-[Safe First Look](#safe-first-look) · [10-Second Tour](#10-second-tour) · [Good Fit / Not A Fit](#good-fit--not-a-fit) · [Public Proof](docs/public_proof.md) · [Docs](docs/index.md) · [Distribution](DISTRIBUTION.md) · [Integrations](INTEGRATIONS.md) · [Browser Surface](#browser-surface) · [Releases](https://github.com/xiaojiou176-open/movi-organizer/releases) · [Discussions](https://github.com/xiaojiou176-open/movi-organizer/discussions) · [Security](SECURITY.md) · [Movi MCP v1](docs/mcp.md) · [Codex Integration](docs/codex_mcp.md) · [Claude Code Integration](docs/claude_code_mcp.md) · [Developer Guide](docs/developer_guide.md)
+[Safe First Look](#safe-first-look) · [10-Second Tour](#10-second-tour) · [Good Fit / Not A Fit](#good-fit--not-a-fit) · [Public Proof](docs/public_proof.md) · [Docs](docs/index.md) · [Distribution](DISTRIBUTION.md) · [Integrations](INTEGRATIONS.md) · [Submission Manifest](manifest.yaml) · [Skills Bundle](examples/skills/README.md) · [OpenClaw Bundle](examples/openclaw/README.md) · [Browser Surface](#browser-surface) · [Releases](https://github.com/xiaojiou176-open/movi-organizer/releases) · [Discussions](https://github.com/xiaojiou176-open/movi-organizer/discussions) · [Security](SECURITY.md) · [Movi MCP v1](docs/mcp.md) · [Codex Integration](docs/codex_mcp.md) · [Claude Code Integration](docs/claude_code_mcp.md) · [Developer Guide](docs/developer_guide.md)
 
 ![Movi overview showing mixed files flowing into manifest review and organized output](docs/assets/storefront/hero-movi-overview.svg)
 
@@ -68,7 +68,7 @@ Current honest ecosystem fit:
 - **Primary fit**: Codex and Claude Code, because `Movi MCP v1` already ships as a local-first stdio surface with review-safe tools
 - **Secondary ecosystem fit**: Cursor and other local MCP-capable clients, because the transport and tool surface already match their integration model
 - **Comparison-only fit**: OpenHands and OpenCode, because the repo has a real MCP and API substrate they can consume, but no dedicated first-party setup surface or branded workflow yet
-- **Not a front-door fit today**: OpenClaw, because the repo does not currently ship a tailored integration surface or branded product claim for it
+- **Submission-ready-unlisted fit**: OpenClaw and ClawHub, because the repo now ships a dedicated bundle, install/proof notes, and agent-facing starter surfaces without claiming a live listing
 
 ## 10-Second Tour
 

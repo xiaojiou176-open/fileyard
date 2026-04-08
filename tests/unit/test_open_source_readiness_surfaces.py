@@ -8,6 +8,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 def test_open_source_surface_files_exist() -> None:
     required = [
+        ".nvmrc",
         "LICENSE",
         "NOTICE",
         "THIRD_PARTY_NOTICES.md",
@@ -20,6 +21,10 @@ def test_open_source_surface_files_exist() -> None:
         ".github/ISSUE_TEMPLATE/bug_report.yml",
         ".github/ISSUE_TEMPLATE/documentation.yml",
         ".github/ISSUE_TEMPLATE/feature_request.yml",
+        "manifest.yaml",
+        "examples/skills/README.md",
+        "examples/skills/SKILL.md",
+        "examples/openclaw/README.md",
         "docs/architecture.md",
         "docs/usage.md",
         "docs/open_source_runbook.md",
@@ -38,6 +43,8 @@ def test_pyproject_and_dependabot_reflect_open_source_defaults() -> None:
     assert 'license-files = ["LICENSE", "NOTICE"]' in pyproject
     assert 'directory: "/"' in dependabot
     assert 'directory: "/apps/webui"' in dependabot
+    assert '"version": "4.0.5"' in package_json
+    assert '"packageManager": "npm@11.6.0"' in package_json
     assert '"public:readiness": "bash tooling/gates/public_readiness_gate.sh release"' in package_json
     assert '"platform:align": "bash tooling/gates/platform_alignment_gate.sh"' in package_json
 

@@ -29,7 +29,7 @@
 - **Repo public readiness gate**: `bash tooling/gates/public_readiness_gate.sh repo`
 - **Release public readiness gate**: `bash tooling/gates/public_readiness_gate.sh release`
 - **Platform alignment gate**: `bash tooling/gates/platform_alignment_gate.sh`
-- **Required repo surface files**: `23`
+- **Required repo surface files**: `28`
 - **Required package scripts**: `5`
 - **Release-mode requires tracked public files**: `yes`
 - **Release-mode requires public repo**: `yes`

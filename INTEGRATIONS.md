@@ -36,13 +36,19 @@ class, some are side entrances, and some are only comparison points.
 | OpenHands | A real API and MCP substrate exists, but no dedicated first-party setup page or branded workflow is shipped. | Do not present it as a primary or secondary front-door integration. |
 | OpenCode | Same honest boundary as OpenHands. | Do not present it as a primary or secondary front-door integration. |
 
-## Not A Front-Door Fit Today
+## Submission-Ready Unlisted Fit
 
-| Surface | Why it is not front-door fit today |
+| Surface | Why it is submission-ready-unlisted |
 | :-- | :-- |
-| OpenClaw | The repository does not currently ship a dedicated integration surface or branded product flow for it. |
+| OpenClaw / ClawHub | The repository now ships a dedicated integration note, starter bundle, and sample configs, but still refuses to claim a live listing. |
+| Skills registry or plugin marketplaces | The repository now ships a repo-owned agent/plugin bundle, but still refuses to claim a live registry or browser marketplace listing. |
+
+## Not Claimed As Live
+
+| Surface | Why it is still not claimed as live |
+| :-- | :-- |
 | MCP registry listings | The current story is local-first stdio MCP, not registry publication. |
-| Skills registry or plugin marketplaces | The repository does not currently claim those as shipped integration channels. |
+| Browser extension marketplaces | The new bundle is agent/plugin-ready, not a Chrome Web Store or browser-extension listing. |
 
 ## Safety Boundary
 

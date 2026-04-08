@@ -548,6 +548,102 @@ def test_check_public_platform_state_fails_when_open_security_alerts_exist(tmp_p
     assert "zero open GitHub secret scanning alerts" in out
 
 
+def test_check_public_platform_state_accepts_explicit_code_scanning_allowlist(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir(parents=True)
+    (repo / "contracts" / "governance").mkdir(parents=True, exist_ok=True)
+    (repo / "contracts" / "governance" / "public_readiness_policy.yaml").write_text(
+        "\n".join(
+            [
+                "version: 1",
+                "default_branch: main",
+                "accepted_code_scanning_rules_contract: contracts/governance/code_scanning_alert_allowlist.yaml",
+                "release_mode:",
+                "  require_public_repo: true",
+                "  require_pvr: true",
+                "  require_branch_protection: true",
+                "  require_zero_code_scanning_alerts: true",
+                "  require_zero_secret_scanning_alerts: true",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (repo / "contracts" / "governance" / "code_scanning_alert_allowlist.yaml").write_text(
+        "\n".join(
+            [
+                "version: 1",
+                "status: active",
+                "accepted_rule_ids:",
+                "  - CIIBestPracticesID",
+                "  - MaintainedID",
+                "  - CodeReviewID",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    gh = bin_dir / "gh"
+    gh.write_text(
+        "\n".join(
+            [
+                "#!/bin/sh",
+                'if [ "$1" = "repo" ] && [ "$2" = "view" ]; then',
+                (
+                    "  printf '%s\\n' "
+                    '\'{"nameWithOwner":"demo/repo","isPrivate":false,"viewerPermission":"ADMIN",'
+                    '"defaultBranchRef":{"name":"main"}}\''
+                ),
+                "  exit 0",
+                "fi",
+                'if [ "$1" = "api" ] && [ "$2" = "repos/demo/repo/private-vulnerability-reporting" ]; then',
+                "  printf '%s\\n' '{\"enabled\":true}'",
+                "  exit 0",
+                "fi",
+                'if [ "$1" = "api" ] && [ "$2" = "repos/demo/repo/branches/main/protection" ]; then',
+                '  printf \'%s\\n\' \'{"required_status_checks":{"contexts":["quality-gate-full"]}}\'',
+                "  exit 0",
+                "fi",
+                'if [ "$1" = "api" ] && [ "$2" = "repos/demo/repo/code-scanning/alerts?state=open&per_page=100" ]; then',
+                (
+                    "  printf '%s\\n' "
+                    '\'[{"rule":{"id":"CIIBestPracticesID"}},{"rule":{"id":"MaintainedID"}},{"rule":{"id":"CodeReviewID"}}]\''
+                ),
+                "  exit 0",
+                "fi",
+                'if [ "$1" = "api" ] && [ "$2" = "repos/demo/repo/secret-scanning/alerts?state=open&per_page=100" ]; then',
+                "  printf '%s\\n' '[]'",
+                "  exit 0",
+                "fi",
+                'echo "unsupported gh args: $*" >&2',
+                "exit 1",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    gh.chmod(0o755)
+    env = dict(os.environ)
+    env["PATH"] = str(bin_dir) + os.pathsep + env.get("PATH", "")
+
+    proc = _run(
+        [
+            sys.executable,
+            str(REPO_ROOT / "tooling" / "scripts" / "check_public_platform_state.py"),
+            "--root",
+            str(repo),
+            "--mode",
+            "release",
+        ],
+        repo,
+        env=env,
+    )
+    out = proc.stdout + proc.stderr
+    assert proc.returncode == 0, out
+    assert "public-platform-state: passed" in out
+
+
 def test_public_readiness_gate_honors_explicit_target_root_from_outside_repo(tmp_path: Path) -> None:
     repo = tmp_path / "repo"
     (repo / "docs").mkdir(parents=True)

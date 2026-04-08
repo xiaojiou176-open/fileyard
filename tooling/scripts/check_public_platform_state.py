@@ -18,6 +18,22 @@ def _load_policy(path: Path) -> dict:
     return payload
 
 
+def _load_optional_allowlist(root: Path, policy: dict) -> set[str]:
+    raw_path = str(policy.get("accepted_code_scanning_rules_contract", "")).strip()
+    if not raw_path:
+        return set()
+    allowlist_path = (root / raw_path).resolve()
+    if not allowlist_path.exists():
+        return set()
+    payload = yaml.safe_load(allowlist_path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise SystemExit(f"invalid code-scanning allowlist: {allowlist_path}")
+    rows = payload.get("accepted_rule_ids", [])
+    if not isinstance(rows, list):
+        raise SystemExit("invalid code-scanning allowlist: accepted_rule_ids must be a list")
+    return {str(item).strip() for item in rows if str(item).strip()}
+
+
 def _run(cmd: list[str], cwd: Path) -> subprocess.CompletedProcess[str] | None:
     try:
         return subprocess.run(cmd, cwd=str(cwd), text=True, capture_output=True, check=False)
@@ -37,6 +53,32 @@ def _count_alerts(proc: subprocess.CompletedProcess[str] | None) -> int | None:
     raise SystemExit("invalid GitHub alerts payload: expected a list")
 
 
+def _load_alerts(proc: subprocess.CompletedProcess[str] | None) -> list[dict] | None:
+    if proc is None or proc.returncode != 0:
+        return None
+    text = proc.stdout.strip()
+    if not text:
+        return []
+    payload = json.loads(text)
+    if isinstance(payload, list):
+        return [entry for entry in payload if isinstance(entry, dict)]
+    raise SystemExit("invalid GitHub alerts payload: expected a list")
+
+
+def _extract_code_scanning_rule_id(alert: dict) -> str:
+    for candidate in (
+        alert.get("rule_id"),
+        alert.get("ruleId"),
+        (alert.get("rule") or {}).get("id") if isinstance(alert.get("rule"), dict) else None,
+        ((alert.get("tool") or {}).get("rule") or {}).get("id")
+        if isinstance(alert.get("tool"), dict) and isinstance((alert.get("tool") or {}).get("rule"), dict)
+        else None,
+    ):
+        if isinstance(candidate, str) and candidate.strip():
+            return candidate.strip()
+    return ""
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Check GitHub platform state for public/open-source readiness")
     parser.add_argument("--root", default=".")
@@ -47,6 +89,7 @@ def main() -> int:
 
     root = Path(args.root).resolve()
     policy = _load_policy(root / args.policy)
+    accepted_code_scanning_rules = _load_optional_allowlist(root, policy)
     release_policy = policy.get("release_mode", {})
     if not isinstance(release_policy, dict):
         raise SystemExit("invalid public readiness policy: release_mode must be a mapping")
@@ -65,6 +108,9 @@ def main() -> int:
         "code_scanning_status_code": None,
         "secret_scanning_status_code": None,
         "code_scanning_open_alerts": None,
+        "accepted_code_scanning_rule_ids": sorted(accepted_code_scanning_rules),
+        "accepted_code_scanning_open_alerts": None,
+        "blocking_code_scanning_open_alerts": None,
         "secret_scanning_open_alerts": None,
         "platform_query_state": "unknown",
         "issues": issues,
@@ -100,6 +146,18 @@ def main() -> int:
             payload["secret_scanning_status_code"] = None if secret_scanning_proc is None else secret_scanning_proc.returncode
             payload["code_scanning_open_alerts"] = _count_alerts(code_scanning_proc)
             payload["secret_scanning_open_alerts"] = _count_alerts(secret_scanning_proc)
+            code_scanning_alerts = _load_alerts(code_scanning_proc)
+            if code_scanning_alerts is not None:
+                accepted_count = 0
+                blocking_count = 0
+                for alert in code_scanning_alerts:
+                    rule_id = _extract_code_scanning_rule_id(alert)
+                    if rule_id and rule_id in accepted_code_scanning_rules:
+                        accepted_count += 1
+                    else:
+                        blocking_count += 1
+                payload["accepted_code_scanning_open_alerts"] = accepted_count
+                payload["blocking_code_scanning_open_alerts"] = blocking_count
             viewer_permission = str(payload.get("viewer_permission") or "").upper()
             limited_permission = viewer_permission in {"READ", "TRIAGE", ""}
 
@@ -145,6 +203,9 @@ def main() -> int:
                         )
                     else:
                         issues.append("release mode requires GitHub code scanning alerts to be queryable")
+                elif isinstance(payload.get("blocking_code_scanning_open_alerts"), int):
+                    if int(payload["blocking_code_scanning_open_alerts"]) > 0:
+                        issues.append("release mode requires zero open GitHub code scanning alerts outside the accepted-exception contract")
                 elif isinstance(code_scanning_open_alerts, int) and code_scanning_open_alerts > 0:
                     issues.append("release mode requires zero open GitHub code scanning alerts")
             if args.mode == "release" and bool(release_policy.get("require_zero_secret_scanning_alerts", False)):

@@ -62,7 +62,7 @@ If you want the shortest ecosystem answer:
 - **Primary current fit**: Codex and Claude Code, because both can use the current stdio-first local MCP surface directly
 - **Secondary ecosystem fit**: Cursor and other local MCP-capable clients, because the transport and tool surface already match their integration model
 - **Comparison-only fit**: OpenHands and OpenCode, because the repo has a real MCP and API substrate they could consume, but it does not yet ship a dedicated first-party setup page or branded workflow for them
-- **Not a front-door fit today**: OpenClaw, because the current repo does not ship a specific integration surface or product claim for it
+- **Submission-ready-unlisted fit**: OpenClaw and ClawHub, because the current repo now ships a dedicated bundle and install/proof notes while still refusing to claim a live listing
 
 Client-specific entry pages:
 

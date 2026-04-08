@@ -1,0 +1,33 @@
+version: 1
+id: movi-organizer
+technical_name: Movi
+status: submission-ready-unlisted
+canonical_repo: xiaojiou176-open/movi-organizer
+homepage: https://xiaojiou176-open.github.io/movi-organizer/
+current_release: v4.0.5
+published_surfaces:
+  - github-repo
+  - github-pages-front-door
+  - github-releases
+submission_ready_surfaces:
+  - codex-mcp-bundle
+  - claude-code-mcp-bundle
+  - openclaw-public-ready-bundle
+  - agent-skill-bundle
+truth_routes:
+  storefront: README.md
+  distribution: DISTRIBUTION.md
+  integrations: INTEGRATIONS.md
+  mcp: docs/mcp.md
+  codex: docs/codex_mcp.md
+  claude: docs/claude_code_mcp.md
+  skills_bundle: examples/skills/README.md
+  openclaw_bundle: examples/openclaw/README.md
+claims_not_made:
+  - no live OpenClaw listing is claimed
+  - no live ClawHub listing is claimed
+  - no browser extension marketplace listing is claimed
+  - no hosted SaaS is claimed
+operator_only_follow_through:
+  - publish any live registry or catalog entry
+  - rerun fresh verification after publication before changing public copy
