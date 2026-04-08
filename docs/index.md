@@ -15,6 +15,8 @@ Movi is a review-first local file organizer and workbench for messy photos, scre
 - Need the full operator route: open [Operator Guide](./usage.md)
 - Need system wiring: open [Architecture](./architecture.md)
 - Need release or GitHub-facing boundary rules: open [Open Source Runbook](./open_source_runbook.md)
+- Need the current distribution boundary: open [Distribution](../DISTRIBUTION.md)
+- Need the current client-fit map: open [Integrations](../INTEGRATIONS.md)
 - Need the naming baseline: open [Brand Positioning](./brand_positioning.md)
 - Need the search-intent map: open [SEO Landing Map](./seo_landing_map.md)
 - Want the search-intent landing page first: open [Review-First AI File Organizer](./review_first_ai_file_organizer.md)

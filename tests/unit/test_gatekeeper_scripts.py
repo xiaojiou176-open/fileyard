@@ -2190,7 +2190,7 @@ jobs:
     assert "actions/checkout@v4" in out
 
 
-def test_ci_workflow_hardening_gate_blocks_unpinned_actions_in_mutation_weekly_workflow(tmp_path: Path) -> None:
+def test_ci_workflow_hardening_gate_blocks_unpinned_actions_in_mutation_manual_workflow(tmp_path: Path) -> None:
     repo = tmp_path / "repo"
     repo.mkdir(parents=True)
 
@@ -2259,7 +2259,7 @@ jobs:
         encoding="utf-8",
     )
 
-    mutation_workflow = repo / "mutation-weekly.yml"
+    mutation_workflow = repo / "mutation-manual.yml"
     mutation_workflow.write_text(
         """
 name: mutation-manual
@@ -2289,11 +2289,11 @@ jobs:
     out = proc.stdout + proc.stderr
 
     assert proc.returncode == 1
-    assert "mutation-weekly.yml" in out
+    assert "mutation-manual.yml" in out
     assert "actions/setup-python@v5" in out
 
 
-def test_ci_workflow_hardening_gate_blocks_unpinned_third_party_actions_in_mutation_weekly_workflow(
+def test_ci_workflow_hardening_gate_blocks_unpinned_third_party_actions_in_mutation_manual_workflow(
     tmp_path: Path,
 ) -> None:
     repo = tmp_path / "repo"
@@ -2364,7 +2364,7 @@ jobs:
         encoding="utf-8",
     )
 
-    mutation_workflow = repo / "mutation-weekly.yml"
+    mutation_workflow = repo / "mutation-manual.yml"
     mutation_workflow.write_text(
         """
 name: mutation-manual
@@ -2383,18 +2383,18 @@ jobs:
     out = proc.stdout + proc.stderr
 
     assert proc.returncode == 1
-    assert "mutation-weekly.yml" in out
+    assert "mutation-manual.yml" in out
     assert "taiki-e/install-action@cargo-mutants" in out
 
 
-def test_ci_workflow_hardening_gate_allows_local_actions_in_mutation_weekly_workflow(tmp_path: Path) -> None:
+def test_ci_workflow_hardening_gate_allows_local_actions_in_mutation_manual_workflow(tmp_path: Path) -> None:
     repo = tmp_path / "repo"
     repo.mkdir(parents=True)
 
     workflow = repo / "ci.yml"
     _write_minimal_valid_ci_workflow(workflow)
 
-    mutation_workflow = repo / "mutation-weekly.yml"
+    mutation_workflow = repo / "mutation-manual.yml"
     mutation_workflow.write_text(
         """
 name: mutation-manual
@@ -2769,7 +2769,7 @@ jobs:
         encoding="utf-8",
     )
 
-    mutation_workflow = repo / "mutation-weekly.yml"
+    mutation_workflow = repo / "mutation-manual.yml"
     mutation_workflow.write_text(
         """
 name: mutation-manual
@@ -3188,7 +3188,7 @@ jobs:
         encoding="utf-8",
     )
 
-    mutation_workflow = repo / "mutation-weekly.yml"
+    mutation_workflow = repo / "mutation-manual.yml"
     mutation_workflow.write_text(
         """
 name: mutation-manual
@@ -3226,7 +3226,7 @@ jobs:
 
     assert proc.returncode == 1
     assert "live-integration.yml job live-tests must invoke gha_self_hosted_hygiene.sh after checkout" in out
-    assert "mutation-weekly.yml job python-mutmut must invoke gha_self_hosted_hygiene.sh after checkout" in out
+    assert "mutation-manual.yml job python-mutmut must invoke gha_self_hosted_hygiene.sh after checkout" in out
 
 
 def _write_minimal_valid_ci_workflow(workflow: Path) -> None:
@@ -3405,7 +3405,7 @@ jobs:
         encoding="utf-8",
     )
 
-    mutation_workflow = repo / "mutation-weekly.yml"
+    mutation_workflow = repo / "mutation-manual.yml"
     mutation_workflow.write_text(
         """
 name: mutation-manual

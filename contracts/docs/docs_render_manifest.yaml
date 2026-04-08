@@ -40,7 +40,7 @@ renders:
       - .github/workflows/ci.yml
       - .github/workflows/pre-commit.yml
       - .github/workflows/live-integration.yml
-      - .github/workflows/mutation-weekly.yml
+      - .github/workflows/mutation-manual.yml
     output_path: docs/reference/governance_truth.generated.md
   - id: root-web-api-routes
     kind: fragment
@@ -124,7 +124,7 @@ renders:
       - .github/workflows/ci.yml
       - .github/workflows/pre-commit.yml
       - .github/workflows/live-integration.yml
-      - .github/workflows/mutation-weekly.yml
+      - .github/workflows/mutation-manual.yml
     output_path: docs/usage.md
     block_id: script-readme-governance-truth
   - id: architecture-web-api-summary
@@ -155,7 +155,7 @@ renders:
       - .github/workflows/ci.yml
       - .github/workflows/pre-commit.yml
       - .github/workflows/live-integration.yml
-      - .github/workflows/mutation-weekly.yml
+      - .github/workflows/mutation-manual.yml
     output_path: docs/architecture.md
     block_id: architecture-governance-truth
   - id: open-source-platform-truth
@@ -168,7 +168,7 @@ renders:
       - .github/workflows/ci.yml
       - .github/workflows/pre-commit.yml
       - .github/workflows/live-integration.yml
-      - .github/workflows/mutation-weekly.yml
+      - .github/workflows/mutation-manual.yml
     output_path: docs/open_source_runbook.md
     block_id: open-source-platform-truth
   - id: runner-contract-governance-truth
@@ -179,7 +179,7 @@ renders:
       - .github/workflows/ci.yml
       - .github/workflows/pre-commit.yml
       - .github/workflows/live-integration.yml
-      - .github/workflows/mutation-weekly.yml
+      - .github/workflows/mutation-manual.yml
     output_path: docs/runner_contract.md
     block_id: runner-contract-governance-truth
   - id: webui-api-contract

@@ -76,6 +76,34 @@ Keep the diff honest and reviewable:
 - Do not add compatibility shims just to hide the real problem
 - Keep documentation, contracts, templates, and gate entrypoints aligned
 
+## Current Truth Surface
+
+This repository no longer uses a repo-local `.agents/Tasks` TaskBoard as an
+active source of truth.
+
+Use the versioned repository surfaces on `main` instead:
+
+- `README.md` and `docs/` for public product and operator guidance
+- contracts, workflows, and generated references for executable truth
+- current repository settings and branch protection for GitHub-side policy
+
+Treat `.agents/` as local operator state, not as a committed planning system.
+
+## Closed Dependabot Pull Requests
+
+Closed-but-unmerged Dependabot pull requests in this repository are kept as
+audit history of automated dependency-update attempts that were later closed
+without merge.
+
+Use the following rule when describing them:
+
+- only call a PR a grouped update when `.github/dependabot.yml` directly
+  supports that grouping
+- only call a PR later superseded when current `main` clearly carries the same
+  or a newer dependency state
+- do not treat a closed PR by itself as proof that the proposed dependency
+  state landed
+
 ## Atomic Commit Guidance
 
 Think of the atomic-commit gate like an airline carry-on sizer: it is there

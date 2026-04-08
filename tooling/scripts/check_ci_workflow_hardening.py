@@ -1289,7 +1289,7 @@ def main(argv: list[str]) -> int:
             if token in live_text:
                 failures.append(f"live-integration.yml must not contain runner registration command token: {token}")
 
-    mutation_path = workflows_dir / "mutation-weekly.yml"
+    mutation_path = workflows_dir / "mutation-manual.yml"
     if mutation_path.exists():
         mutation_data = yaml.safe_load(mutation_path.read_text(encoding="utf-8"))
         mutation_jobs = mutation_data.get("jobs", {}) if isinstance(mutation_data, dict) else {}
@@ -1300,7 +1300,7 @@ def main(argv: list[str]) -> int:
             build_job = mutation_jobs.get("build-ci-image", {})
             uses_value = str(build_job.get("uses", "")).strip() if isinstance(build_job, dict) else ""
             if build_job and (not isinstance(build_job, dict) or uses_value != "./.github/workflows/reusable-build-runtime-image.yml"):
-                failures.append("mutation-weekly.yml build-ci-image must use ./.github/workflows/reusable-build-runtime-image.yml")
+                failures.append("mutation-manual.yml build-ci-image must use ./.github/workflows/reusable-build-runtime-image.yml")
             _validate_workspace_hygiene_and_cache_paths(
                 mutation_jobs,
                 failures=failures,
@@ -1309,13 +1309,13 @@ def main(argv: list[str]) -> int:
             for mutation_job_id in ("python-mutmut", "js-stryker", "rust-cargo-mutants"):
                 mutation_job = mutation_jobs.get(mutation_job_id, {})
                 if not isinstance(mutation_job, dict) or not _is_github_hosted(mutation_job.get("runs-on")):
-                    failures.append(f"mutation-weekly job {mutation_job_id} must run on ubuntu-latest")
+                    failures.append(f"mutation-manual.yml job {mutation_job_id} must run on ubuntu-latest")
         mutation_text = mutation_path.read_text(encoding="utf-8")
         if "GHCR_PUSH_TOKEN" in mutation_text:
-            failures.append("mutation-weekly.yml must not reference GHCR_PUSH_TOKEN")
+            failures.append("mutation-manual.yml must not reference GHCR_PUSH_TOKEN")
         for token in forbidden_runner_registration:
             if token in mutation_text:
-                failures.append(f"mutation-weekly.yml must not contain runner registration command token: {token}")
+                failures.append(f"mutation-manual.yml must not contain runner registration command token: {token}")
 
     if failures:
         print("❌ ci-hardening: failed")
