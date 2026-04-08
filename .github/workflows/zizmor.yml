@@ -32,7 +32,7 @@ jobs:
         with:
           inputs: >-
             .github/workflows/nightly-drift-audit.yml
-            .github/workflows/upstream-governance-weekly.yml
+            .github/workflows/upstream-governance-manual.yml
             .github/workflows/zizmor.yml
             .github/workflows/trivy-fs.yml
             .github/workflows/trufflehog.yml

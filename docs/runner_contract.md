@@ -16,7 +16,7 @@ This repository is now **Hosted-First**:
   - `.github/workflows/ci.yml`
   - `.github/workflows/pre-commit.yml`
   - `.github/workflows/live-integration.yml`
-  - `.github/workflows/mutation-weekly.yml`
+  - `.github/workflows/mutation-manual.yml`
 
 ## 2. Public Collaboration Safety Rules
 

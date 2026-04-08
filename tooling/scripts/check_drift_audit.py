@@ -14,7 +14,7 @@ WORKFLOWS = [
     REPO_ROOT / ".github" / "workflows" / "ci.yml",
     REPO_ROOT / ".github" / "workflows" / "pre-commit.yml",
     REPO_ROOT / ".github" / "workflows" / "live-integration.yml",
-    REPO_ROOT / ".github" / "workflows" / "mutation-weekly.yml",
+    REPO_ROOT / ".github" / "workflows" / "mutation-manual.yml",
     REPO_ROOT / ".github" / "workflows" / "reusable-build-runtime-image.yml",
 ]
 PINNED_SHA = re.compile(r"@[0-9a-fA-F]{40}$")

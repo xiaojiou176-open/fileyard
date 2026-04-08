@@ -805,7 +805,7 @@ def _extract_runner_bootstrap_contract(repo_root: Path = REPO_ROOT) -> dict[str,
         ".github/workflows/ci.yml",
         ".github/workflows/pre-commit.yml",
         ".github/workflows/live-integration.yml",
-        ".github/workflows/mutation-weekly.yml",
+        ".github/workflows/mutation-manual.yml",
     ]
     for rel_path in workflow_paths:
         payload = workflow_data(repo_root / rel_path)

@@ -24,5 +24,5 @@ def test_verify_repo_final_script_keeps_governance_scorecard_separate_from_deliv
 
     assert "repo-side governance scorecard only" in script
     assert "quality_gate.sh for delivery-complete truth" in script
-    assert '--allow-missing-gate platform-alignment' in script
+    assert "--allow-missing-gate platform-alignment" in script
     assert '".runtime-cache/logs/quality-gate/host-summary.json"' in script

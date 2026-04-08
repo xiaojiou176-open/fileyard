@@ -34,9 +34,9 @@ def _load_governance_defaults() -> dict[str, str]:
     return values
 
 
-def _extract_weekly_mutation_test_paths(weekly: str) -> set[str]:
+def _extract_mutation_manual_test_paths(workflow_text: str) -> set[str]:
     paths: set[str] = set()
-    for line in weekly.splitlines():
+    for line in workflow_text.splitlines():
         stripped = line.strip()
         if stripped.startswith("tests:"):
             paths.update(stripped.removeprefix("tests:").strip().split())
@@ -122,14 +122,14 @@ def test_mutation_canary_gate_is_in_pre_push_and_ci() -> None:
     _assert_contains(ci, "name: Mutation canary gate", "CI mutation gate step")
 
 
-def test_weekly_mutation_workflow_covers_core_python_modules() -> None:
+def test_mutation_manual_workflow_covers_core_python_modules() -> None:
     repo_root = _repo_root()
-    weekly = (repo_root / ".github" / "workflows" / "mutation-weekly.yml").read_text(encoding="utf-8")
+    workflow_text = (repo_root / ".github" / "workflows" / "mutation-manual.yml").read_text(encoding="utf-8")
 
-    _assert_contains(weekly, "name: mutation-manual", "manual mutation workflow header")
-    _assert_contains(weekly, "python-mutmut:", "weekly mutmut job")
-    _assert_contains(weekly, "matrix:", "weekly mutmut matrix")
-    _assert_contains(weekly, "max-parallel: 3", "weekly mutmut parallelism cap")
+    _assert_contains(workflow_text, "name: mutation-manual", "manual mutation workflow header")
+    _assert_contains(workflow_text, "python-mutmut:", "manual mutmut job")
+    _assert_contains(workflow_text, "matrix:", "manual mutmut matrix")
+    _assert_contains(workflow_text, "max-parallel: 3", "manual mutmut parallelism cap")
 
     for module, mutate_path in (
         ("core_utils", "packages/domain/core_utils.py"),
@@ -143,40 +143,44 @@ def test_weekly_mutation_workflow_covers_core_python_modules() -> None:
         ("analyze_media", "packages/application/analyze_media.py"),
         ("reporting", "packages/application/reporting.py"),
     ):
-        _assert_contains(weekly, f"module: {module}", f"weekly mutmut module {module}")
-        _assert_contains(weekly, f"mutate_path: {mutate_path}", f"weekly mutmut path {mutate_path}")
+        _assert_contains(workflow_text, f"module: {module}", f"manual mutmut module {module}")
+        _assert_contains(workflow_text, f"mutate_path: {mutate_path}", f"manual mutmut path {mutate_path}")
 
-    _assert_contains(weekly, "check_mutation_report.py", "weekly mutmut structured fail gate")
-    _assert_contains(weekly, "--max-survived 0", "weekly mutmut survived threshold")
-    _assert_contains(weekly, "--max-timed-out 0", "weekly mutmut timed_out threshold")
-    _assert_contains(weekly, "--max-suspicious 0", "weekly mutmut suspicious threshold")
-    _assert_contains(weekly, "--min-killed 1", "weekly mutmut min killed threshold")
-    _assert_contains(weekly, "--require-non-empty-sample", "weekly mutmut non-empty sample threshold")
-    _assert_contains(weekly, "mutation-manual-diagnostics-${{ matrix.module }}", "manual mutmut per-module artifacts")
+    _assert_contains(workflow_text, "check_mutation_report.py", "manual mutmut structured fail gate")
+    _assert_contains(workflow_text, "--max-survived 0", "manual mutmut survived threshold")
+    _assert_contains(workflow_text, "--max-timed-out 0", "manual mutmut timed_out threshold")
+    _assert_contains(workflow_text, "--max-suspicious 0", "manual mutmut suspicious threshold")
+    _assert_contains(workflow_text, "--min-killed 1", "manual mutmut min killed threshold")
+    _assert_contains(workflow_text, "--require-non-empty-sample", "manual mutmut non-empty sample threshold")
+    _assert_contains(workflow_text, "mutation-manual-diagnostics-${{ matrix.module }}", "manual mutmut per-module artifacts")
 
-    test_paths = _extract_weekly_mutation_test_paths(weekly)
-    assert test_paths, "weekly mutation workflow must define at least one tests: path"
+    test_paths = _extract_mutation_manual_test_paths(workflow_text)
+    assert test_paths, "manual mutation workflow must define at least one tests: path"
     for test_path in test_paths:
-        assert (repo_root / test_path).exists(), f"weekly mutation tests path missing: {test_path}"
+        assert (repo_root / test_path).exists(), f"manual mutation tests path missing: {test_path}"
 
 
-def test_weekly_mutation_workflow_uses_hash_locked_mutmut_install() -> None:
-    weekly = (_repo_root() / ".github" / "workflows" / "mutation-weekly.yml").read_text(encoding="utf-8")
+def test_mutation_manual_workflow_uses_hash_locked_mutmut_install() -> None:
+    workflow_text = (_repo_root() / ".github" / "workflows" / "mutation-manual.yml").read_text(encoding="utf-8")
     dev_shell = (_repo_root() / "tooling" / "requirements-dev.txt").read_text(encoding="utf-8")
     dev_lock = (_repo_root() / "tooling" / "requirements-dev.lock.txt").read_text(encoding="utf-8")
 
-    _assert_contains(weekly, "name: mutation-image-contract", "weekly mutation image contract artifact")
-    _assert_contains(weekly, "Load CI runtime image from contract", "weekly mutation image contract load step")
-    _assert_contains(weekly, 'echo "MOVI_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"', "weekly image env export")
-    _assert_contains(weekly, "bash tooling/scripts/container_exec.sh --label mutation-manual --", "manual mutation run via container_exec")
+    _assert_contains(workflow_text, "name: mutation-image-contract", "manual mutation image contract artifact")
+    _assert_contains(workflow_text, "Load CI runtime image from contract", "manual mutation image contract load step")
+    _assert_contains(workflow_text, 'echo "MOVI_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"', "manual image env export")
     _assert_contains(
-        weekly,
+        workflow_text,
+        "bash tooling/scripts/container_exec.sh --label mutation-manual --",
+        "manual mutation run via container_exec",
+    )
+    _assert_contains(
+        workflow_text,
         "bash tooling/scripts/container_exec.sh --label mutation-manual-report --",
         "manual mutation report via container_exec",
     )
     _assert_contains(dev_shell, "-r requirements-dev.lock.txt", "dev shell forwards to dev lock")
     _assert_contains(dev_lock, "mutmut==2.5.1", "dev lock includes mutmut pin")
-    assert "actions/setup-python" not in weekly, "weekly should rely on image contract instead of host python bootstrap"
+    assert "actions/setup-python" not in workflow_text, "manual workflow should rely on image contract instead of host python bootstrap"
 
 
 def test_quality_gate_runs_fast_lane_before_full_pytest() -> None:

@@ -66,7 +66,8 @@ Movi belongs to a very specific lane:
 Current honest ecosystem fit:
 
 - **Primary fit**: Codex and Claude Code, because `Movi MCP v1` already ships as a local-first stdio surface with review-safe tools
-- **Secondary ecosystem fit**: OpenHands and OpenCode, because the repo has a real MCP and API substrate they can consume, but no dedicated first-party setup surface yet
+- **Secondary ecosystem fit**: Cursor and other local MCP-capable clients, because the transport and tool surface already match their integration model
+- **Comparison-only fit**: OpenHands and OpenCode, because the repo has a real MCP and API substrate they can consume, but no dedicated first-party setup surface or branded workflow yet
 - **Not a front-door fit today**: OpenClaw, because the repo does not currently ship a tailored integration surface or branded product claim for it
 
 ## 10-Second Tour

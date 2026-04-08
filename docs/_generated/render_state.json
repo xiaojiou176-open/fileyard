@@ -63,7 +63,7 @@
         ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
         ".github/workflows/pre-commit.yml": "ed0082256d36108f1bdb3d6c66f6f9805295a4f7f738465b0092d0b3fe0199ed",
         ".github/workflows/live-integration.yml": "87a1d413bc8d92d2103b5d4a6e19cfcb85fdb30e9e753b88a3267607a41d2b92",
-        ".github/workflows/mutation-weekly.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
+        ".github/workflows/mutation-manual.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
       },
       "output_hash": "1e9db2c2bcd9dc853fd5772bd1edabf7b910d9014dc7bc2cc78f5a835f83e588"
     },
@@ -76,7 +76,7 @@
       "source_hashes": {
         "contracts/api/web_api.openapi.yaml": "c97830844b65fd8f76cd23688187ca8648835d787d1819045882dea01e1d7b64"
       },
-      "output_hash": "cb6345e4f376224c71bddab270ce33f2a043caf985668a63c5b18cdea159c44a"
+      "output_hash": "ac7ae956b9adc83bdebf65c60c15798a27259f5be04ce702d4d8bcd1d2d75843"
     },
     {
       "id": "root-runtime-topology",
@@ -91,7 +91,7 @@
         "package.json": "19ed161b16378601fc42d4baa05b7225fc57a47cfdee28a64131fd57d3cd1efc",
         ".env.example": "32a60792624cd36eb5992b34d9c67c6e6e2a0971a45f3a48370f3b0b720b0aa8"
       },
-      "output_hash": "cb6345e4f376224c71bddab270ce33f2a043caf985668a63c5b18cdea159c44a"
+      "output_hash": "ac7ae956b9adc83bdebf65c60c15798a27259f5be04ce702d4d8bcd1d2d75843"
     },
     {
       "id": "root-ci-governance-summary",
@@ -106,7 +106,7 @@
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3",
         "package.json": "19ed161b16378601fc42d4baa05b7225fc57a47cfdee28a64131fd57d3cd1efc"
       },
-      "output_hash": "cb6345e4f376224c71bddab270ce33f2a043caf985668a63c5b18cdea159c44a"
+      "output_hash": "ac7ae956b9adc83bdebf65c60c15798a27259f5be04ce702d4d8bcd1d2d75843"
     },
     {
       "id": "root-release-identity",
@@ -117,7 +117,7 @@
       "source_hashes": {
         "pyproject.toml": "d12c2c415c3900d81c888e91d3a8ec1af88af96a701c6de801c37a1e52b4a495"
       },
-      "output_hash": "cb6345e4f376224c71bddab270ce33f2a043caf985668a63c5b18cdea159c44a"
+      "output_hash": "ac7ae956b9adc83bdebf65c60c15798a27259f5be04ce702d4d8bcd1d2d75843"
     },
     {
       "id": "script-readme-web-api-routes",
@@ -184,7 +184,7 @@
         ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
         ".github/workflows/pre-commit.yml": "ed0082256d36108f1bdb3d6c66f6f9805295a4f7f738465b0092d0b3fe0199ed",
         ".github/workflows/live-integration.yml": "87a1d413bc8d92d2103b5d4a6e19cfcb85fdb30e9e753b88a3267607a41d2b92",
-        ".github/workflows/mutation-weekly.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
+        ".github/workflows/mutation-manual.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
       },
       "output_hash": "4203a15a1ce623a972a6ba31f6a28f55eaa4520db960e7529b165e1bb550e2b3"
     },
@@ -227,7 +227,7 @@
         ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
         ".github/workflows/pre-commit.yml": "ed0082256d36108f1bdb3d6c66f6f9805295a4f7f738465b0092d0b3fe0199ed",
         ".github/workflows/live-integration.yml": "87a1d413bc8d92d2103b5d4a6e19cfcb85fdb30e9e753b88a3267607a41d2b92",
-        ".github/workflows/mutation-weekly.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
+        ".github/workflows/mutation-manual.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
       },
       "output_hash": "c0cb776be4feeaa4d6517d934e2d4f541ae1a04d66350c7bd82da6b009f710b4"
     },
@@ -244,7 +244,7 @@
         ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
         ".github/workflows/pre-commit.yml": "ed0082256d36108f1bdb3d6c66f6f9805295a4f7f738465b0092d0b3fe0199ed",
         ".github/workflows/live-integration.yml": "87a1d413bc8d92d2103b5d4a6e19cfcb85fdb30e9e753b88a3267607a41d2b92",
-        ".github/workflows/mutation-weekly.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
+        ".github/workflows/mutation-manual.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
       },
       "output_hash": "590a2ddf45c93e4e0639c4c4a077e725da6fb8c107a7567d7edb484e714a5b2b"
     },
@@ -259,9 +259,9 @@
         ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
         ".github/workflows/pre-commit.yml": "ed0082256d36108f1bdb3d6c66f6f9805295a4f7f738465b0092d0b3fe0199ed",
         ".github/workflows/live-integration.yml": "87a1d413bc8d92d2103b5d4a6e19cfcb85fdb30e9e753b88a3267607a41d2b92",
-        ".github/workflows/mutation-weekly.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
+        ".github/workflows/mutation-manual.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
       },
-      "output_hash": "6f81c9b2b0e6e733c3f9eaebc0a92d2c05d246683a14750e6cb42f7d4a359700"
+      "output_hash": "633b230e1dba7628f622a01d8a4ed273844a38bd15e88124a914ea2e500d2edc"
     },
     {
       "id": "webui-api-contract",
