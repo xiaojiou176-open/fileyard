@@ -168,7 +168,11 @@ def test_mutation_manual_workflow_uses_hash_locked_mutmut_install() -> None:
     _assert_contains(workflow_text, "name: mutation-image-contract", "manual mutation image contract artifact")
     _assert_contains(workflow_text, "Load CI runtime image from contract", "manual mutation image contract load step")
     _assert_contains(workflow_text, 'echo "MOVI_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"', "manual image env export")
-    _assert_contains(workflow_text, "bash tooling/scripts/container_exec.sh --label mutation-manual --", "manual mutation run via container_exec")
+    _assert_contains(
+        workflow_text,
+        "bash tooling/scripts/container_exec.sh --label mutation-manual --",
+        "manual mutation run via container_exec",
+    )
     _assert_contains(
         workflow_text,
         "bash tooling/scripts/container_exec.sh --label mutation-manual-report --",
