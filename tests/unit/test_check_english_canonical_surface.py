@@ -64,7 +64,10 @@ def test_deep_water_english_boundary_is_explicit() -> None:
     assert "t('dashboard.command.next.applyCta')" in dashboard_page
     assert "t('dashboard.command.next.reportCta')" in dashboard_page
     assert "t('dashboard.recentJobs.title')" in dashboard_page
-    assert "Use this page like a command center: confirm readiness, take the next step, and keep the current batch in the right stage." in i18n_file
+    assert (
+        "Use this page like a command center: confirm readiness, take the next step, and keep the current batch in the right stage."
+        in i18n_file
+    )
     assert "Open Setup" in i18n_file
     assert "Go to Analyze" in i18n_file
     assert "Open Review" in i18n_file
