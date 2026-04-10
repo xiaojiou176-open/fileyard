@@ -962,11 +962,21 @@ jobs:
         run: mkdir -p .runtime-cache/logs .runtime-cache/ci
       - name: Resolve diff base for backend governance gates
         if: needs.change-detection.outputs.run-heavy == 'true'
+        env:
+          CI_HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
           set -euo pipefail
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             BASE_REF="origin/${{ github.base_ref }}"
-            git fetch --no-tags --prune --depth=1 origin "${{ github.base_ref }}"
+            git fetch --no-tags --prune --depth=200 origin "${{ github.base_ref }}"
+            if [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
+              HEAD_REF="origin/${CI_HEAD_REF}"
+              git fetch --no-tags --prune --depth=200 origin "${CI_HEAD_REF}"
+              MERGE_BASE="$(git merge-base "$BASE_REF" "$HEAD_REF" 2>/dev/null || true)"
+              if [ -n "$MERGE_BASE" ]; then
+                BASE_REF="$MERGE_BASE"
+              fi
+            fi
           else
             BEFORE_SHA="${{ github.event.before }}"
             if [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
@@ -1140,11 +1150,21 @@ jobs:
         run: mkdir -p .runtime-cache/logs .runtime-cache/ci
       - name: Resolve diff base for backend governance gates
         if: needs.change-detection.outputs.run-heavy == 'true'
+        env:
+          CI_HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
           set -euo pipefail
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             BASE_REF="origin/${{ github.base_ref }}"
-            git fetch --no-tags --prune --depth=1 origin "${{ github.base_ref }}"
+            git fetch --no-tags --prune --depth=200 origin "${{ github.base_ref }}"
+            if [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
+              HEAD_REF="origin/${CI_HEAD_REF}"
+              git fetch --no-tags --prune --depth=200 origin "${CI_HEAD_REF}"
+              MERGE_BASE="$(git merge-base "$BASE_REF" "$HEAD_REF" 2>/dev/null || true)"
+              if [ -n "$MERGE_BASE" ]; then
+                BASE_REF="$MERGE_BASE"
+              fi
+            fi
           else
             BEFORE_SHA="${{ github.event.before }}"
             if [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then

@@ -19,7 +19,7 @@
       "output_path": "docs/required_checks_matrix.md",
       "block_id": null,
       "source_hashes": {
-        ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
+        ".github/workflows/ci.yml": "ca9aba257f6ca2e4e38feef96767e43f47198ad00e09e7e65b637fda95faa6f5",
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3"
       },
       "output_hash": "76db4927da6c20357d86b7b0d5f9efbcd12120beeb75a5bfc5c18468624f1e49"
@@ -60,7 +60,7 @@
         "contracts/governance/done_signal_policy.yaml": "16e2fc2add45a68406d6a6077ed7b912fe2406905bf1ff68e967bceeda4bd83c",
         "contracts/governance/public_readiness_policy.yaml": "fc5821ecc62249926ee5e282d114b63eb844d39e4ec408f8673a7bc162d5ad39",
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3",
-        ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
+        ".github/workflows/ci.yml": "ca9aba257f6ca2e4e38feef96767e43f47198ad00e09e7e65b637fda95faa6f5",
         ".github/workflows/pre-commit.yml": "ed0082256d36108f1bdb3d6c66f6f9805295a4f7f738465b0092d0b3fe0199ed",
         ".github/workflows/live-integration.yml": "87a1d413bc8d92d2103b5d4a6e19cfcb85fdb30e9e753b88a3267607a41d2b92",
         ".github/workflows/mutation-manual.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
@@ -100,7 +100,7 @@
       "output_path": "README.md",
       "block_id": "root-ci-governance-summary",
       "source_hashes": {
-        ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
+        ".github/workflows/ci.yml": "ca9aba257f6ca2e4e38feef96767e43f47198ad00e09e7e65b637fda95faa6f5",
         ".github/workflows/reusable-build-runtime-image.yml": "0b79722ad922ec45ce8eb62c2466834855aebb9915f86a8ff65a25b71ebf5793",
         ".github/workflows/nightly-drift-audit.yml": "485f3ee338c8c951e92047ff1bf600379eebb8a3265c1ded542bd95caad7770c",
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3",
@@ -152,7 +152,7 @@
       "output_path": "docs/usage.md",
       "block_id": "script-readme-ci-governance-summary",
       "source_hashes": {
-        ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
+        ".github/workflows/ci.yml": "ca9aba257f6ca2e4e38feef96767e43f47198ad00e09e7e65b637fda95faa6f5",
         ".github/workflows/reusable-build-runtime-image.yml": "0b79722ad922ec45ce8eb62c2466834855aebb9915f86a8ff65a25b71ebf5793",
         ".github/workflows/nightly-drift-audit.yml": "485f3ee338c8c951e92047ff1bf600379eebb8a3265c1ded542bd95caad7770c",
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3",
@@ -181,7 +181,7 @@
         "contracts/governance/done_signal_policy.yaml": "16e2fc2add45a68406d6a6077ed7b912fe2406905bf1ff68e967bceeda4bd83c",
         "contracts/governance/public_readiness_policy.yaml": "fc5821ecc62249926ee5e282d114b63eb844d39e4ec408f8673a7bc162d5ad39",
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3",
-        ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
+        ".github/workflows/ci.yml": "ca9aba257f6ca2e4e38feef96767e43f47198ad00e09e7e65b637fda95faa6f5",
         ".github/workflows/pre-commit.yml": "ed0082256d36108f1bdb3d6c66f6f9805295a4f7f738465b0092d0b3fe0199ed",
         ".github/workflows/live-integration.yml": "87a1d413bc8d92d2103b5d4a6e19cfcb85fdb30e9e753b88a3267607a41d2b92",
         ".github/workflows/mutation-manual.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
@@ -224,7 +224,7 @@
         "contracts/governance/done_signal_policy.yaml": "16e2fc2add45a68406d6a6077ed7b912fe2406905bf1ff68e967bceeda4bd83c",
         "contracts/governance/public_readiness_policy.yaml": "fc5821ecc62249926ee5e282d114b63eb844d39e4ec408f8673a7bc162d5ad39",
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3",
-        ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
+        ".github/workflows/ci.yml": "ca9aba257f6ca2e4e38feef96767e43f47198ad00e09e7e65b637fda95faa6f5",
         ".github/workflows/pre-commit.yml": "ed0082256d36108f1bdb3d6c66f6f9805295a4f7f738465b0092d0b3fe0199ed",
         ".github/workflows/live-integration.yml": "87a1d413bc8d92d2103b5d4a6e19cfcb85fdb30e9e753b88a3267607a41d2b92",
         ".github/workflows/mutation-manual.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
@@ -241,7 +241,7 @@
         "contracts/governance/done_signal_policy.yaml": "16e2fc2add45a68406d6a6077ed7b912fe2406905bf1ff68e967bceeda4bd83c",
         "contracts/governance/public_readiness_policy.yaml": "fc5821ecc62249926ee5e282d114b63eb844d39e4ec408f8673a7bc162d5ad39",
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3",
-        ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
+        ".github/workflows/ci.yml": "ca9aba257f6ca2e4e38feef96767e43f47198ad00e09e7e65b637fda95faa6f5",
         ".github/workflows/pre-commit.yml": "ed0082256d36108f1bdb3d6c66f6f9805295a4f7f738465b0092d0b3fe0199ed",
         ".github/workflows/live-integration.yml": "87a1d413bc8d92d2103b5d4a6e19cfcb85fdb30e9e753b88a3267607a41d2b92",
         ".github/workflows/mutation-manual.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
@@ -256,7 +256,7 @@
       "block_id": "runner-contract-governance-truth",
       "source_hashes": {
         "contracts/governance/required_checks_policy.yaml": "51f9e8cb17df93c3912ae719a6ba95b74f2c666b6b11c79e1728f7002fb3e3b3",
-        ".github/workflows/ci.yml": "145d243beb087cd6a976d45e4455e0747ace3ee3ad9c77160b57fb17f75c63fe",
+        ".github/workflows/ci.yml": "ca9aba257f6ca2e4e38feef96767e43f47198ad00e09e7e65b637fda95faa6f5",
         ".github/workflows/pre-commit.yml": "ed0082256d36108f1bdb3d6c66f6f9805295a4f7f738465b0092d0b3fe0199ed",
         ".github/workflows/live-integration.yml": "87a1d413bc8d92d2103b5d4a6e19cfcb85fdb30e9e753b88a3267607a41d2b92",
         ".github/workflows/mutation-manual.yml": "c892aa745b913f37a4662e51ecf0c2013dc32faecd1c97d4a59f2d1e808fb101"
