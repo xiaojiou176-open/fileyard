@@ -128,10 +128,6 @@ entries:
     owner: repo
     change_class: public-doc
     approval_rule: architecture-review
-  server.json:
-    owner: repo
-    change_class: public-doc
-    approval_rule: architecture-review
   ops:
     owner: repo
     change_class: canonical-root
