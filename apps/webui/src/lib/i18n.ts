@@ -230,7 +230,7 @@ const messages = {
     'setup.card.required.description': 'These are the only long-term settings a newcomer needs before the first real batch.',
     'setup.card.checklist.title': 'Start readiness checklist',
     'setup.card.checklist.description': '{ready} of {total} required items are ready.',
-    'setup.checklist.apiKey': 'API key connected',
+    'setup.checklist.apiKey': 'API key connected', // pragma: allowlist secret
     'setup.checklist.inputRoot': 'Source folder available',
     'setup.checklist.outputRoot': 'Organized-output folder available',
     'setup.checklist.ready': 'Ready',
@@ -933,7 +933,7 @@ const messages = {
     'setup.card.required.description': '新用户在第一批真实文件开始之前，只需要先把这三个长期设置接好。',
     'setup.card.checklist.title': '启动就绪清单',
     'setup.card.checklist.description': '已就绪 {ready} / {total} 项 required 配置。',
-    'setup.checklist.apiKey': 'API key 已连接',
+    'setup.checklist.apiKey': 'API key 已连接', // pragma: allowlist secret
     'setup.checklist.inputRoot': '源目录可用',
     'setup.checklist.outputRoot': '整理输出目录可用',
     'setup.checklist.ready': '已就绪',
