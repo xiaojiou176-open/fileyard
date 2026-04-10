@@ -57,13 +57,19 @@ def test_deep_water_english_boundary_is_explicit() -> None:
     assert "重试加载" not in report_page
 
     assert "t('dashboard.hero.title')" in dashboard_page
-    assert "t('dashboard.cta.startAnalyze')" in dashboard_page
-    assert "t('dashboard.cta.openReview')" in dashboard_page
+    assert "const nextStepMeta = {" in dashboard_page
+    assert "t('dashboard.command.next.setupCta')" in dashboard_page
+    assert "t('dashboard.command.next.analyzeCta')" in dashboard_page
+    assert "t('dashboard.command.next.reviewCta')" in dashboard_page
+    assert "t('dashboard.command.next.applyCta')" in dashboard_page
+    assert "t('dashboard.command.next.reportCta')" in dashboard_page
     assert "t('dashboard.recentJobs.title')" in dashboard_page
-    assert "t('dashboard.quickActions.title')" in dashboard_page
-    assert "Review-first local organization." in i18n_file
-    assert "Start Analyze" in i18n_file
-    assert "Open Movi Review" in i18n_file
+    assert "Use this page like a command center: confirm readiness, take the next step, and keep the current batch in the right stage." in i18n_file
+    assert "Open Setup" in i18n_file
+    assert "Go to Analyze" in i18n_file
+    assert "Open Review" in i18n_file
+    assert "Open Apply" in i18n_file
+    assert "Open Report" in i18n_file
     assert "Recent Jobs" in i18n_file
     assert "Quick Actions" in i18n_file
     assert "Report Insights" in i18n_file
