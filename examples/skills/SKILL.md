@@ -68,7 +68,7 @@ analysis artifact. Do not call `manifest.patch_row`, `manifest.batch_patch`, or
 ## Boundaries
 
 - Movi stays a local-first review-first MCP workflow, not a hosted SaaS
-- this packet does not claim a live OpenHands or ClawHub listing
+- this packet does not claim an accepted OpenHands listing beyond review thread `#161`, and it does not treat the current ClawHub listing as a clean approval while the page still shows `suspicious.vt_suspicious`
 - this packet does not bypass `review-first -> dry-run -> execute`
 
 ## Local references

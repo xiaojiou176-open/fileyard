@@ -1,6 +1,6 @@
 # Movi Review-First Bundle Public Skill
 
-Status: `submission-ready-unlisted`
+Status: `ClawHub listed_live (current page still shows suspicious.vt_suspicious); OpenHands/extensions#161 review pending`
 
 This folder is the current public, self-contained skill packet for Movi.
 
@@ -54,12 +54,16 @@ the packet itself:
 ## Current state
 
 - the repo-owned packet is ready for review-first host-native evaluation
-- the OpenHands/extensions lane remains future-facing, not a current live claim
-- the packet does not claim a live OpenHands, OpenClaw, or ClawHub listing
+- the current ClawHub lane is listed live, but the page still shows `Moderation verdict: suspicious` and `Detected: suspicious.vt_suspicious`
+- the current OpenHands/extensions lane is `#161` and remains `OPEN / REVIEW_REQUIRED / BLOCKED`
+- the Official MCP Registry lane remains `not_submitted`
+- the packet does not claim a live OpenHands acceptance or an official OpenClaw catalog approval
 
 ## What this packet must not claim
 
-- no live OpenHands listing without fresh PR/read-back
+- no accepted OpenHands listing without fresh PR/read-back
+- no clean ClawHub approval beyond the current suspicious moderation warning
+- no official MCP Registry submission
 - no browser-extension marketplace listing
 - no hosted Movi SaaS or hidden execute shortcut
 
@@ -73,4 +77,4 @@ useful during review:
 - `openclaw.mcp.json`
 - `install-and-proof.md`
 
-They are helper artifacts, not evidence that a live listing already exists.
+They are helper artifacts, not evidence of clean approval across every host lane.
