@@ -34,6 +34,9 @@ shipped yet.
 | :-- | :-- | :-- |
 | ClawHub | listed_live | Movi is listed live on ClawHub; the current live page still shows `Moderation verdict: suspicious` and `Detected: suspicious.vt_suspicious`. |
 | OpenHands `extensions#161` | OPEN / REVIEW_REQUIRED / BLOCKED | Movi has been submitted to OpenHands via PR `#161`, but that lane is still blocked in review and is not the same thing as acceptance. |
+| Goose Skills Marketplace | OPEN / security-review-required | Submitted via PR [`block/Agent-Skills#25`](https://github.com/block/Agent-Skills/pull/25); upstream validator passed, and the current visible blocker is security review / CODEOWNERS handling instead of a missing repo packet. |
+| agent-skill.co source repo | OPEN / preview-authorization-blocked | Submitted via PR [`heilcheng/awesome-agent-skills#181`](https://github.com/heilcheng/awesome-agent-skills/pull/181); the current visible blocker is upstream Vercel preview authorization rather than a missing repo packet. |
+| awesome-opencode project/resource lane | not_submitted | No awesome-opencode receipt is claimed today because Movi still presents as a review-first local MCP workflow rather than an Opencode-centered project/resource fit. |
 | Official MCP Registry | not_submitted | No official MCP Registry submission is claimed today. |
 | GHCR | not_published | No public GHCR package or container publication is claimed today. |
 | Package / Docker later lanes | no verified public receipt today | The repo may contain packaging guidance or operator notes, but this file does not claim a live public package or container receipt. |
@@ -46,6 +49,9 @@ shipped yet.
 | npm package | Not published | The root Node surface is a repo control surface, not a published npm package. |
 | Official MCP Registry | not_submitted | `Movi MCP v1` is documented as a local-first stdio surface, not a submitted or published registry listing. |
 | Skills registry | Not published | A repo-owned skills bundle exists, but no live registry listing is claimed. |
+| Goose Skills Marketplace | review pending, not accepted | PR `#25` exists, but no accepted marketplace listing is claimed until upstream review clears. |
+| agent-skill.co source repo | submission done, not accepted | PR `#181` exists, but no accepted public directory entry is claimed while upstream preview authorization still blocks. |
+| awesome-opencode | Not submitted | No project/resource entry is claimed because the current product shape is not an honest Opencode-centered fit. |
 | Plugin marketplace | Not published | Agent/plugin bundle readiness exists, but no browser or plugin marketplace listing is claimed. |
 | Chrome Web Store | Not published | No official Chrome Web Store distribution claim is made here. |
 | GHCR | not_published | No public GHCR package or container publication claim is made here. |

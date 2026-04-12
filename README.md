@@ -93,7 +93,10 @@ Current honest ecosystem fit:
 
 - **ClawHub**: listed live, but the current page still shows `Moderation verdict: suspicious` and `Detected: suspicious.vt_suspicious`.
 - **OpenHands**: submitted through `OpenHands/extensions#161`; current GitHub state is `OPEN / REVIEW_REQUIRED / BLOCKED`.
+- **Goose Skills Marketplace**: submitted through `block/Agent-Skills#25`; validation passed, and the current visible blocker is upstream security review / CODEOWNERS handling.
+- **agent-skill.co source repo**: submitted through `heilcheng/awesome-agent-skills#181`; the current visible blocker is upstream preview authorization rather than a missing Movi packet.
 - **Official MCP Registry**: `not_submitted`.
+- **awesome-opencode**: `not_submitted`, because Movi is still a review-first local MCP workflow rather than an Opencode-centered project/resource fit.
 - **GHCR**: `not_published`.
 - **Package and Docker later lanes**: no verified public receipt today.
 

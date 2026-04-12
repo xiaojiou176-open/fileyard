@@ -1,6 +1,6 @@
 # Movi Review-First Bundle Public Skill
 
-Status: `ClawHub listed_live (current page still shows suspicious.vt_suspicious); OpenHands/extensions#161 review pending`
+Status: `ClawHub listed_live (current page still shows suspicious.vt_suspicious); OpenHands/extensions#161 review pending; block/Agent-Skills#25 open; awesome-agent-skills#181 open`
 
 This folder is the current public, self-contained skill packet for Movi.
 
@@ -56,6 +56,11 @@ the packet itself:
 - the repo-owned packet is ready for review-first host-native evaluation
 - the current ClawHub lane is listed live, but the page still shows `Moderation verdict: suspicious` and `Detected: suspicious.vt_suspicious`
 - the current OpenHands/extensions lane is `#161` and remains `OPEN / REVIEW_REQUIRED / BLOCKED`
+- the Goose lane is real through `block/Agent-Skills#25`, and the current
+  visible blocker is upstream security review after validation passed
+- the agent-skill index lane is real through
+  `heilcheng/awesome-agent-skills#181`, and the current visible blocker is
+  upstream preview authorization rather than a missing Movi packet
 - the Official MCP Registry lane remains `not_submitted`
 - the packet does not claim a live OpenHands acceptance or an official OpenClaw catalog approval
 
@@ -63,6 +68,8 @@ the packet itself:
 
 - no accepted OpenHands listing without fresh PR/read-back
 - no clean ClawHub approval beyond the current suspicious moderation warning
+- no accepted Goose marketplace listing beyond PR `#25`
+- no accepted agent-skill directory entry beyond PR `#181`
 - no official MCP Registry submission
 - no browser-extension marketplace listing
 - no hosted Movi SaaS or hidden execute shortcut
