@@ -36,19 +36,23 @@ class, some are side entrances, and some are only comparison points.
 | OpenHands | A real API and MCP substrate exists, but no dedicated first-party setup page or branded workflow is shipped. | Do not present it as a primary or secondary front-door integration. |
 | OpenCode | Same honest boundary as OpenHands. | Do not present it as a primary or secondary front-door integration. |
 
-## Submission-Ready Unlisted Fit
+## Docs-Safe External Lanes
 
-| Surface | Why it is submission-ready-unlisted |
-| :-- | :-- |
-| OpenClaw / ClawHub | The repository now ships a dedicated integration note, starter bundle, and sample configs, but still refuses to claim a live listing. |
-| Skills registry or plugin marketplaces | The repository now ships a repo-owned agent/plugin bundle, but still refuses to claim a live registry or browser marketplace listing. |
+| Surface | Current lane truth | Boundary |
+| :-- | :-- | :-- |
+| ClawHub | listed_live; the current page still shows `Moderation verdict: suspicious` and `Detected: suspicious.vt_suspicious`. | Treat the live ClawHub page as a listing with a warning label, not as a clean approval receipt. |
+| OpenClaw bundle | repo-owned supporting surface | Keep OpenClaw in the host-facing bundle/supporting lane, not in the live-listing lane. |
+| OpenHands `extensions#161` | OPEN / REVIEW_REQUIRED / BLOCKED | This is a real external review lane, but it is not the same thing as a primary Movi integration story or an accepted host surface. |
+| Official MCP Registry | not_submitted | The current MCP story is local-first stdio MCP, not an official registry listing. |
+| Skills registry or plugin marketplaces | no verified public receipt today | The repository ships repo-owned agent/plugin bundles, but this file does not claim a live registry or browser marketplace listing. |
 
 ## Not Claimed As Live
 
 | Surface | Why it is still not claimed as live |
 | :-- | :-- |
-| MCP registry listings | The current story is local-first stdio MCP, not registry publication. |
+| Official MCP Registry listings | The current story is local-first stdio MCP, not registry publication. |
 | Browser extension marketplaces | The new bundle is agent/plugin-ready, not a Chrome Web Store or browser-extension listing. |
+| GHCR or public container package lanes | Packaging guidance may exist elsewhere, but no public container publication is claimed here. |
 
 ## Safety Boundary
 

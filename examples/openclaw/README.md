@@ -1,6 +1,6 @@
 # Movi For OpenClaw / ClawHub
 
-Status: `submission-ready-unlisted`
+Status: `ClawHub listed_live (current page still shows suspicious.vt_suspicious); no official OpenClaw catalog approval claimed`
 
 This page is the OpenClaw-facing integration note for Movi.
 
@@ -9,8 +9,9 @@ The canonical public root for Movi still lives at `../../README.md` plus
 repo storefront.
 
 In plain language: the repo now ships a truthful bundle you can hand to an
-OpenClaw-style host, but it still refuses to pretend that a live OpenClaw or
-ClawHub listing already exists.
+OpenClaw-style host, and the current ClawHub listing is already live, but the
+page still shows the `suspicious.vt_suspicious` warning instead of a clean
+approval receipt.
 
 ## What Exists Today
 
@@ -21,6 +22,6 @@ ClawHub listing already exists.
 
 ## What This Does Not Claim
 
-- a live ClawHub entry
+- a clean ClawHub approval beyond the current suspicious moderation warning
 - an official OpenClaw catalog approval
 - a browser-extension marketplace listing

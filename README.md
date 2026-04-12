@@ -55,6 +55,15 @@ If you are asking, "is this a real product surface or just a careful README," th
 
 If you want the full outsider-facing proof map, open [Public Proof](docs/public_proof.md). If you want the shortest hands-on route, stay on this page and run [Safe First Look](#safe-first-look).
 
+## Public Language Contract
+
+For external readers, Movi keeps one simple language rule:
+
+- **English-first public truth surfaces**: this root `README.md`, [`DISTRIBUTION.md`](./DISTRIBUTION.md), [`INTEGRATIONS.md`](./INTEGRATIONS.md), [`manifest.yaml`](./manifest.yaml), and any later root truth surface only after it is explicitly synced to the same wording standard.
+- **Bilingual or locale-switchable product surfaces**: the WebUI keeps English as the default locale and can switch to `zh-CN` for operator comfort, walkthroughs, and day-to-day use.
+- **Why this split exists**: public listings, review threads, and release receipts need one stable English contract so outside readers do not have to compare two drifting versions of the same claim, while the product itself can still meet operators where they are.
+- **Honesty rule**: translations may improve usability, but they must not silently outrun or override the English canonical public truth.
+
 ## Product Surface Baseline
 
 - **Movi**: the main product brand.
@@ -79,7 +88,14 @@ Current honest ecosystem fit:
 - **Primary fit**: Codex and Claude Code, because `Movi MCP v1` already ships as a local-first stdio surface with review-safe tools
 - **Secondary ecosystem fit**: Cursor and other local MCP-capable clients, because the transport and tool surface already match their integration model
 - **Comparison-only fit**: OpenHands and OpenCode, because the repo has a real MCP and API substrate they can consume, but no dedicated first-party setup surface or branded workflow yet
-- **Submission-ready-unlisted fit**: OpenClaw and ClawHub, because the repo now ships a dedicated bundle, install/proof notes, and agent-facing starter surfaces without claiming a live listing
+
+## Public Distribution Snapshot
+
+- **ClawHub**: listed live, but the current page still shows `Moderation verdict: suspicious` and `Detected: suspicious.vt_suspicious`.
+- **OpenHands**: submitted through `OpenHands/extensions#161`; current GitHub state is `OPEN / REVIEW_REQUIRED / BLOCKED`.
+- **Official MCP Registry**: `not_submitted`.
+- **GHCR**: `not_published`.
+- **Package and Docker later lanes**: no verified public receipt today.
 
 ## 10-Second Tour
 

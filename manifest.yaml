@@ -1,7 +1,7 @@
 version: 1
 id: movi-organizer
 technical_name: Movi
-status: submission-ready-unlisted
+status: listed_live
 canonical_repo: xiaojiou176-open/movi-organizer
 homepage: https://xiaojiou176-open.github.io/movi-organizer/
 current_release: v4.0.5
@@ -9,12 +9,24 @@ published_surfaces:
   - github-repo
   - github-pages-front-door
   - github-releases
+  - clawhub-listed-live
 submission_ready_surfaces:
   - pure-mcp-registry-descriptor
   - codex-mcp-bundle
   - claude-code-mcp-bundle
   - openclaw-public-ready-bundle
   - agent-skill-bundle
+external_review_lanes:
+  - surface: clawhub
+    status: listed_live
+    moderation_verdict: suspicious
+    detected_label: suspicious.vt_suspicious
+  - surface: openhands-extensions-161
+    status: OPEN / REVIEW_REQUIRED / BLOCKED
+  - surface: official-mcp-registry
+    status: not_submitted
+  - surface: ghcr
+    status: not_published
 truth_routes:
   storefront: README.md
   distribution: DISTRIBUTION.md
@@ -28,11 +40,13 @@ truth_routes:
   skills_packet: examples/skills/README.md
   openclaw_bundle: examples/openclaw/README.md
 claims_not_made:
-  - no live OpenClaw listing is claimed
-  - no live ClawHub listing is claimed
+  - no clean ClawHub approval is claimed beyond the current suspicious warning state
+  - no live OpenHands acceptance is claimed
   - no live official MCP registry publication is claimed
   - no browser extension marketplace listing is claimed
+  - no public GHCR package or container publication is claimed
   - no hosted SaaS is claimed
 operator_only_follow_through:
-  - publish any live registry or catalog entry
-  - rerun fresh verification after publication before changing public copy
+  - resolve or advance any platform-owned review thread such as OpenHands `#161`
+  - publish any later registry or catalog entry not already listed live
+  - rerun fresh verification after platform state changes before changing public copy
