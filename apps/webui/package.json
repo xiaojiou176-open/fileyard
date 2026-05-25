@@ -53,7 +53,7 @@
     "fast-check": "^4.3.0",
     "globals": "^16.5.0",
     "jsdom": "^28.1.0",
-    "postcss": "^8.5.8",
+    "postcss": "^8.5.15",
     "tailwindcss": "^3.4.19",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "~5.9.3",
