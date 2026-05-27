@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://fileyard/contracts/runtime/run_bundle.schema.json",
-  "title": "Fileyard Run Bundle Summary",
+  "$id": "https://fileorganize/contracts/runtime/run_bundle.schema.json",
+  "title": "Fileorganize Run Bundle Summary",
   "type": "object",
   "required": [
     "run_id",

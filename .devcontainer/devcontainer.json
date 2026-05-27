@@ -17,10 +17,10 @@
     "TZ": "America/Los_Angeles"
   },
   "remoteEnv": {
-    "FILEYARD_IN_CONTAINER": "1",
-    "FILEYARD_ALLOW_HOST_EXECUTION": "0"
+    "FILEORGANIZE_IN_CONTAINER": "1",
+    "FILEORGANIZE_ALLOW_HOST_EXECUTION": "0"
   },
-  "postCreateCommand": "bash tooling/runtime/bootstrap_env.sh && ~/.cache/fileyard/venv/default/bin/python -m playwright install --with-deps chromium",
+  "postCreateCommand": "bash tooling/runtime/bootstrap_env.sh && ~/.cache/fileorganize/venv/default/bin/python -m playwright install --with-deps chromium",
   "customizations": {
     "vscode": {
       "extensions": [

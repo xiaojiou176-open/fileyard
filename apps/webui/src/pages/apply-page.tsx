@@ -95,7 +95,7 @@ export function ApplyPage() {
 
   const current = useMemo(() => job ?? sourceJob, [job, sourceJob])
   const progress = progressToPercent(current?.progress ?? 0)
-  const outputRoot = current?.summary?.output_root ?? '~/.fileyard/workspaces/default/data/organized'
+  const outputRoot = current?.summary?.output_root ?? '~/.fileorganize/workspaces/default/data/organized'
   const strictReady = current?.strict_integrity_ready ?? true
   const isCancelling = current?.status === 'cancelling'
   const reviewPrefetch = createRouteIntentPrefetchHandlers('review')

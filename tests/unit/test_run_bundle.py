@@ -10,7 +10,7 @@ from packages.observability.run_bundle import finalize_run_bundle, initialize_ru
 
 
 def test_run_bundle_creates_expected_files(tmp_path: Path, monkeypatch) -> None:
-    monkeypatch.setenv("FILEYARD_RUN_BUNDLE_ROOT", str(tmp_path))
+    monkeypatch.setenv("FILEORGANIZE_RUN_BUNDLE_ROOT", str(tmp_path))
 
     bundle = initialize_run_bundle("apply_20260314_deadbeef", "apply")
     print("stderr-line", file=sys.stderr)
@@ -28,7 +28,7 @@ def test_run_bundle_creates_expected_files(tmp_path: Path, monkeypatch) -> None:
 
 
 def test_run_bundle_logger_writes_jsonl_file(tmp_path: Path, monkeypatch) -> None:
-    monkeypatch.setenv("FILEYARD_RUN_BUNDLE_ROOT", str(tmp_path))
+    monkeypatch.setenv("FILEORGANIZE_RUN_BUNDLE_ROOT", str(tmp_path))
     bundle = initialize_run_bundle("report_20260314_deadbeef", "report")
 
     logger = setup_logger("INFO", True)
@@ -42,7 +42,7 @@ def test_run_bundle_logger_writes_jsonl_file(tmp_path: Path, monkeypatch) -> Non
 
 
 def test_run_bundle_records_gate_bridge_context(tmp_path: Path, monkeypatch) -> None:
-    monkeypatch.setenv("FILEYARD_RUN_BUNDLE_ROOT", str(tmp_path))
+    monkeypatch.setenv("FILEORGANIZE_RUN_BUNDLE_ROOT", str(tmp_path))
 
     bundle = initialize_run_bundle(
         "report_20260314_bridge",
@@ -68,7 +68,7 @@ def test_run_bundle_records_gate_bridge_context(tmp_path: Path, monkeypatch) -> 
 
 
 def test_run_bundle_reinitialization_restores_previous_stderr_handle(tmp_path: Path, monkeypatch) -> None:
-    monkeypatch.setenv("FILEYARD_RUN_BUNDLE_ROOT", str(tmp_path))
+    monkeypatch.setenv("FILEORGANIZE_RUN_BUNDLE_ROOT", str(tmp_path))
 
     first = initialize_run_bundle("apply_20260314_first", "apply")
     second = initialize_run_bundle("apply_20260314_second", "apply")
@@ -83,7 +83,7 @@ def test_run_bundle_reinitialization_restores_previous_stderr_handle(tmp_path: P
 
 
 def test_finalize_run_bundle_recovers_from_invalid_existing_summary(tmp_path: Path, monkeypatch) -> None:
-    monkeypatch.setenv("FILEYARD_RUN_BUNDLE_ROOT", str(tmp_path))
+    monkeypatch.setenv("FILEORGANIZE_RUN_BUNDLE_ROOT", str(tmp_path))
 
     for run_id, broken_payload in (
         ("apply_20260314_empty", ""),

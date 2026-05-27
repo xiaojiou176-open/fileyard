@@ -71,29 +71,29 @@ repo_runtime:
     - "**/.mypy_cache"
     - "**/.ruff_cache"
 workspace_runtime:
-  workspace_root: ~/.fileyard/workspaces/default
-  movi_root: ~/.fileyard/workspaces/default/.fileyard
-  manifest_root: ~/.fileyard/workspaces/default/.fileyard/manifests
-  artifact_root: ~/.fileyard/workspaces/default/.fileyard/artifacts
-  run_bundle_root: ~/.fileyard/workspaces/default/.fileyard/runs
-  env_root: ~/.fileyard/workspaces/default/.fileyard/env
+  workspace_root: ~/.fileorganize/workspaces/default
+  fileorganize_root: ~/.fileorganize/workspaces/default/.fileorganize
+  manifest_root: ~/.fileorganize/workspaces/default/.fileorganize/manifests
+  artifact_root: ~/.fileorganize/workspaces/default/.fileorganize/artifacts
+  run_bundle_root: ~/.fileorganize/workspaces/default/.fileorganize/runs
+  env_root: ~/.fileorganize/workspaces/default/.fileorganize/env
 machine_cache:
-  root: ~/.cache/fileyard
+  root: ~/.cache/fileorganize
   required_paths:
-    - ~/.cache/fileyard/venv/default
-    - ~/.cache/fileyard/pip
-    - ~/.cache/fileyard/npm
-    - ~/.cache/fileyard/xdg
-    - ~/.cache/fileyard/playwright
-    - ~/.cache/fileyard/pycache
+    - ~/.cache/fileorganize/venv/default
+    - ~/.cache/fileorganize/pip
+    - ~/.cache/fileorganize/npm
+    - ~/.cache/fileorganize/xdg
+    - ~/.cache/fileorganize/playwright
+    - ~/.cache/fileorganize/pycache
 docker_runtime:
-  compose_project: fileyard-web-stack
-  canonical_image: fileyard-ci:local
+  compose_project: fileorganize-web-stack
+  canonical_image: fileorganize-ci:local
   protected_volumes:
-    - fileyard-web-stack_movi_playwright
-    - fileyard-web-stack_movi_venv
+    - fileorganize-web-stack_fileorganize_playwright
+    - fileorganize-web-stack_fileorganize_venv
   optional_volumes:
-    - fileyard-web-stack_movi_webui_node_modules
+    - fileorganize-web-stack_fileorganize_webui_node_modules
   shared_related_surface:
     - docker build cache
   cleanup_modes:

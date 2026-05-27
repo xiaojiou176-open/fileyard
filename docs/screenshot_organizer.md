@@ -1,5 +1,5 @@
 ---
-title: Screenshot Organizer With Review Queue And Dry-Run Safety | Fileyard
+title: Screenshot Organizer With Review Queue And Dry-Run Safety | Fileorganize
 description: Organize screenshots with a review-first queue, local-first workflow, and dry-run safety instead of autonomous file mutation.
 ---
 
@@ -7,7 +7,7 @@ description: Organize screenshots with a review-first queue, local-first workflo
 
 Screenshot cleanup is usually repetitive, but the mistakes still matter. Work images, receipts, and random references all end up mixed together, so a “sort automatically now” button is often the wrong answer.
 
-Fileyard treats screenshot cleanup like a review workflow instead of a blind rename script.
+Fileorganize treats screenshot cleanup like a review workflow instead of a blind rename script.
 
 ## What Changes
 

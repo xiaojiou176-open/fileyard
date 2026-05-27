@@ -1,9 +1,9 @@
 ---
-title: Fileyard FAQ
-description: Common questions about Fileyard, offline mode, local-first workflow, and support routes.
+title: Fileorganize FAQ
+description: Common questions about Fileorganize, offline mode, local-first workflow, and support routes.
 ---
 
-## Does Fileyard call Gemini every time
+## Does Fileorganize call Gemini every time
 
 No. `analyze` may call Gemini when you are not in offline mode. `apply` and `rollback` do not call Gemini.
 
@@ -11,13 +11,13 @@ No. `analyze` may call Gemini when you are not in offline mode. `apply` and `rol
 
 Yes. The public quickstart uses the fixture files under `tests/fixtures/golden_input` and keeps `apply` in `--dry-run` mode.
 
-## Is Fileyard a hosted product
+## Is Fileorganize a hosted product
 
-No. Fileyard is a limited-maintenance open-source repository with a local-first workflow.
+No. Fileorganize is a limited-maintenance open-source repository with a local-first workflow.
 
 ## Where should I ask questions
 
-- Usage or workflow questions: [GitHub Discussions](https://github.com/xiaojiou176-open/fileyard/discussions)
+- Usage or workflow questions: [GitHub Discussions](https://github.com/xiaojiou176-open/fileorganize/discussions)
 - Bug reports with fresh evidence: GitHub Issues
 - Security problems: [SECURITY.md](../SECURITY.md)
 

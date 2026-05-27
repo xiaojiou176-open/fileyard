@@ -23,14 +23,14 @@ if str(REPO_ROOT) not in sys.path:
 
 
 def _prepare_contract_env() -> None:
-    temp_workspace = Path(tempfile.gettempdir()) / "fileyard-api-contract-workspace"
+    temp_workspace = Path(tempfile.gettempdir()) / "fileorganize-api-contract-workspace"
     temp_workspace.mkdir(parents=True, exist_ok=True)
-    os.environ.setdefault("FILEYARD_WORKSPACE_ROOT", str(temp_workspace))
-    os.environ.setdefault("FILEYARD_INPUT_ROOT", str(temp_workspace / "data" / "raw"))
-    os.environ.setdefault("FILEYARD_OUTPUT_ROOT", str(temp_workspace / "data" / "organized"))
-    os.environ.setdefault("FILEYARD_MANIFEST_ROOT", str(temp_workspace / ".fileyard" / "manifests"))
-    os.environ.setdefault("FILEYARD_ARTIFACT_ROOT", str(temp_workspace / ".fileyard" / "artifacts"))
-    os.environ.setdefault("FILEYARD_RUN_BUNDLE_ROOT", str(temp_workspace / ".fileyard" / "runs"))
+    os.environ.setdefault("FILEORGANIZE_WORKSPACE_ROOT", str(temp_workspace))
+    os.environ.setdefault("FILEORGANIZE_INPUT_ROOT", str(temp_workspace / "data" / "raw"))
+    os.environ.setdefault("FILEORGANIZE_OUTPUT_ROOT", str(temp_workspace / "data" / "organized"))
+    os.environ.setdefault("FILEORGANIZE_MANIFEST_ROOT", str(temp_workspace / ".fileorganize" / "manifests"))
+    os.environ.setdefault("FILEORGANIZE_ARTIFACT_ROOT", str(temp_workspace / ".fileorganize" / "artifacts"))
+    os.environ.setdefault("FILEORGANIZE_RUN_BUNDLE_ROOT", str(temp_workspace / ".fileorganize" / "runs"))
 
 
 def _load_openapi() -> dict[str, Any]:
@@ -55,7 +55,7 @@ def _fallback_openapi() -> dict[str, Any]:
     _overlay_wave2_paths(paths)
     return {
         "openapi": "3.1.0",
-        "info": {"title": "Fileyard Web API", "version": "2.0.0"},
+        "info": {"title": "Fileorganize Web API", "version": "2.0.0"},
         "paths": paths,
         "components": {"schemas": _wave2_schemas()},
     }
@@ -1400,7 +1400,7 @@ def _outputs() -> dict[Path, str]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Generate API contract and WebUI client/types from the Fileyard Web API")
+    parser = argparse.ArgumentParser(description="Generate API contract and WebUI client/types from the Fileorganize Web API")
     parser.add_argument("--root", default=str(REPO_ROOT))
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()

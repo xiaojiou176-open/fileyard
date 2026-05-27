@@ -58,7 +58,7 @@ PUBLIC_GUIDE_PATHS = {
 LEGACY_PATTERNS: tuple[tuple[str, re.Pattern[str], str], ...] = (
     (
         "legacy-script-tree",
-        re.compile(r"脚本/(?:README\.md|config|docs|pipeline|requirements|scripts|tests|fileyard\.py|manifest\.schema\.json)"),
+        re.compile(r"脚本/(?:README\.md|config|docs|pipeline|requirements|scripts|tests|fileorganize\.py|manifest\.schema\.json)"),
         "replace legacy 脚本/* references with current tooling/contracts/docs/packages/tests paths",
     ),
     (

@@ -45,11 +45,11 @@ def _repo_root() -> Path:
 
 
 def _workspace_input_root() -> Path:
-    return Path(os.environ.get("FILEYARD_INPUT_ROOT", "~/.fileyard/workspaces/default/data/raw")).expanduser()
+    return Path(os.environ.get("FILEORGANIZE_INPUT_ROOT", "~/.fileorganize/workspaces/default/data/raw")).expanduser()
 
 
 def _workspace_output_root() -> Path:
-    return Path(os.environ.get("FILEYARD_OUTPUT_ROOT", "~/.fileyard/workspaces/default/data/organized")).expanduser()
+    return Path(os.environ.get("FILEORGANIZE_OUTPUT_ROOT", "~/.fileorganize/workspaces/default/data/organized")).expanduser()
 
 
 def _find_free_port() -> int:
@@ -322,7 +322,7 @@ def _new_non_live_context(browser):
     context.add_init_script(
         """
         (() => {
-          window.localStorage.setItem('fileyard.locale', 'en');
+          window.localStorage.setItem('fileorganize.locale', 'en');
           document.documentElement.lang = 'en';
         })();
         """
@@ -916,16 +916,16 @@ def test_webui_playwright_non_live_full_journey(e2e_cleanup_actions, tmp_path: P
 
     run_env = dict(os.environ)
     run_env["PYTHONUNBUFFERED"] = run_env.get("PYTHONUNBUFFERED") or "1"
-    run_env["FILEYARD_ALLOW_HOST_EXECUTION"] = run_env.get("FILEYARD_ALLOW_HOST_EXECUTION") or "1"
-    run_env["FILEYARD_IN_CONTAINER"] = run_env.get("FILEYARD_IN_CONTAINER") or "0"
-    run_env["FILEYARD_ROLLBACK_HMAC_KEY"] = run_env.get("FILEYARD_ROLLBACK_HMAC_KEY") or "webui-playwright-e2e-key"
+    run_env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = run_env.get("FILEORGANIZE_ALLOW_HOST_EXECUTION") or "1"
+    run_env["FILEORGANIZE_IN_CONTAINER"] = run_env.get("FILEORGANIZE_IN_CONTAINER") or "0"
+    run_env["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = run_env.get("FILEORGANIZE_ROLLBACK_HMAC_KEY") or "webui-playwright-e2e-key"
     run_env["PYTHONPATH"] = f"{repo_root}{os.pathsep}{run_env.get('PYTHONPATH', '')}".rstrip(os.pathsep)
-    run_env["FILEYARD_RUN_LIVE_TESTS"] = "0"
-    run_env["FILEYARD_RUN_WEBUI_E2E"] = "0"
+    run_env["FILEORGANIZE_RUN_LIVE_TESTS"] = "0"
+    run_env["FILEORGANIZE_RUN_WEBUI_E2E"] = "0"
     workspace_root = tmp_path / "workspace"
-    run_env["FILEYARD_WORKSPACE_ROOT"] = str(workspace_root)
-    run_env["FILEYARD_INPUT_ROOT"] = str(workspace_root / "data" / "raw")
-    run_env["FILEYARD_OUTPUT_ROOT"] = str(workspace_root / "data" / "organized")
+    run_env["FILEORGANIZE_WORKSPACE_ROOT"] = str(workspace_root)
+    run_env["FILEORGANIZE_INPUT_ROOT"] = str(workspace_root / "data" / "raw")
+    run_env["FILEORGANIZE_OUTPUT_ROOT"] = str(workspace_root / "data" / "organized")
 
     log_dir = tmp_path / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
@@ -963,7 +963,7 @@ def test_webui_playwright_non_live_full_journey(e2e_cleanup_actions, tmp_path: P
 
         token = uuid.uuid4().hex[:8]
         source_name = f"e2e-nonlive-{token}.png"
-        source_dir = Path(run_env["FILEYARD_INPUT_ROOT"]).expanduser() / f"e2e-nonlive-{token}"
+        source_dir = Path(run_env["FILEORGANIZE_INPUT_ROOT"]).expanduser() / f"e2e-nonlive-{token}"
         source_dir.mkdir(parents=True, exist_ok=True)
         source_path = source_dir / source_name
         source_path.write_bytes(
@@ -1063,7 +1063,7 @@ def test_webui_playwright_non_live_full_journey(e2e_cleanup_actions, tmp_path: P
             page.wait_for_url("**/review/*", timeout=30_000)
 
             _heartbeat("review queue")
-            _wait_until(page.get_by_role("heading", name=re.compile(r"^Fileyard Review$")), timeout_s=WAIT_TIMEOUT_S)
+            _wait_until(page.get_by_role("heading", name=re.compile(r"^Fileorganize Review$")), timeout_s=WAIT_TIMEOUT_S)
             _wait_until(page.get_by_text(source_name).first, timeout_s=WAIT_TIMEOUT_S)
             page.get_by_role("link", name="Open Manifest Workbench").click()
             page.wait_for_url("**/manifest/*", timeout=30_000)
@@ -1170,7 +1170,7 @@ def test_webui_playwright_non_live_full_journey(e2e_cleanup_actions, tmp_path: P
             _wait_for_manifest_ready(page, timeout_s=WAIT_TIMEOUT_S)
             _wait_until(page.locator(f"input[value='{expected_template_target}']").first, timeout_s=WAIT_TIMEOUT_S)
 
-            execute_target = str((Path(run_env["FILEYARD_OUTPUT_ROOT"]).expanduser() / f"e2e-nonlive-{token}-renamed.png").resolve())
+            execute_target = str((Path(run_env["FILEORGANIZE_OUTPUT_ROOT"]).expanduser() / f"e2e-nonlive-{token}-renamed.png").resolve())
             _http_json_request(
                 f"{api_base}/api/jobs/{analyze_job_id}/manifest/batch",
                 method="POST",
@@ -1441,16 +1441,16 @@ def test_webui_playwright_non_live_upload_conflicts_preview_and_report_filters(e
 
     run_env = dict(os.environ)
     run_env["PYTHONUNBUFFERED"] = run_env.get("PYTHONUNBUFFERED") or "1"
-    run_env["FILEYARD_ALLOW_HOST_EXECUTION"] = run_env.get("FILEYARD_ALLOW_HOST_EXECUTION") or "1"
-    run_env["FILEYARD_IN_CONTAINER"] = run_env.get("FILEYARD_IN_CONTAINER") or "0"
-    run_env["FILEYARD_ROLLBACK_HMAC_KEY"] = run_env.get("FILEYARD_ROLLBACK_HMAC_KEY") or "webui-playwright-e2e-key"
+    run_env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = run_env.get("FILEORGANIZE_ALLOW_HOST_EXECUTION") or "1"
+    run_env["FILEORGANIZE_IN_CONTAINER"] = run_env.get("FILEORGANIZE_IN_CONTAINER") or "0"
+    run_env["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = run_env.get("FILEORGANIZE_ROLLBACK_HMAC_KEY") or "webui-playwright-e2e-key"
     run_env["PYTHONPATH"] = f"{repo_root}{os.pathsep}{run_env.get('PYTHONPATH', '')}".rstrip(os.pathsep)
-    run_env["FILEYARD_RUN_LIVE_TESTS"] = "0"
-    run_env["FILEYARD_RUN_WEBUI_E2E"] = "0"
+    run_env["FILEORGANIZE_RUN_LIVE_TESTS"] = "0"
+    run_env["FILEORGANIZE_RUN_WEBUI_E2E"] = "0"
     workspace_root = tmp_path / "workspace"
-    run_env["FILEYARD_WORKSPACE_ROOT"] = str(workspace_root)
-    run_env["FILEYARD_INPUT_ROOT"] = str(workspace_root / "data" / "raw")
-    run_env["FILEYARD_OUTPUT_ROOT"] = str(workspace_root / "data" / "organized")
+    run_env["FILEORGANIZE_WORKSPACE_ROOT"] = str(workspace_root)
+    run_env["FILEORGANIZE_INPUT_ROOT"] = str(workspace_root / "data" / "raw")
+    run_env["FILEORGANIZE_OUTPUT_ROOT"] = str(workspace_root / "data" / "organized")
 
     log_dir = tmp_path / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
@@ -1584,8 +1584,8 @@ def test_webui_playwright_non_live_upload_conflicts_preview_and_report_filters(e
             raw_rows = rows_payload.get("rows")
             rows = raw_rows if isinstance(raw_rows, list) else []
             assert len(rows) >= 3
-            conflict_target = str((Path(run_env["FILEYARD_OUTPUT_ROOT"]).expanduser() / f"conflict-{token}.png").resolve())
-            manual_target = str((Path(run_env["FILEYARD_OUTPUT_ROOT"]).expanduser() / f"manual-target-{token}.png").resolve())
+            conflict_target = str((Path(run_env["FILEORGANIZE_OUTPUT_ROOT"]).expanduser() / f"conflict-{token}.png").resolve())
+            manual_target = str((Path(run_env["FILEORGANIZE_OUTPUT_ROOT"]).expanduser() / f"manual-target-{token}.png").resolve())
 
             _http_json_request(
                 f"{api_base}/api/jobs/{analyze_job_id}/manifest/batch",
@@ -1825,16 +1825,16 @@ def test_webui_playwright_non_live_jobs_cancel(e2e_cleanup_actions, tmp_path: Pa
 
     run_env = dict(os.environ)
     run_env["PYTHONUNBUFFERED"] = run_env.get("PYTHONUNBUFFERED") or "1"
-    run_env["FILEYARD_ALLOW_HOST_EXECUTION"] = run_env.get("FILEYARD_ALLOW_HOST_EXECUTION") or "1"
-    run_env["FILEYARD_IN_CONTAINER"] = run_env.get("FILEYARD_IN_CONTAINER") or "0"
-    run_env["FILEYARD_ROLLBACK_HMAC_KEY"] = run_env.get("FILEYARD_ROLLBACK_HMAC_KEY") or "webui-playwright-e2e-key"
+    run_env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = run_env.get("FILEORGANIZE_ALLOW_HOST_EXECUTION") or "1"
+    run_env["FILEORGANIZE_IN_CONTAINER"] = run_env.get("FILEORGANIZE_IN_CONTAINER") or "0"
+    run_env["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = run_env.get("FILEORGANIZE_ROLLBACK_HMAC_KEY") or "webui-playwright-e2e-key"
     run_env["PYTHONPATH"] = f"{repo_root}{os.pathsep}{run_env.get('PYTHONPATH', '')}".rstrip(os.pathsep)
-    run_env["FILEYARD_RUN_LIVE_TESTS"] = "0"
-    run_env["FILEYARD_RUN_WEBUI_E2E"] = "0"
+    run_env["FILEORGANIZE_RUN_LIVE_TESTS"] = "0"
+    run_env["FILEORGANIZE_RUN_WEBUI_E2E"] = "0"
     workspace_root = tmp_path / "workspace"
-    run_env["FILEYARD_WORKSPACE_ROOT"] = str(workspace_root)
-    run_env["FILEYARD_INPUT_ROOT"] = str(workspace_root / "data" / "raw")
-    run_env["FILEYARD_OUTPUT_ROOT"] = str(workspace_root / "data" / "organized")
+    run_env["FILEORGANIZE_WORKSPACE_ROOT"] = str(workspace_root)
+    run_env["FILEORGANIZE_INPUT_ROOT"] = str(workspace_root / "data" / "raw")
+    run_env["FILEORGANIZE_OUTPUT_ROOT"] = str(workspace_root / "data" / "organized")
 
     log_dir = tmp_path / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
@@ -1845,7 +1845,7 @@ def test_webui_playwright_non_live_jobs_cancel(e2e_cleanup_actions, tmp_path: Pa
     browser_ui_base = f"http://127.0.0.1:{api_port}/app"
 
     token = uuid.uuid4().hex[:8]
-    source_dir = Path(run_env["FILEYARD_INPUT_ROOT"]) / f"cancel-source-{token}"
+    source_dir = Path(run_env["FILEORGANIZE_INPUT_ROOT"]) / f"cancel-source-{token}"
     source_dir.mkdir(parents=True, exist_ok=True)
     (source_dir / "cancel-me.png").write_bytes(
         b"\x89PNG\r\n\x1a\n"

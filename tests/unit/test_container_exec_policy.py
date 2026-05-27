@@ -12,7 +12,7 @@ def _docker_socket_uri() -> str:
 
 
 def _running_inside_container() -> bool:
-    return Path("/.dockerenv").exists() or os.getenv("FILEYARD_IN_CONTAINER") == "1"
+    return Path("/.dockerenv").exists() or os.getenv("FILEORGANIZE_IN_CONTAINER") == "1"
 
 
 def _run_container_exec_with_fake_docker(
@@ -29,9 +29,9 @@ def _run_container_exec_with_fake_docker(
     fake_docker.chmod(0o755)
 
     env = os.environ.copy()
-    env.pop("FILEYARD_IN_CONTAINER", None)
-    env.pop("FILEYARD_ALLOW_HOST_EXECUTION", None)
-    env.pop("FILEYARD_CI_IMAGE", None)
+    env.pop("FILEORGANIZE_IN_CONTAINER", None)
+    env.pop("FILEORGANIZE_ALLOW_HOST_EXECUTION", None)
+    env.pop("FILEORGANIZE_CI_IMAGE", None)
     env["PATH"] = f"{tmp_path}{os.pathsep}{env.get('PATH', '')}"
     if extra_env:
         env.update(extra_env)
@@ -53,8 +53,8 @@ def test_container_exec_forbids_host_fallback_in_ci() -> None:
     script = repo_root / "tooling" / "scripts" / "container_exec.sh"
     env = os.environ.copy()
     env["CI"] = "1"
-    env["FILEYARD_ALLOW_HOST_EXECUTION"] = "1"
-    env.pop("FILEYARD_IN_CONTAINER", None)
+    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env.pop("FILEORGANIZE_IN_CONTAINER", None)
 
     proc = subprocess.run(
         ["bash", str(script), "--label", "ci-policy", "--", "echo", "ok"],
@@ -77,8 +77,8 @@ def test_container_exec_forbids_host_fallback_in_github_actions() -> None:
     env = os.environ.copy()
     env.pop("CI", None)
     env["GITHUB_ACTIONS"] = "true"
-    env["FILEYARD_ALLOW_HOST_EXECUTION"] = "1"
-    env.pop("FILEYARD_IN_CONTAINER", None)
+    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env.pop("FILEORGANIZE_IN_CONTAINER", None)
 
     proc = subprocess.run(
         ["bash", str(script), "--label", "gha-policy", "--", "echo", "ok"],
@@ -100,8 +100,8 @@ def test_container_exec_rejects_spoofed_in_container_env_on_host() -> None:
     script = repo_root / "tooling" / "scripts" / "container_exec.sh"
     env = os.environ.copy()
     env.pop("CI", None)
-    env["FILEYARD_IN_CONTAINER"] = "1"
-    env["FILEYARD_ALLOW_HOST_EXECUTION"] = "0"
+    env["FILEORGANIZE_IN_CONTAINER"] = "1"
+    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "0"
 
     proc = subprocess.run(
         ["bash", str(script), "--label", "spoof-policy", "--", "echo", "ok"],
@@ -181,9 +181,9 @@ def test_container_exec_image_path_mounts_isolated_runtime_and_keeps_ci_env_pass
     fake_docker.chmod(0o755)
 
     env = os.environ.copy()
-    env.pop("FILEYARD_IN_CONTAINER", None)
-    env.pop("FILEYARD_ALLOW_HOST_EXECUTION", None)
-    env["FILEYARD_CI_IMAGE"] = "fileyard-ci:test"
+    env.pop("FILEORGANIZE_IN_CONTAINER", None)
+    env.pop("FILEORGANIZE_ALLOW_HOST_EXECUTION", None)
+    env["FILEORGANIZE_CI_IMAGE"] = "fileorganize-ci:test"
     env["FAKE_DOCKER_ARGS_FILE"] = str(args_file)
     env["PATH"] = f"{tmp_path}{os.pathsep}{env.get('PATH', '')}"
 
@@ -210,9 +210,9 @@ def test_container_exec_image_path_mounts_isolated_runtime_and_keeps_ci_env_pass
 
     runtime_mounts = {mount.split(":", 1)[1]: mount.split(":", 1)[0] for mount in mounts if ":" in mount}
     assert f"{repo_root}:/workspace" in mounts
-    assert runtime_mounts["/root/.cache/fileyard/venv/default"].startswith("fileyard-venv-")
-    assert runtime_mounts["/root/.cache/fileyard/playwright"].startswith("fileyard-playwright-")
-    assert runtime_mounts["/workspace/apps/webui/node_modules"].startswith("fileyard-node-modules-")
+    assert runtime_mounts["/root/.cache/fileorganize/venv/default"].startswith("fileorganize-venv-")
+    assert runtime_mounts["/root/.cache/fileorganize/playwright"].startswith("fileorganize-playwright-")
+    assert runtime_mounts["/workspace/apps/webui/node_modules"].startswith("fileorganize-node-modules-")
     assert f"{repo_root}/.venv:/workspace/.venv" not in mounts
 
     assert "CI" in env_exports
@@ -251,9 +251,9 @@ exit 0
     fake_docker.chmod(0o755)
 
     env = os.environ.copy()
-    env.pop("FILEYARD_IN_CONTAINER", None)
-    env.pop("FILEYARD_ALLOW_HOST_EXECUTION", None)
-    env.pop("FILEYARD_CI_IMAGE", None)
+    env.pop("FILEORGANIZE_IN_CONTAINER", None)
+    env.pop("FILEORGANIZE_ALLOW_HOST_EXECUTION", None)
+    env.pop("FILEORGANIZE_CI_IMAGE", None)
     env["FAKE_DOCKER_LOG_FILE"] = str(log_file)
     env["PATH"] = f"{tmp_path}{os.pathsep}{env.get('PATH', '')}"
 
@@ -273,11 +273,11 @@ exit 0
         call.startswith(
             f"build --file {repo_root / '.devcontainer' / 'Dockerfile'} --build-arg "
             "NODE_RUNTIME_IMAGE=node:24.8.0-bullseye@sha256:1f01014be94e1bbd6687191b5e33e376b8bb1a48abf9c42560a26c812587fdfb "
-            f"--tag fileyard-ci:local {repo_root}"
+            f"--tag fileorganize-ci:local {repo_root}"
         )
         for call in calls
     )
-    assert any("compose" in call and "run --name" in call and "--rm -T" in call and "fileyard-ci" in call for call in calls)
+    assert any("compose" in call and "run --name" in call and "--rm -T" in call and "fileorganize-ci" in call for call in calls)
 
 
 def test_container_exec_reports_dns_failure_when_local_image_build_cannot_resolve_host(tmp_path: Path) -> None:
@@ -307,9 +307,9 @@ exit 0
     )
 
     assert proc.returncode == 1
-    assert "failed to build local fallback image fileyard-ci:local" in proc.stderr
+    assert "failed to build local fallback image fileorganize-ci:local" in proc.stderr
     assert "Likely cause: DNS/network failure while building the local CI image." in proc.stderr
-    assert "This gate can only run offline if fileyard-ci:local already exists locally." in proc.stderr
+    assert "This gate can only run offline if fileorganize-ci:local already exists locally." in proc.stderr
     assert "Temporary failure resolving 'deb.debian.org'" in proc.stderr
 
 
@@ -336,7 +336,7 @@ if [ "$#" -ge 2 ] && [ "$1" = "image" ] && [ "$2" = "inspect" ]; then
 fi
 if [ "$#" -ge 1 ] && [ "$1" = "build" ]; then
   touch "{marker}"
-  echo 'ERROR: failed to solve: image "docker.io/library/fileyard-ci:local": already exists' >&2
+  echo 'ERROR: failed to solve: image "docker.io/library/fileorganize-ci:local": already exists' >&2
   exit 1
 fi
 if [ "$#" -ge 1 ] && [ "$1" = "compose" ]; then

@@ -15,7 +15,7 @@ apply_runtime_env_defaults "$REPO_ROOT"
 
 VENV_PATH="$(governance_runtime_venv_path "$REPO_ROOT")"
 PYTHON_BIN="$VENV_PATH/bin/python"
-REQ_HASH_FILE="$VENV_PATH/.movi_req_hash"
+REQ_HASH_FILE="$VENV_PATH/.fileorganize_req_hash"
 
 bootstrap_setuptools_from_dev_lock() {
   local py_bin="$1"
@@ -45,14 +45,14 @@ bootstrap_setuptools_from_dev_lock() {
 
 restore_prebuilt_venv_if_available() {
   local req_hash="$1"
-  local prebuilt_dir="${FILEYARD_PREBUILT_VENV_DIR:-}"
+  local prebuilt_dir="${FILEORGANIZE_PREBUILT_VENV_DIR:-}"
   local prebuilt_hash=""
 
-  if [ -z "$prebuilt_dir" ] || [ ! -x "$prebuilt_dir/bin/python" ] || [ ! -f "$prebuilt_dir/.movi_req_hash" ]; then
+  if [ -z "$prebuilt_dir" ] || [ ! -x "$prebuilt_dir/bin/python" ] || [ ! -f "$prebuilt_dir/.fileorganize_req_hash" ]; then
     return 1
   fi
 
-  prebuilt_hash="$(cat "$prebuilt_dir/.movi_req_hash" 2>/dev/null || true)"
+  prebuilt_hash="$(cat "$prebuilt_dir/.fileorganize_req_hash" 2>/dev/null || true)"
   if [ "$prebuilt_hash" != "$req_hash" ]; then
     return 1
   fi

@@ -17,7 +17,7 @@ GATE_LOG_ARGS=(--root "$REPO_ROOT" --allow-missing-gate platform-alignment)
 echo "ℹ️ verify_repo_final: repo-side governance scorecard only; use bash tooling/gates/quality_gate.sh for delivery-complete truth"
 bash "$ROOT/cleanup/prune_repo_runtime.sh" "$REPO_ROOT" >/dev/null 2>&1 || true
 
-if [ "${FILEYARD_IN_CONTAINER:-0}" != "1" ] && [ "${FILEYARD_ALLOW_HOST_EXECUTION:-0}" = "1" ]; then
+if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ] && [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" = "1" ]; then
   GATE_LOG_ARGS+=(--gate quality-gate --summary-path ".runtime-cache/logs/quality-gate/host-summary.json")
 fi
 

@@ -4,7 +4,7 @@ import path from 'node:path'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => {
-  const proxyTarget = process.env.FILEYARD_WEB_API_PROXY_TARGET?.trim() || 'http://127.0.0.1:18080'
+  const proxyTarget = process.env.FILEORGANIZE_WEB_API_PROXY_TARGET?.trim() || 'http://127.0.0.1:18080'
 
   return {
     base: command === 'build' ? '/app/' : '/',

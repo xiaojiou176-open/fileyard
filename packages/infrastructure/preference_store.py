@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 from typing import Any, Dict
 
-PREFERENCE_ROOT_RELATIVE_PATH = Path(".fileyard") / "preferences"
-LEGACY_WEB_API_PREF_ROOT_RELATIVE_PATH = Path(".fileyard") / "artifacts" / "web_api" / "preferences"
+PREFERENCE_ROOT_RELATIVE_PATH = Path(".fileorganize") / "preferences"
+LEGACY_WEB_API_PREF_ROOT_RELATIVE_PATH = Path(".fileorganize") / "artifacts" / "web_api" / "preferences"
 
 
 def preference_root(workspace_root: str | Path) -> Path:

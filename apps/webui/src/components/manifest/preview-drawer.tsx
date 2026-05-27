@@ -17,7 +17,7 @@ interface PreviewDrawerProps {
   editedRow?: ManifestRow | null
 }
 
-const PREVIEW_CACHE_SESSION_KEY = 'fileyard.preview-cache.v1'
+const PREVIEW_CACHE_SESSION_KEY = 'fileorganize.preview-cache.v1'
 const PREVIEW_RETRY_BACKOFF_MS = 220
 const MEDIA_FINGERPRINT_FIELDS = [
   'sha1',

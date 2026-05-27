@@ -196,7 +196,7 @@ repos:
       - id: commit-message-lint
         name: commit-message-lint
         entry: >-
-          bash -lc 'VENV_DIR="${GOVERNANCE_RUNTIME_VENV_DIR:-$HOME/.cache/fileyard/venv/default}"; "$VENV_DIR/bin/python" tooling/scripts/check_commit_message.py --commit-msg-file "$@"' --
+          bash -lc 'VENV_DIR="${GOVERNANCE_RUNTIME_VENV_DIR:-$HOME/.cache/fileorganize/venv/default}"; "$VENV_DIR/bin/python" tooling/scripts/check_commit_message.py --commit-msg-file "$@"' --
         language: system
         stages: [commit-msg]
 

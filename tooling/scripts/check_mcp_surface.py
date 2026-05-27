@@ -14,17 +14,17 @@ def main() -> int:
     repo_root = Path(__file__).resolve().parents[2]
     pyproject = tomllib.loads((repo_root / "pyproject.toml").read_text(encoding="utf-8"))
     scripts = pyproject.get("project", {}).get("scripts", {})
-    required_entrypoints = pyproject.get("tool", {}).get("fileyard", {}).get("package_smoke", {}).get("required_entrypoints", [])
+    required_entrypoints = pyproject.get("tool", {}).get("fileorganize", {}).get("package_smoke", {}).get("required_entrypoints", [])
 
     issues: list[str] = []
-    if scripts.get("fileyard-mcp") != "apps.mcp.server:main":
-        issues.append("pyproject.toml must expose fileyard-mcp -> apps.mcp.server:main")
-    if "fileyard-mcp" not in required_entrypoints:
-        issues.append("package smoke required_entrypoints must include fileyard-mcp")
+    if scripts.get("fileorganize-mcp") != "apps.mcp.server:main":
+        issues.append("pyproject.toml must expose fileorganize-mcp -> apps.mcp.server:main")
+    if "fileorganize-mcp" not in required_entrypoints:
+        issues.append("package smoke required_entrypoints must include fileorganize-mcp")
     if not (repo_root / "apps" / "mcp" / "server.py").exists():
-        issues.append("apps/mcp/server.py is required for Fileyard MCP")
+        issues.append("apps/mcp/server.py is required for Fileorganize MCP")
     if not (repo_root / "tooling" / "runtime" / "run_mcp_stdio.sh").exists():
-        issues.append("tooling/runtime/run_mcp_stdio.sh is required for Fileyard MCP")
+        issues.append("tooling/runtime/run_mcp_stdio.sh is required for Fileorganize MCP")
     package_json = json.loads((repo_root / "package.json").read_text(encoding="utf-8"))
     npm_scripts = package_json.get("scripts", {})
     if npm_scripts.get("mcp:stdio") != "bash tooling/runtime/run_mcp_stdio.sh":

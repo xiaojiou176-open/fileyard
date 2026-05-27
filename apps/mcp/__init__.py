@@ -1,1 +1,1 @@
-"""Fileyard MCP surfaces."""
+"""Fileorganize MCP surfaces."""

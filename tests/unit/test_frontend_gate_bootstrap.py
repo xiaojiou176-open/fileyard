@@ -42,7 +42,7 @@ def test_lint_frontend_keeps_canonical_container_path_even_during_host_emergency
 
     assert "LINT_FRONTEND_ALLOW_HOST_EXECUTION" in script
     assert "canonical frontend verification stays containerized by default" in script
-    assert ('env -u FILEYARD_ALLOW_HOST_EXECUTION FILEYARD_COMPOSE_SERVICE=fileyard-web-api bash "$ROOT/scripts/container_exec.sh"') in script
+    assert ('env -u FILEORGANIZE_ALLOW_HOST_EXECUTION FILEORGANIZE_COMPOSE_SERVICE=fileorganize-web-api bash "$ROOT/scripts/container_exec.sh"') in script
 
 
 def test_lint_frontend_cleanup_is_best_effort_for_node_modules_permissions() -> None:
@@ -59,7 +59,7 @@ def test_run_webui_task_allows_explicit_host_execution_outside_ci() -> None:
 
     assert "is_ci_context()" in script
     assert "emergency host execution enabled; canonical webui task path stays containerized by default" in script
-    assert "FILEYARD_ALLOW_HOST_EXECUTION=1 is forbidden in CI" in script
+    assert "FILEORGANIZE_ALLOW_HOST_EXECUTION=1 is forbidden in CI" in script
 
 
 def test_run_webui_task_retries_after_node_modules_residue() -> None:
@@ -84,7 +84,7 @@ def test_run_webui_task_handles_empty_extra_args_under_set_u() -> None:
 def test_run_webui_task_forwards_skip_install_into_container_command() -> None:
     script = (_repo_root() / "tooling" / "runtime" / "run_webui_task.sh").read_text(encoding="utf-8")
     expected = (
-        'env FILEYARD_COMPOSE_SERVICE=fileyard-web-api bash "$ROOT/scripts/container_exec.sh" --label "webui-${TASK}" -- "${CONTAINER_ARGS[@]}"'
+        'env FILEORGANIZE_COMPOSE_SERVICE=fileorganize-web-api bash "$ROOT/scripts/container_exec.sh" --label "webui-${TASK}" -- "${CONTAINER_ARGS[@]}"'
     )
 
     assert 'CONTAINER_ARGS=(bash tooling/runtime/run_webui_task.sh "$TASK")' in script
@@ -249,17 +249,17 @@ def test_check_frontend_a11y_treats_native_button_and_design_system_button_diffe
 def test_env_contract_registers_web_stack_runtime_vars() -> None:
     registry = (_repo_root() / "contracts" / "runtime" / "env_contract_registry.yaml").read_text(encoding="utf-8")
 
-    assert "FILEYARD_WEBUI_HOST" in registry
-    assert "FILEYARD_WEBUI_PORT" in registry
-    assert "FILEYARD_WEB_API_HOST" in registry
-    assert "FILEYARD_WEB_API_PORT" in registry
+    assert "FILEORGANIZE_WEBUI_HOST" in registry
+    assert "FILEORGANIZE_WEBUI_PORT" in registry
+    assert "FILEORGANIZE_WEB_API_HOST" in registry
+    assert "FILEORGANIZE_WEB_API_PORT" in registry
 
 
 def test_env_contract_registers_live_coverage_runtime_vars() -> None:
     registry = (_repo_root() / "contracts" / "runtime" / "env_contract_registry.yaml").read_text(encoding="utf-8")
     env_example = (_repo_root() / ".env.example").read_text(encoding="utf-8")
 
-    assert "FILEYARD_LIVE_COVERAGE_FILE" in registry
+    assert "FILEORGANIZE_LIVE_COVERAGE_FILE" in registry
     assert "LIVE_COVERAGE_FILE" in registry
-    assert "FILEYARD_LIVE_COVERAGE_FILE=" in env_example
+    assert "FILEORGANIZE_LIVE_COVERAGE_FILE=" in env_example
     assert "LIVE_COVERAGE_FILE=" in env_example

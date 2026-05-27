@@ -44,7 +44,7 @@ required_runbook_snippets:
   - bash tooling/gates/platform_alignment_gate.sh
 required_asset_provenance_entries:
   - tests/fixtures/golden_input/archive.pdf
-  - apps/webui/public/fileyard-mark.svg
+  - apps/webui/public/fileorganize-mark.svg
   - tests/fixtures/golden_input/doc.pdf
   - tests/fixtures/golden_input/invoice.pdf
   - tests/fixtures/golden_input/my_screenshot.png

@@ -18,7 +18,7 @@ Read `AGENTS.md` first for repository-wide safety and governance rules.
   - `packages/infrastructure/`
   - `packages/observability/`
 - Main entrypoints:
-  - `apps/cli/fileyard.py`
+  - `apps/cli/fileorganize.py`
   - `apps/cli/cli_app.py`
   - `apps/api/web_api.py`
 

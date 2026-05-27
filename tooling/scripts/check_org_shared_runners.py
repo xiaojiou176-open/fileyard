@@ -62,7 +62,7 @@ def _api_get(url: str, token: str) -> dict[str, object]:
         headers={
             "Accept": "application/vnd.github+json",
             "Authorization": f"Bearer {token}",
-            "User-Agent": "fileyard-ci-runner-bootstrap",
+            "User-Agent": "fileorganize-ci-runner-bootstrap",
             "X-GitHub-Api-Version": "2022-11-28",
         },
         method="GET",

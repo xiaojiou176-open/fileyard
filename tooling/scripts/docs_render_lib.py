@@ -404,11 +404,11 @@ def _toml_data(path: Path) -> dict[str, Any]:
 def _sanitize_public_runtime_value(value: str) -> str:
     sanitized = str(value)
     replacements = [
-        ("~/.fileyard/workspaces/default/.fileyard", "<workspace-root>/.fileyard"),
-        ("~/.fileyard/workspaces/default/data/raw", "<workspace-root>/data/raw"),
-        ("~/.fileyard/workspaces/default/data/organized", "<workspace-root>/data/organized"),
-        ("~/.fileyard/workspaces/default/data", "<workspace-root>/data"),
-        ("~/.fileyard/workspaces/default", "<workspace-root>"),
+        ("~/.fileorganize/workspaces/default/.fileorganize", "<workspace-root>/.fileorganize"),
+        ("~/.fileorganize/workspaces/default/data/raw", "<workspace-root>/data/raw"),
+        ("~/.fileorganize/workspaces/default/data/organized", "<workspace-root>/data/organized"),
+        ("~/.fileorganize/workspaces/default/data", "<workspace-root>/data"),
+        ("~/.fileorganize/workspaces/default", "<workspace-root>"),
         (".runtime-cache", "<repo-runtime-cache>"),
     ]
     for old, new in replacements:
@@ -454,18 +454,18 @@ def runtime_topology_snapshot(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
         key: env_defaults[key]
         for key in (
             "GEMINI_MODEL",
-            "FILEYARD_WEB_API_HOST",
-            "FILEYARD_WEB_API_PORT",
-            "FILEYARD_WEBUI_HOST",
-            "FILEYARD_WEBUI_PORT",
-            "FILEYARD_COMPOSE_SERVICE",
-            "FILEYARD_CI_IMAGE",
+            "FILEORGANIZE_WEB_API_HOST",
+            "FILEORGANIZE_WEB_API_PORT",
+            "FILEORGANIZE_WEBUI_HOST",
+            "FILEORGANIZE_WEBUI_PORT",
+            "FILEORGANIZE_COMPOSE_SERVICE",
+            "FILEORGANIZE_CI_IMAGE",
         )
         if key in env_defaults
     }
 
     project_scripts = dict(pyproject.get("project", {}).get("scripts", {}))
-    package_smoke = dict(pyproject.get("tool", {}).get("fileyard", {}).get("package_smoke", {}))
+    package_smoke = dict(pyproject.get("tool", {}).get("fileorganize", {}).get("package_smoke", {}))
     npm_scripts = dict(package.get("scripts", {}))
     docker_runtime = dict(runtime_layout.get("docker_runtime", {})) if isinstance(runtime_layout, dict) else {}
     return {
@@ -499,7 +499,7 @@ def runtime_topology_snapshot(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
             {
                 "name": "destructive workspace reset",
                 "commands": ["bash tooling/runtime/runtime_reset.sh --confirm-workspace-reset"],
-                "note": "Clears workspace .fileyard state; not a routine cache cleanup command.",
+                "note": "Clears workspace .fileorganize state; not a routine cache cleanup command.",
             },
         ],
         "docker_runtime": docker_runtime,
@@ -563,7 +563,7 @@ def render_runtime_topology_reference(repo_root: Path = REPO_ROOT) -> str:
                 "",
                 "### Container-First Defaults",
                 "",
-                f"- Canonical Docker image: `{docker_runtime.get('canonical_image', 'fileyard-ci:local')}`",
+                f"- Canonical Docker image: `{docker_runtime.get('canonical_image', 'fileorganize-ci:local')}`",
                 f"- Protected Docker volumes: {protected or 'None'}",
                 f"- Optional Docker volumes: {optional or 'None'}",
                 (
@@ -654,8 +654,8 @@ def _workflow_link_for(target_path: str, workflow_name: str) -> str:
 def render_runtime_topology_summary_block(output_path: str, repo_root: Path = REPO_ROOT) -> str:
     snapshot = runtime_topology_snapshot(repo_root)
     services = ", ".join(f"`{service['name']}`" for service in snapshot["services"])
-    api_port = snapshot["env_defaults"].get("FILEYARD_WEB_API_PORT", "18080")
-    webui_port = snapshot["env_defaults"].get("FILEYARD_WEBUI_PORT", "5173")
+    api_port = snapshot["env_defaults"].get("FILEORGANIZE_WEB_API_PORT", "18080")
+    webui_port = snapshot["env_defaults"].get("FILEORGANIZE_WEBUI_PORT", "5173")
     lines = [
         "> Auto-generated: runtime services, default ports, runtime paths, and entrypoint facts live in "
         f"[generated runtime topology]({_runtime_reference_link_for(output_path)}).",

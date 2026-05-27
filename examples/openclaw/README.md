@@ -1,14 +1,14 @@
-# Fileyard For OpenClaw / ClawHub
+# Fileorganize For OpenClaw / ClawHub
 
 Status: `ClawHub listed_live (current page still shows suspicious.vt_suspicious); no official OpenClaw catalog approval claimed`
 
-This page is the OpenClaw-facing integration note for Fileyard.
+This page is the OpenClaw-facing integration note for Fileorganize.
 
-The canonical public root for Fileyard still lives at `../../README.md` plus
+The canonical public root for Fileorganize still lives at `../../README.md` plus
 `../../manifest.yaml`. This page is a host-specific supporting bundle, not the
 repo storefront.
 
-The canonical public root for Movi still lives at `../../README.md` plus
+The canonical public root for Fileorganize still lives at `../../README.md` plus
 `../../manifest.yaml`. This page is a host-specific supporting bundle, not the
 repo storefront.
 

@@ -105,7 +105,7 @@ summary: dict[str, object] = {
 bundle_dir = Path(bundle_dir_raw).resolve() if bundle_dir_raw else None
 manifest = None
 expected_assets = {
-    f"fileyard-{tag_name}.tar.gz",
+    f"fileorganize-{tag_name}.tar.gz",
     "release-draft.md",
     "release-evidence.json",
     "python-runtime-sbom.cdx.json",

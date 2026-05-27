@@ -9,27 +9,27 @@
 
 | service | ports | network_mode | command |
 | --- | --- | --- | --- |
-| `fileyard-ci` | — | `default` | — |
-| `fileyard-web-api` | `${FILEYARD_WEB_API_PORT:-18080}:18080`, `${FILEYARD_WEBUI_PORT:-5173}:5173` | `default` | `bash tooling/runtime/run_web_api.sh --host 0.0.0.0 --port 18080` |
-| `fileyard-webui` | — | `service:fileyard-web-api` | `bash tooling/runtime/run_webui.sh --host 0.0.0.0 --port 5173` |
+| `fileorganize-ci` | — | `default` | — |
+| `fileorganize-web-api` | `${FILEORGANIZE_WEB_API_PORT:-18080}:18080`, `${FILEORGANIZE_WEBUI_PORT:-5173}:5173` | `default` | `bash tooling/runtime/run_web_api.sh --host 0.0.0.0 --port 18080` |
+| `fileorganize-webui` | — | `service:fileorganize-web-api` | `bash tooling/runtime/run_webui.sh --host 0.0.0.0 --port 5173` |
 
 ## Runtime Paths
 
 | key | value |
 | --- | --- |
-| `GOVERNANCE_PERSISTENT_ARTIFACTS_DIR` | `<workspace-root>/.fileyard/artifacts` |
+| `GOVERNANCE_PERSISTENT_ARTIFACTS_DIR` | `<workspace-root>/.fileorganize/artifacts` |
 | `GOVERNANCE_RUNTIME_BUILD_DIR` | `<repo-runtime-cache>/build` |
 | `GOVERNANCE_RUNTIME_CACHE_ROOT` | `<repo-runtime-cache>` |
 | `GOVERNANCE_RUNTIME_CI_CONTRACT_DIR` | `<repo-runtime-cache>/ci-contract` |
 | `GOVERNANCE_RUNTIME_CI_DIR` | `<repo-runtime-cache>/ci` |
 | `GOVERNANCE_RUNTIME_CODEGEN_DIR` | `<repo-runtime-cache>/codegen` |
-| `GOVERNANCE_RUNTIME_ENV_FILE` | `<workspace-root>/.fileyard/env/runtime.env` |
+| `GOVERNANCE_RUNTIME_ENV_FILE` | `<workspace-root>/.fileorganize/env/runtime.env` |
 | `GOVERNANCE_RUNTIME_LOG_DIR` | `<repo-runtime-cache>/logs` |
 | `GOVERNANCE_RUNTIME_MUTMUT_CACHE_FILE` | `<repo-runtime-cache>/test/mutation/.mutmut-cache` |
 | `GOVERNANCE_RUNTIME_TEMP_DIR` | `<repo-runtime-cache>/tmp` |
 | `GOVERNANCE_RUNTIME_TEST_DIR` | `<repo-runtime-cache>/test` |
-| `GOVERNANCE_RUNTIME_VENV_DIR` | `~/.cache/fileyard/venv/default` |
-| `GOVERNANCE_WEBUI_LOCK_HASH_FILE` | `<repo-runtime-cache>/build/apps/webui/.movi_webui_lock_hash` |
+| `GOVERNANCE_RUNTIME_VENV_DIR` | `~/.cache/fileorganize/venv/default` |
+| `GOVERNANCE_WEBUI_LOCK_HASH_FILE` | `<repo-runtime-cache>/build/apps/webui/.fileorganize_webui_lock_hash` |
 
 ## Default Runtime Knobs
 
@@ -46,28 +46,28 @@
 - **docker runtime**: `bash tooling/cleanup/prune_docker_runtime.sh --dry-run`, `bash tooling/cleanup/prune_docker_runtime.sh --rebuildable`, `bash tooling/cleanup/prune_docker_runtime.sh --aggressive`
   Canonical runtime rail backed by the current Docker image, named volumes, and repo-related build cache.
 - **destructive workspace reset**: `bash tooling/runtime/runtime_reset.sh --confirm-workspace-reset`
-  Clears workspace .fileyard state; not a routine cache cleanup command.
+  Clears workspace .fileorganize state; not a routine cache cleanup command.
 
 ### Container-First Defaults
 
-- Canonical Docker image: `fileyard-ci:local`
-- Protected Docker volumes: `fileyard-web-stack_movi_playwright`, `fileyard-web-stack_movi_venv`
-- Optional Docker volumes: `fileyard-web-stack_movi_webui_node_modules`
+- Canonical Docker image: `fileorganize-ci:local`
+- Protected Docker volumes: `fileorganize-web-stack_fileorganize_playwright`, `fileorganize-web-stack_fileorganize_venv`
+- Optional Docker volumes: `fileorganize-web-stack_fileorganize_webui_node_modules`
 - Shared-related surface: `docker build cache`
 
 ## Entrypoints
 
 ### Python entrypoints
 
-- `fileyard` -> `apps.cli.fileyard:main`
-- `fileyard-web-api` -> `apps.api.server:main`
-- `fileyard-mcp` -> `apps.mcp.server:main`
+- `fileorganize` -> `apps.cli.fileorganize:main`
+- `fileorganize-web-api` -> `apps.api.server:main`
+- `fileorganize-mcp` -> `apps.mcp.server:main`
 
 ### Package smoke required entrypoints
 
-- `fileyard`
-- `fileyard-web-api`
-- `fileyard-mcp`
+- `fileorganize`
+- `fileorganize-web-api`
+- `fileorganize-mcp`
 
 ### Workspace scripts
 

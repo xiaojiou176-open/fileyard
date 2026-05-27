@@ -1,8 +1,8 @@
 version: 1
-id: fileyard-agent-bundle
-display_name: Movi Review-First Bundle
+id: fileorganize-agent-bundle
+display_name: Fileorganize Review-First Bundle
 status: submission-ready-unlisted
-canonical_repo: xiaojiou176-open/fileyard
+canonical_repo: xiaojiou176-open/fileorganize
 entrypoint: SKILL.md
 package_shape: skill-folder
 registry_targets:
@@ -15,7 +15,7 @@ registry_targets:
     status: folder-ready-not-submitted
     package_shape: skill-folder
     channel_role: host-native extensions registry
-    submit_via: submit this folder as skills/fileyard-review-first-bundle/ after Wave 2 verification
+    submit_via: submit this folder as skills/fileorganize-review-first-bundle/ after Wave 2 verification
 bundle_surfaces:
   - SKILL.md
   - README.md
@@ -36,4 +36,4 @@ claims_not_made:
   - no clean ClawHub approval is claimed beyond the current suspicious moderation warning
   - no official MCP Registry submission is claimed
   - no browser-extension marketplace listing is claimed
-  - no hosted Movi SaaS claim is made
+  - no hosted Fileorganize SaaS claim is made

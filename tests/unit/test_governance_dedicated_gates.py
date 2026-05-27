@@ -100,7 +100,7 @@ def test_done_signal_policy_declares_canonical_and_host_emergency_quality_gate_r
 
     assert "canonical_delivery_gate: bash tooling/gates/quality_gate.sh" in policy
     assert "canonical_receipt_path: .runtime-cache/logs/quality-gate/summary.json" in policy
-    assert "host_emergency_gate: env FILEYARD_ALLOW_HOST_EXECUTION=1 bash tooling/gates/quality_gate.sh" in policy
+    assert "host_emergency_gate: env FILEORGANIZE_ALLOW_HOST_EXECUTION=1 bash tooling/gates/quality_gate.sh" in policy
     assert "host_emergency_receipt_path: .runtime-cache/logs/quality-gate/host-summary.json" in policy
 
 

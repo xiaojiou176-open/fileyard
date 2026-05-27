@@ -20,7 +20,7 @@ def test_proof_upgrade_pack_script_prepares_both_files(tmp_path: Path) -> None:
     value_dir = tmp_path / "value-pack"
     ai_dir = tmp_path / "ai-pack"
     env = os.environ.copy()
-    env["FILEYARD_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
 
     proc = subprocess.run(
         ["bash", "tooling/gates/proof_upgrade_pack.sh", str(value_dir), str(ai_dir)],
@@ -48,7 +48,7 @@ def test_proof_upgrade_pack_script_also_refreshes_canonical_paths(tmp_path: Path
     repo_root = _repo_root()
     target = tmp_path / "proof-pack"
     env = os.environ.copy()
-    env["FILEYARD_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
 
     proc = subprocess.run(
         ["bash", "tooling/gates/proof_upgrade_pack.sh", str(target)],

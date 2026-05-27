@@ -32,7 +32,7 @@ Use this short routing guide before opening an issue:
 | Runtime commands and operator flow | [docs/usage.md](docs/usage.md) | This is the detailed operator guide |
 | Architecture and boundaries | [docs/architecture.md](docs/architecture.md) | This explains how the system is wired |
 | Release or public platform questions | [docs/open_source_runbook.md](docs/open_source_runbook.md) | This covers release and GitHub-facing rules |
-| Usage ideas or workflow discussion | [GitHub Discussions](https://github.com/xiaojiou176-open/fileyard/discussions) | This keeps lightweight questions and ideas out of the bug queue |
+| Usage ideas or workflow discussion | [GitHub Discussions](https://github.com/xiaojiou176-open/fileorganize/discussions) | This keeps lightweight questions and ideas out of the bug queue |
 | Security concerns | [SECURITY.md](SECURITY.md) | Security reports must stay off public issue threads |
 
 ## Before Opening An Issue
@@ -57,7 +57,7 @@ for these commands when they are relevant:
 
 - Security concerns: follow [SECURITY.md](SECURITY.md)
 - Usage questions: start with [README.md](README.md) and [docs/usage.md](docs/usage.md)
-- Workflow ideas or broader discussion: start in [GitHub Discussions](https://github.com/xiaojiou176-open/fileyard/discussions)
+- Workflow ideas or broader discussion: start in [GitHub Discussions](https://github.com/xiaojiou176-open/fileorganize/discussions)
 - Release and platform questions: read [docs/open_source_runbook.md](docs/open_source_runbook.md)
 
 ## What Makes A Helpful Support Request

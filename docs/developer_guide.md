@@ -1,11 +1,11 @@
 ---
-title: Fileyard Developer And Agent Guide
-description: Choose the right Fileyard surface for operators, developers, and agents without breaking review-first safety.
+title: Fileorganize Developer And Agent Guide
+description: Choose the right Fileorganize surface for operators, developers, and agents without breaking review-first safety.
 ---
 
 ## Developer And Agent Guide
 
-This page is for people who want to extend Fileyard, wire it into automation, or plug an agent into the current product surface without breaking the safety contract.
+This page is for people who want to extend Fileorganize, wire it into automation, or plug an agent into the current product surface without breaking the safety contract.
 
 ## Surface Map
 
@@ -17,9 +17,9 @@ Use the entry surface that matches the job:
 | Web API | local app integration, debugging, and explicit route calls | [`contracts/api/web_api.openapi.yaml`](../contracts/api/web_api.openapi.yaml) |
 | Generated TypeScript client | builder-facing WebUI or local tool integrations that want typed API calls | [`contracts/api/generated/webui/client.ts`](../contracts/api/generated/webui/client.ts) + [`contracts/api/generated/webui/types.ts`](../contracts/api/generated/webui/types.ts) |
 | WebUI | human review, triage, and job orchestration | `npm run dev:stack` |
-| Fileyard MCP v1 | stdio/local-first agent integrations | `bash tooling/runtime/run_mcp_stdio.sh` (default) or `fileyard-mcp` when the installed console entrypoint is available |
+| Fileorganize MCP v1 | stdio/local-first agent integrations | `bash tooling/runtime/run_mcp_stdio.sh` (default) or `fileorganize-mcp` when the installed console entrypoint is available |
 
-Think of it like choosing the right door into the same building. The CLI is the loading dock, the WebUI is the front desk, the Web API is the service corridor, and Fileyard MCP is the guarded service window for agents.
+Think of it like choosing the right door into the same building. The CLI is the loading dock, the WebUI is the front desk, the Web API is the service corridor, and Fileorganize MCP is the guarded service window for agents.
 
 ## Quick Picks
 
@@ -29,20 +29,20 @@ Use this Navigation table as a search-before-write shortcut: it tells you which 
 
 | I want to build or use... | Start here | Why this is the shortest honest route |
 | :-- | :-- | :-- |
-| a Codex workflow | [Fileyard MCP For Codex](./codex_mcp.md) | it gives the client-specific MCP install path without pretending Codex can bypass review |
-| a Claude Code workflow | [Fileyard MCP For Claude Code](./claude_code_mcp.md) | same local-first MCP lane, but written in Claude Code terms |
-| a generic MCP-capable agent | [Fileyard MCP v1](./mcp.md) | this is the current stdio-first extension contract |
+| a Codex workflow | [Fileorganize MCP For Codex](./codex_mcp.md) | it gives the client-specific MCP install path without pretending Codex can bypass review |
+| a Claude Code workflow | [Fileorganize MCP For Claude Code](./claude_code_mcp.md) | same local-first MCP lane, but written in Claude Code terms |
+| a generic MCP-capable agent | [Fileorganize MCP v1](./mcp.md) | this is the current stdio-first extension contract |
 | a local app or script using HTTP | [`contracts/api/web_api.openapi.yaml`](../contracts/api/web_api.openapi.yaml) | the Web API contract is still the public machine-readable truth source |
 | a typed TypeScript integration | [`contracts/api/generated/webui/client.ts`](../contracts/api/generated/webui/client.ts) | this is the fastest path when you want typed request helpers instead of hand-writing fetch calls |
 | the whole operator flow before integrating | [Operator Guide](./usage.md) | it shows the review-first workflow end-to-end before you wire a client into it |
 
 ## Current Contract And Client Substrate
 
-Fileyard is not just a page app anymore. The current extension stack already has a thin substrate shape:
+Fileorganize is not just a page app anymore. The current extension stack already has a thin substrate shape:
 
 - **HTTP contract**: [`contracts/api/web_api.openapi.yaml`](../contracts/api/web_api.openapi.yaml) is the public machine-readable contract for the local Web API.
 - **Generated client layer**: [`contracts/api/generated/webui/client.ts`](../contracts/api/generated/webui/client.ts) and [`contracts/api/generated/webui/types.ts`](../contracts/api/generated/webui/types.ts) keep the WebUI aligned with the current API shape.
-- **MCP facade**: `Fileyard MCP v1` reuses the same review-safe workflow rather than inventing a second business-logic path.
+- **MCP facade**: `Fileorganize MCP v1` reuses the same review-safe workflow rather than inventing a second business-logic path.
 
 In plain language: the API contract is the signed blueprint, the generated client is the shared wiring harness, and the MCP layer is another supervised door into the same building.
 
@@ -65,7 +65,7 @@ Everything still revolves around the same chain:
 
 1. `analyze` drafts a manifest
 2. review surfaces inspect or edit the overlay
-3. Fileyard resolves a snapshot from `base manifest + overlay`
+3. Fileorganize resolves a snapshot from `base manifest + overlay`
 4. `apply` starts with a dry run before real execution
 5. `rollback` stays bounded and auditable
 
@@ -75,9 +75,9 @@ That means:
 - no hidden second truth source
 - no AI path that skips review and jumps straight to execution
 
-## When To Use Fileyard MCP v1
+## When To Use Fileorganize MCP v1
 
-Use `Fileyard MCP v1` when you want an agent to:
+Use `Fileorganize MCP v1` when you want an agent to:
 
 - inspect current runtime defaults before it creates work
 - inspect jobs, review queues, manifests, or reports
@@ -107,8 +107,8 @@ This is the shortest accurate ecosystem map for the current repo:
 
 If you want the client-specific landing page first:
 
-- [Fileyard MCP For Codex](./codex_mcp.md)
-- [Fileyard MCP For Claude Code](./claude_code_mcp.md)
+- [Fileorganize MCP For Codex](./codex_mcp.md)
+- [Fileorganize MCP For Claude Code](./claude_code_mcp.md)
 
 ## Current Agent-Safe Moves
 
@@ -129,9 +129,9 @@ These actions do **not** fit the current product promise:
 
 ## Docs To Keep Nearby
 
-- [Fileyard MCP v1](./mcp.md)
-- [Fileyard MCP For Codex](./codex_mcp.md)
-- [Fileyard MCP For Claude Code](./claude_code_mcp.md)
+- [Fileorganize MCP v1](./mcp.md)
+- [Fileorganize MCP For Codex](./codex_mcp.md)
+- [Fileorganize MCP For Claude Code](./claude_code_mcp.md)
 - [Operator Guide](./usage.md)
 - [Architecture](./architecture.md)
 - [Brand Positioning](./brand_positioning.md)
@@ -144,7 +144,7 @@ Keep this order:
 
 1. add or adjust the underlying safe workflow first
 2. expose it through Web API or application services
-3. only then expose it through `Fileyard MCP`
+3. only then expose it through `Fileorganize MCP`
 4. update docs and discoverability copy to match the real shipped boundary
 
 That order matters because the docs are the road signs, not the road. If the road does not exist yet, the sign should not pretend it does.

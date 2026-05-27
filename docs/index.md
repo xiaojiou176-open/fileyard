@@ -1,11 +1,11 @@
 ---
-title: Fileyard | Review-first file organization docs
-description: Review-first docs for Fileyard, the local-first file organizer and workbench with AI-assisted planning, dry-run execution, rollback-ready recovery, and an agent-safe MCP v1 surface.
+title: Fileorganize | Review-first file organization docs
+description: Review-first docs for Fileorganize, the local-first file organizer and workbench with AI-assisted planning, dry-run execution, rollback-ready recovery, and an agent-safe MCP v1 surface.
 ---
 
-Fileyard is a review-first local file organizer and workbench for messy photos, screenshots, documents, and audio. It lets AI assist with manifest drafting first, then lets you review the plan before deterministic `apply` or `rollback` touches your files.
+Fileorganize is a review-first local file organizer and workbench for messy photos, screenshots, documents, and audio. It lets AI assist with manifest drafting first, then lets you review the plan before deterministic `apply` or `rollback` touches your files.
 
-![Fileyard overview showing mixed files flowing into manifest review and organized output](./assets/storefront/hero-fileyard-overview.svg)
+![Fileorganize overview showing mixed files flowing into manifest review and organized output](./assets/storefront/hero-fileorganize-overview.svg)
 
 ## Start Here
 
@@ -21,17 +21,17 @@ Fileyard is a review-first local file organizer and workbench for messy photos, 
 - Need the search-intent map: open [SEO Landing Map](./seo_landing_map.md)
 - Want the search-intent landing page first: open [Review-First AI File Organizer](./review_first_ai_file_organizer.md)
 - Need a use-case landing page first: open [Photo Organizer](./photo_organizer.md), [Screenshot Organizer](./screenshot_organizer.md), or [Receipt Organizer](./receipt_organizer.md)
-- Want the agent/developer extension surface after you understand the product story: open [Fileyard MCP v1](./mcp.md) and [Developer Guide](./developer_guide.md)
-- Want a client-specific MCP route: open [Fileyard MCP For Codex](./codex_mcp.md) or [Fileyard MCP For Claude Code](./claude_code_mcp.md)
+- Want the agent/developer extension surface after you understand the product story: open [Fileorganize MCP v1](./mcp.md) and [Developer Guide](./developer_guide.md)
+- Want a client-specific MCP route: open [Fileorganize MCP For Codex](./codex_mcp.md) or [Fileorganize MCP For Claude Code](./claude_code_mcp.md)
 
-## What Makes Fileyard Different
+## What Makes Fileorganize Different
 
 - **Review-first**: AI drafts a manifest, but file actions happen only after you inspect the plan.
-- **AI-assisted**: Fileyard helps propose labels, rules, and review inputs without claiming autonomous file organization.
+- **AI-assisted**: Fileorganize helps propose labels, rules, and review inputs without claiming autonomous file organization.
 - **Dry-run first**: the first-look route keeps `apply` in dry-run mode so you can see the intended moves safely.
 - **Rollback-ready**: the same workflow keeps an audit trail for recovery instead of treating file moves like one-way guesses.
 - **Local-first**: folders, manifests, and reports stay under your chosen workspace root.
-- **Agent-safe extension surface**: Fileyard MCP v1 exposes the same review-safe workflow to agents without adding a hidden “move files now” shortcut.
+- **Agent-safe extension surface**: Fileorganize MCP v1 exposes the same review-safe workflow to agents without adding a hidden “move files now” shortcut.
 
 ## Builder Quick Map
 
@@ -41,9 +41,9 @@ This Navigation map is intentionally search-before-write friendly: pick the shor
 
 | If you want... | Open... |
 | :-- | :-- |
-| a Codex-friendly MCP route | [Fileyard MCP For Codex](./codex_mcp.md) |
-| a Claude Code-friendly MCP route | [Fileyard MCP For Claude Code](./claude_code_mcp.md) |
-| the generic Fileyard MCP contract | [Fileyard MCP v1](./mcp.md) |
+| a Codex-friendly MCP route | [Fileorganize MCP For Codex](./codex_mcp.md) |
+| a Claude Code-friendly MCP route | [Fileorganize MCP For Claude Code](./claude_code_mcp.md) |
+| the generic Fileorganize MCP contract | [Fileorganize MCP v1](./mcp.md) |
 | the local HTTP contract | [`contracts/api/web_api.openapi.yaml`](../contracts/api/web_api.openapi.yaml) |
 | the generated TypeScript client and types | [Developer Guide](./developer_guide.md) |
 
@@ -60,9 +60,9 @@ This Navigation map is intentionally search-before-write friendly: pick the shor
 - [Quickstart / safe first look](./quickstart.md)
 - [Public Proof](./public_proof.md)
 - [FAQ](./faq.md)
-- [Fileyard MCP v1](./mcp.md)
-- [Fileyard MCP For Codex](./codex_mcp.md)
-- [Fileyard MCP For Claude Code](./claude_code_mcp.md)
+- [Fileorganize MCP v1](./mcp.md)
+- [Fileorganize MCP For Codex](./codex_mcp.md)
+- [Fileorganize MCP For Claude Code](./claude_code_mcp.md)
 - [Developer Guide](./developer_guide.md)
 - [Review-First AI File Organizer](./review_first_ai_file_organizer.md)
 - [Photo Organizer](./photo_organizer.md)

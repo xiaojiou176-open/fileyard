@@ -21,7 +21,7 @@ SELF_HOSTED_SHARED_POOL = {"self-hosted", "shared-pool"}
 GITHUB_HOSTED_PRIMARY = "ubuntu-latest"
 HYGIENE_SCRIPT_SNIPPET = "bash tooling/ci/gha_self_hosted_hygiene.sh"
 WORKSPACE_CACHE_PATTERN = re.compile(r"^(?:\./)?(?:\.venv|\.cache|\.pytest_cache|\.mypy_cache|\.ruff_cache)(?:/.*)?$")
-WORKSPACE_ENV_KEYS = {"PRE_COMMIT_HOME", "XDG_CACHE_HOME", "PIP_CACHE_DIR", "FILEYARD_VENV_DIR"}
+WORKSPACE_ENV_KEYS = {"PRE_COMMIT_HOME", "XDG_CACHE_HOME", "PIP_CACHE_DIR", "FILEORGANIZE_VENV_DIR"}
 WORKSPACE_CACHE_PATTERNS = (
     ".venv",
     "./.venv",

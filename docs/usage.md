@@ -1,4 +1,4 @@
-# Fileyard Detailed Operator Guide
+# Fileorganize Detailed Operator Guide
 
 This file is the detailed operator guide.
 Detailed operator guide for runtime commands, API usage, and operator-facing execution notes.
@@ -45,18 +45,18 @@ Think of the workflow as three separate steps:
 
 When you use the browser surface, the practical route is a little more guided:
 
-- `Fileyard Inbox` discovers or registers intake sources, then hands a chosen batch into Analyze
+- `Fileorganize Inbox` discovers or registers intake sources, then hands a chosen batch into Analyze
 - `Analyze` drafts the manifest with optional Strategy Pack defaults
-- `Fileyard Review` is still the human decision gate, with collection slices, learned suggestions, and overlay-only actions
+- `Fileorganize Review` is still the human decision gate, with collection slices, learned suggestions, and overlay-only actions
 - `Report` acts like an after-action board and can send you back into a focused Review pass
 
 ## Naming Baseline
 
-- **Fileyard** is the product brand.
-- **`fileyard`** is the repository and CLI/runtime identity.
-- **Fileyard Review**, **Fileyard Rules**, and **Fileyard Inbox** are the current stable product-surface names.
-- **Fileyard Copilot** is the current review-only guidance layer.
-- **Fileyard MCP v1** is the current local-first stdio surface for agent/developer integrations.
+- **Fileorganize** is the product brand.
+- **`fileorganize`** is the repository and CLI/runtime identity.
+- **Fileorganize Review**, **Fileorganize Rules**, and **Fileorganize Inbox** are the current stable product-surface names.
+- **Fileorganize Copilot** is the current review-only guidance layer.
+- **Fileorganize MCP v1** is the current local-first stdio surface for agent/developer integrations.
 
 ## Fast Operator Route
 
@@ -66,14 +66,14 @@ people who want explicit paths and repeatable local outputs.
 ```bash
 bash tooling/runtime/bootstrap_env.sh
 mkdir -p .runtime-cache/operator-demo
-FILEYARD_ALLOW_HOST_EXECUTION=1 bash tooling/runtime/run_analyze.sh \
+FILEORGANIZE_ALLOW_HOST_EXECUTION=1 bash tooling/runtime/run_analyze.sh \
   --offline \
   --config ./contracts/runtime/config.example.toml \
   --input ./tests/fixtures/golden_input \
   --manifest ./.runtime-cache/operator-demo/manifest.jsonl \
   --report ./.runtime-cache/operator-demo/analyze-report.json
 cp ./.runtime-cache/operator-demo/manifest.jsonl ./.runtime-cache/operator-demo/manifest.apply.jsonl
-FILEYARD_ALLOW_HOST_EXECUTION=1 bash tooling/runtime/run_apply.sh \
+FILEORGANIZE_ALLOW_HOST_EXECUTION=1 bash tooling/runtime/run_apply.sh \
   --config ./contracts/runtime/config.example.toml \
   --manifest ./.runtime-cache/operator-demo/manifest.apply.jsonl \
   --input-root ./tests/fixtures/golden_input \
@@ -94,22 +94,22 @@ npm run dev:stack
 ```
 
 This starts the Web API and WebUI so you can walk through setup, analyze,
-Fileyard Review, Fileyard Rules, apply, report, rollback, and Fileyard Inbox from the browser. Inside the review workbench, saved rules can be reloaded into Rule Studio and learned suggestions can be promoted into an editable draft before you apply them to the overlay.
-The current Wave 2 surface also adds a visible `Fileyard Copilot v1` panel for review-only guidance, batch triage that writes to the overlay rather than disk, explainable learned suggestions that can be accepted or dismissed, and a `rule from examples` helper that seeds Rule Studio with transparent heuristics instead of auto-executing changes.
+Fileorganize Review, Fileorganize Rules, apply, report, rollback, and Fileorganize Inbox from the browser. Inside the review workbench, saved rules can be reloaded into Rule Studio and learned suggestions can be promoted into an editable draft before you apply them to the overlay.
+The current Wave 2 surface also adds a visible `Fileorganize Copilot v1` panel for review-only guidance, batch triage that writes to the overlay rather than disk, explainable learned suggestions that can be accepted or dismissed, and a `rule from examples` helper that seeds Rule Studio with transparent heuristics instead of auto-executing changes.
 The current Wave 3 surface makes the front door more continuous: Inbox can explicitly launch Analyze with batch context, Strategy Packs are explained as analyze templates instead of hidden settings, Collection Intelligence v2 explains why a slice belongs together, and Report can loop you back into Review with clear focus filters such as conflicts or learning suggestions.
-Wave 4 adds `Fileyard MCP v1` as the agent/developer-facing extension surface. It stays stdio-first and local-first, and it only exposes review-safe tools plus read-only resources rather than a hidden execute shortcut.
+Wave 4 adds `Fileorganize MCP v1` as the agent/developer-facing extension surface. It stays stdio-first and local-first, and it only exposes review-safe tools plus read-only resources rather than a hidden execute shortcut.
 
 Important promise boundary:
 
 - the current browser surface is a review-first workbench, not a hosted SaaS
 - AI assists planning and review, but real execution still goes through deterministic `apply`
 - Strategy Packs, learned suggestions, and report-to-review links all stay advisory or routing-only; they do not auto-execute changes
-- `Fileyard MCP v1` is live as a thin agent/developer surface, but it still inherits the same review-first and dry-run-first boundaries
-- future surfaces such as deeper `Fileyard Copilot` automation should still be read as roadmap language, not live product claims
+- `Fileorganize MCP v1` is live as a thin agent/developer surface, but it still inherits the same review-first and dry-run-first boundaries
+- future surfaces such as deeper `Fileorganize Copilot` automation should still be read as roadmap language, not live product claims
 
-## Fileyard MCP v1
+## Fileorganize MCP v1
 
-`Fileyard MCP v1` is the agent-safe extension surface for this repository.
+`Fileorganize MCP v1` is the agent-safe extension surface for this repository.
 
 In plain language: it gives an LLM or automation client a supervised service window into the same workflow you already use in the app. It can inspect queues, read reports, patch overlays, preview rules, and queue dry-run apply jobs, but it does not get a secret door that bypasses review.
 
@@ -136,12 +136,12 @@ Start with [docs/mcp.md](./mcp.md) for the capability map and [docs/developer_gu
 
 ## Space Governance
 
-Think of Fileyard's runtime footprint as four primary rails, plus one infrastructure-only surface:
+Think of Fileorganize's runtime footprint as four primary rails, plus one infrastructure-only surface:
 
 - `repo-local residue`: checkout-local runtime noise such as `.runtime-cache`
-- `machine cache`: governed host-side caches under `~/.cache/fileyard`; in the container-first model this is the fallback lane, not the canonical runtime lane
-- `docker runtime`: the canonical container-first runtime surface, including `fileyard-ci:local`, named volumes, and repo-related build cache
-- `workspace evidence`: run bundles and durable artifacts under `<workspace-root>/.fileyard`
+- `machine cache`: governed host-side caches under `~/.cache/fileorganize`; in the container-first model this is the fallback lane, not the canonical runtime lane
+- `docker runtime`: the canonical container-first runtime surface, including `fileorganize-ci:local`, named volumes, and repo-related build cache
+- `workspace evidence`: run bundles and durable artifacts under `<workspace-root>/.fileorganize`
 - `shared runner workdir`: shared CI infrastructure workdirs outside single-repo ownership; this is infrastructure maintenance, not normal single-repo cleanup
 
 Use the cleanup entrypoint that matches the bucket you actually want to trim:
@@ -174,7 +174,7 @@ bash tooling/cleanup/prune_workspace_runtime.sh --dry-run
 
 Important boundary:
 
-- `bash tooling/runtime/runtime_reset.sh --confirm-workspace-reset` is **not** a routine cache cleanup. It prunes repo-local residue and then clears workspace `.fileyard` state.
+- `bash tooling/runtime/runtime_reset.sh --confirm-workspace-reset` is **not** a routine cache cleanup. It prunes repo-local residue and then clears workspace `.fileorganize` state.
 - `bash tooling/cleanup/prune_docker_runtime.sh --aggressive --include-image --include-volumes` is intentionally separate from routine cleanup because it can reclaim the current canonical Docker runtime surface.
 - `bash tooling/ci/prune_shared_runner_workdirs.sh --dry-run` is historical-only and no longer part of the active hosted-first operating model.
 
@@ -204,7 +204,7 @@ Important boundary:
 <!-- BEGIN GENERATED: script-readme-runtime-topology -->
 > Auto-generated: runtime services, default ports, runtime paths, and entrypoint facts live in [generated runtime topology](docs/reference/runtime_topology.generated.md).
 
-- **Compose services**: `fileyard-ci`, `fileyard-web-api`, `fileyard-webui`
+- **Compose services**: `fileorganize-ci`, `fileorganize-web-api`, `fileorganize-webui`
 - **Web API bind**: `loopback:18080`
 - **WebUI bind**: `loopback:5173`
 - **Persistent workspace docs alias**: `<workspace-root>`

@@ -232,8 +232,8 @@ def inspect_docker_runtime(repo_root: Path, contract_path: Path) -> dict[str, An
     contract = _load_yaml(contract_path)
     docker_contract = dict(contract.get("docker_runtime", {}))
     defaults = _read_defaults(repo_root)
-    compose_project = str(docker_contract.get("compose_project", "fileyard-web-stack"))
-    canonical_image = str(docker_contract.get("canonical_image", "fileyard-ci:local"))
+    compose_project = str(docker_contract.get("compose_project", "fileorganize-web-stack"))
+    canonical_image = str(docker_contract.get("canonical_image", "fileorganize-ci:local"))
     protected_volumes = [str(item) for item in docker_contract.get("protected_volumes", [])]
     optional_volumes = [str(item) for item in docker_contract.get("optional_volumes", [])]
 

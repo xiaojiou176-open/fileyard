@@ -85,7 +85,7 @@ bash tooling/gates/quality_gate.sh
 bash tooling/gates/pre_push_gate.sh
 bash tooling/gates/secret_scan.sh .
 bash tooling/docs/docs_smoke.sh --install-smoke
-~/.cache/fileyard/venv/default/bin/pre-commit install --hook-type pre-commit --hook-type pre-push --hook-type commit-msg
+~/.cache/fileorganize/venv/default/bin/pre-commit install --hook-type pre-commit --hook-type pre-push --hook-type commit-msg
 ```
 
 CI chain role notes:

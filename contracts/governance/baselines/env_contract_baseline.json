@@ -4,7 +4,7 @@
   "observed_business_envs": 23,
   "baseline_update_policy": "governance-cycle-only",
   "category_counts": {
-    "FILEYARD_": 17,
+    "FILEORGANIZE_": 17,
     "GEMINI_": 2,
     "LIVE_": 3,
     "CLEAN_CACHE_": 1,

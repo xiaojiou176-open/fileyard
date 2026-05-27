@@ -29,7 +29,7 @@ class WatchSource:
 
 
 def watch_source_path(workspace_root: str | Path) -> Path:
-    return Path(workspace_root).expanduser() / ".fileyard" / "preferences" / "watch_sources.json"
+    return Path(workspace_root).expanduser() / ".fileorganize" / "preferences" / "watch_sources.json"
 
 
 def load_watch_sources(workspace_root: str | Path) -> List[WatchSource]:

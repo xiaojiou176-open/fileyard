@@ -23,9 +23,9 @@ type NavItem = {
 
 function getDocumentMetadata(pathname: string): { title: string; description: string } {
   const fallback = {
-    title: 'Fileyard | Review-first local organizer',
+    title: 'Fileorganize | Review-first local organizer',
     description:
-      'Fileyard is a review-first local file organizer and workbench with AI-assisted planning, dry-run-first execution, and rollback-ready recovery.',
+      'Fileorganize is a review-first local file organizer and workbench with AI-assisted planning, dry-run-first execution, and rollback-ready recovery.',
   }
 
   if (pathname === '/') {
@@ -33,62 +33,62 @@ function getDocumentMetadata(pathname: string): { title: string; description: st
   }
   if (pathname.startsWith('/setup')) {
     return {
-      title: 'Setup | Fileyard',
+      title: 'Setup | Fileorganize',
       description: 'Configure workspace roots, runtime defaults, and review-safe settings before you start organizing batches.',
     }
   }
   if (pathname.startsWith('/jobs')) {
     return {
-      title: 'Jobs | Fileyard',
+      title: 'Jobs | Fileorganize',
       description: 'Inspect current analyze, apply, and rollback jobs inside the same review-first local workspace.',
     }
   }
   if (pathname.startsWith('/analyze')) {
     return {
-      title: 'Analyze | Fileyard',
+      title: 'Analyze | Fileorganize',
       description: 'Draft a manifest from a local batch, optionally with Strategy Pack defaults, before anything reaches Apply.',
     }
   }
   if (pathname.startsWith('/review')) {
     return {
-      title: 'Fileyard Review | Fileyard',
+      title: 'Fileorganize Review | Fileorganize',
       description: 'Review queue, collections, learned suggestions, and rule drafts all stay inside the approval layer before execution.',
     }
   }
   if (pathname.startsWith('/manifest')) {
     return {
-      title: 'Manifest Workbench | Fileyard',
+      title: 'Manifest Workbench | Fileorganize',
       description: 'Inspect and edit manifest rows in the local review workbench before dry-run or real apply.',
     }
   }
   if (pathname.startsWith('/conflicts')) {
     return {
-      title: 'Conflicts | Fileyard',
+      title: 'Conflicts | Fileorganize',
       description: 'Resolve duplicate targets and review conflicts without bypassing overlay-only and dry-run-first guardrails.',
     }
   }
   if (pathname.startsWith('/apply')) {
     return {
-      title: 'Apply | Fileyard',
+      title: 'Apply | Fileorganize',
       description: 'Queue and inspect deterministic apply jobs that start in dry-run mode and stay rollback-ready.',
     }
   }
   if (pathname.startsWith('/report')) {
     return {
-      title: 'Report | Fileyard',
+      title: 'Report | Fileorganize',
       description: 'Use the after-action board to inspect results and route back into the right Review focus instead of guessing what to fix next.',
     }
   }
   if (pathname.startsWith('/rollback')) {
     return {
-      title: 'Rollback | Fileyard',
+      title: 'Rollback | Fileorganize',
       description: 'Rollback stays bounded, deterministic, and auditable inside the same local-first workflow.',
     }
   }
   if (pathname.startsWith('/inbox')) {
     return {
-      title: 'Fileyard Inbox | Fileyard',
-      description: 'Scan intake batches, pick a Strategy Pack, and hand the batch into Analyze without turning Fileyard into an autonomous organizer.',
+      title: 'Fileorganize Inbox | Fileorganize',
+      description: 'Scan intake batches, pick a Strategy Pack, and hand the batch into Analyze without turning Fileorganize into an autonomous organizer.',
     }
   }
   return fallback
@@ -244,7 +244,7 @@ export function AppShell() {
                   <BriefcaseBusiness className="h-5 w-5" />
                 </div>
                 <div className="space-y-1">
-                  <p className="workspace-kicker">Movi</p>
+                  <p className="workspace-kicker">Fileorganize</p>
                   <p className="text-sm font-semibold tracking-[-0.02em] text-foreground">{t('appShell.brand.subtitle')}</p>
                 </div>
               </div>
@@ -402,7 +402,7 @@ export function AppShell() {
           </header>
 
           <main>
-            <h1 className="sr-only">Fileyard Review-First Workspace</h1>
+            <h1 className="sr-only">Fileorganize Review-First Workspace</h1>
             <Outlet />
           </main>
         </div>

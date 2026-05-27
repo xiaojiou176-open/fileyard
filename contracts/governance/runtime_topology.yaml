@@ -8,14 +8,14 @@ repo_runtime:
   test_dir: .runtime-cache/test
   build_dir: .runtime-cache/build
   codegen_dir: .runtime-cache/codegen
-  venv_dir: ~/.cache/fileyard/venv/default
+  venv_dir: ~/.cache/fileorganize/venv/default
   mutmut_cache_file: .runtime-cache/test/mutation/.mutmut-cache
-  webui_lock_hash_file: .runtime-cache/build/apps/webui/.movi_webui_lock_hash
+  webui_lock_hash_file: .runtime-cache/build/apps/webui/.fileorganize_webui_lock_hash
 workspace_runtime:
-  workspace_root: ~/.fileyard/workspaces/default
-  input_dir: ~/.fileyard/workspaces/default/data/raw
-  output_dir: ~/.fileyard/workspaces/default/data/organized
-  manifest_root: ~/.fileyard/workspaces/default/.fileyard/manifests
-  artifact_root: ~/.fileyard/workspaces/default/.fileyard/artifacts
-  evidence_bundle_path: ~/.fileyard/workspaces/default/.fileyard/artifacts/evidence-bundle.json
-  run_bundle_root: ~/.fileyard/workspaces/default/.fileyard/runs
+  workspace_root: ~/.fileorganize/workspaces/default
+  input_dir: ~/.fileorganize/workspaces/default/data/raw
+  output_dir: ~/.fileorganize/workspaces/default/data/organized
+  manifest_root: ~/.fileorganize/workspaces/default/.fileorganize/manifests
+  artifact_root: ~/.fileorganize/workspaces/default/.fileorganize/artifacts
+  evidence_bundle_path: ~/.fileorganize/workspaces/default/.fileorganize/artifacts/evidence-bundle.json
+  run_bundle_root: ~/.fileorganize/workspaces/default/.fileorganize/runs

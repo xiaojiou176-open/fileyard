@@ -50,12 +50,12 @@ _is_str_or_str_list = _cli_config_schema._is_str_or_str_list
 
 
 def _is_test_hooks_enabled() -> bool:
-    return os.environ.get("FILEYARD_ENABLE_TEST_HOOKS", "") == "1" or bool(os.environ.get("PYTEST_CURRENT_TEST", ""))
+    return os.environ.get("FILEORGANIZE_ENABLE_TEST_HOOKS", "") == "1" or bool(os.environ.get("PYTEST_CURRENT_TEST", ""))
 
 
 def _default_report_out() -> str:
-    workspace_root = Path(os.environ.get("FILEYARD_WORKSPACE_ROOT", "~/.fileyard/workspaces/default")).expanduser()
-    return str(workspace_root / ".fileyard" / "artifacts" / "report" / "report_summary.json")
+    workspace_root = Path(os.environ.get("FILEORGANIZE_WORKSPACE_ROOT", "~/.fileorganize/workspaces/default")).expanduser()
+    return str(workspace_root / ".fileorganize" / "artifacts" / "report" / "report_summary.json")
 
 
 DEFAULT_REPORT_OUT = _default_report_out()

@@ -14,7 +14,7 @@
     "tests/**/*",
     "tooling/scripts/*",
     "tooling/scripts/**/*",
-    "apps/cli/fileyard.py",
+    "apps/cli/fileorganize.py",
     "contracts/runtime/config.example.toml",
     ".github/workflows/*",
     ".github/workflows/**/*",

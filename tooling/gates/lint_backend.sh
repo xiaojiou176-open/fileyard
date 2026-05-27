@@ -19,7 +19,7 @@ if [ "${1:-}" = "--parallel" ]; then
   MODE="parallel"
 fi
 
-if [ "${FILEYARD_IN_CONTAINER:-0}" != "1" ] && [ "${FILEYARD_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
+if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ] && [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
   exec bash "$ROOT/scripts/container_exec.sh" --label lint-backend -- bash tooling/gates/lint_backend.sh "$@"
 fi
 

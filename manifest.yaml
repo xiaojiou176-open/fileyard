@@ -1,9 +1,9 @@
 version: 1
-id: fileyard
-technical_name: Movi
+id: fileorganize
+technical_name: Fileorganize
 status: listed_live
-canonical_repo: xiaojiou176-open/fileyard
-homepage: https://xiaojiou176-open.github.io/fileyard/
+canonical_repo: xiaojiou176-open/fileorganize
+homepage: https://xiaojiou176-open.github.io/fileorganize/
 current_release: v4.0.5
 published_surfaces:
   - github-repo

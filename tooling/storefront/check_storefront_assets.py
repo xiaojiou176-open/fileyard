@@ -7,10 +7,10 @@ import tempfile
 from pathlib import Path
 
 DEFAULT_ASSETS = (
-    "docs/assets/storefront/hero-fileyard-overview.svg",
-    "docs/assets/storefront/ten-second-tour-fileyard.svg",
-    "docs/assets/storefront/before-after-fileyard.svg",
-    "docs/assets/storefront/social-preview-fileyard.svg",
+    "docs/assets/storefront/hero-fileorganize-overview.svg",
+    "docs/assets/storefront/ten-second-tour-fileorganize.svg",
+    "docs/assets/storefront/before-after-fileorganize.svg",
+    "docs/assets/storefront/social-preview-fileorganize.svg",
 )
 
 
@@ -42,7 +42,7 @@ def main() -> int:
         out_dir = Path(args.out_dir).expanduser().resolve()
         out_dir.mkdir(parents=True, exist_ok=True)
     else:
-        out_dir = Path(tempfile.mkdtemp(prefix="fileyard-storefront-assets-"))
+        out_dir = Path(tempfile.mkdtemp(prefix="fileorganize-storefront-assets-"))
 
     print(f"render_root={out_dir}")
     for asset in assets:

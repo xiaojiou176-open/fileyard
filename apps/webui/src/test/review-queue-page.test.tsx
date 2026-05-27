@@ -197,8 +197,8 @@ describe('ReviewQueuePage', () => {
   it('renders copilot guidance, learned explainability, and bucket sections', async () => {
     renderPage()
 
-    expect(await screen.findByRole('heading', { name: 'Fileyard Review' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Fileyard Copilot v1' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Fileorganize Review' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Fileorganize Copilot v1' })).toBeInTheDocument()
     expect(screen.getByText('Review Copilot found 1 conflict, 1 human-review rows, 1 rule opportunity.')).toBeInTheDocument()
     expect(screen.getByText('Trip images may form a reusable rule')).toBeInTheDocument()
     expect(screen.getByText('Batch suggestions')).toBeInTheDocument()
@@ -282,15 +282,15 @@ describe('ReviewQueuePage', () => {
   })
 
   it('renders localized review workbench copy when locale switches to zh-CN', async () => {
-    window.localStorage.setItem('fileyard.locale', 'zh-CN')
+    window.localStorage.setItem('fileorganize.locale', 'zh-CN')
 
     renderPage()
 
-    expect(await screen.findByRole('heading', { name: 'Fileyard 审核台' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Fileorganize 审核台' })).toBeInTheDocument()
     await waitFor(() => {
       expect(screen.queryByRole('heading', { name: '正在加载 Review Queue' })).not.toBeInTheDocument()
     })
-    expect(await screen.findByRole('heading', { name: 'Fileyard Copilot v1' }, { timeout: 5000 })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Fileorganize Copilot v1' }, { timeout: 5000 })).toBeInTheDocument()
     expect(await screen.findByText('后端审核摘要')).toBeInTheDocument()
     expect(screen.getByText('批量分诊')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '清空示例' })).toBeInTheDocument()

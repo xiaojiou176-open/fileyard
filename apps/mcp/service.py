@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 from apps.api.web_api import create_app
 
 
-class MoviMcpError(RuntimeError):
+class FileorganizeMcpError(RuntimeError):
     """Raised when the MCP thin facade receives a non-2xx Web API response."""
 
 
@@ -22,12 +22,12 @@ def _extract_detail(payload: Any) -> str:
 
 
 @dataclass
-class MoviMcpApiFacade:
+class FileorganizeMcpApiFacade:
     """Thin in-process facade that reuses the current Web API contract."""
 
     _client: TestClient | None = None
 
-    def start(self) -> "MoviMcpApiFacade":
+    def start(self) -> "FileorganizeMcpApiFacade":
         if self._client is None:
             self._client = TestClient(create_app())
             self._client.__enter__()
@@ -66,7 +66,7 @@ class MoviMcpApiFacade:
         except Exception:
             detail = ""
         message = detail or f"{response.status_code} {response.reason_phrase}".strip()
-        raise MoviMcpError(message)
+        raise FileorganizeMcpError(message)
 
     def list_jobs(self, *, kind: str | None = None, status: str | None = None) -> dict[str, Any]:
         items = self.request_json("GET", "/api/jobs").get("items")
@@ -241,8 +241,8 @@ class MoviMcpApiFacade:
 
     def get_safety_boundary_text(self) -> str:
         return (
-            "# Fileyard MCP safety boundary\n\n"
-            "- Fileyard MCP is local-first and review-first.\n"
+            "# Fileorganize MCP safety boundary\n\n"
+            "- Fileorganize MCP is local-first and review-first.\n"
             "- Tools may inspect jobs, review queues, manifests, reports, strategy packs, and watch sources.\n"
             "- Safe write tools only patch the overlay or create draft/dry-run jobs.\n"
             "- MCP v1 does not expose `apply.execute`, direct file mutation shortcuts, or rollback creation.\n"
@@ -251,7 +251,7 @@ class MoviMcpApiFacade:
 
     def get_tool_matrix(self) -> dict[str, Any]:
         return {
-            "server": "Fileyard MCP",
+            "server": "Fileorganize MCP",
             "mode": "local-first stdio",
             "v1_scope": "safe thin facade",
             "tools": [

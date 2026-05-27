@@ -100,8 +100,8 @@ def _resolve_api_key(repo_root: Path) -> str:
     env_key = os.getenv("GEMINI_API_KEY", "").strip()
     if env_key:
         return env_key
-    workspace_root = Path(os.getenv("FILEYARD_WORKSPACE_ROOT", "~/.fileyard/workspaces/default")).expanduser()
-    return _read_dotenv_value(workspace_root / ".fileyard" / "env" / "runtime.env", "GEMINI_API_KEY")
+    workspace_root = Path(os.getenv("FILEORGANIZE_WORKSPACE_ROOT", "~/.fileorganize/workspaces/default")).expanduser()
+    return _read_dotenv_value(workspace_root / ".fileorganize" / "env" / "runtime.env", "GEMINI_API_KEY")
 
 
 def _candidate_files(repo_root: Path, filenames: list[str], max_files: int) -> list[Path]:

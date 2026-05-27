@@ -98,7 +98,7 @@ describe('ReportPage', () => {
     )
 
     expect(await screen.findByText('Report to Review Loop')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Review conflicts in Fileyard Review' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Review conflicts in Fileorganize Review' })).toHaveAttribute(
       'href',
       '/review/job-1?from=report&bucket=conflict',
     )
@@ -113,7 +113,7 @@ describe('ReportPage', () => {
   })
 
   it('renders localized report copy when the locale is switched to zh-CN', async () => {
-    window.localStorage.setItem('fileyard.locale', 'zh-CN')
+    window.localStorage.setItem('fileorganize.locale', 'zh-CN')
 
     render(
       <MemoryRouter initialEntries={['/report/job-1']}>

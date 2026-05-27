@@ -51,7 +51,7 @@ def install_apply_changes_test_compat() -> None:
             return path_norm == root_norm or path_norm.startswith(root_norm + os.sep)
         except Exception as exc:  # pragma: no cover - tests-only compatibility
             compat.log_event(
-                compat.logging.getLogger("fileyard"),
+                compat.logging.getLogger("fileorganize"),
                 compat.logging.WARNING,
                 "path_boundary_check_failed",
                 "Path boundary check failed during canonicalization",
@@ -63,7 +63,7 @@ def install_apply_changes_test_compat() -> None:
             return False
 
     def _resolve_apply_crash_inject(args):
-        raw = str(getattr(args, "crash_inject", "") or os.environ.get("FILEYARD_APPLY_CRASH_AT", "")).strip()
+        raw = str(getattr(args, "crash_inject", "") or os.environ.get("FILEORGANIZE_APPLY_CRASH_AT", "")).strip()
         crash = raw.lower().replace("-", "_")
         if not crash:
             return ""

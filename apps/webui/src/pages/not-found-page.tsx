@@ -14,7 +14,7 @@ export function NotFoundPage() {
           <CardTitle>Page not found</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">This route is not assigned to an Fileyard WebUI workflow yet.</p>
+          <p className="text-sm text-muted-foreground">This route is not assigned to an Fileorganize WebUI workflow yet.</p>
           <Button asChild>
             <Link {...homePrefetch} to="/">
               Back to home

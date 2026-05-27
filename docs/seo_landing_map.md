@@ -1,4 +1,4 @@
-# Fileyard SEO Landing Map
+# Fileorganize SEO Landing Map
 
 This file maps high-intent search language to the current docs surface and future landing opportunities.
 
@@ -8,7 +8,7 @@ The goal is simple: attract people who already want a safer file-organization wo
 
 Current public surfaces should consistently reinforce this sentence:
 
-> **Fileyard is a review-first local file organizer and workbench with AI-assisted planning, dry-run execution, and rollback-ready recovery.**
+> **Fileorganize is a review-first local file organizer and workbench with AI-assisted planning, dry-run execution, and rollback-ready recovery.**
 
 ## High-Intent Keywords
 
@@ -51,7 +51,7 @@ These terms either over-promise or attract the wrong audience for the current pr
 | `README.md` | front-door overview, product promise, fast trust check |
 | `docs/index.md` | docs landing page for review-first value and navigation |
 | `docs/usage.md` | operator-intent landing page for commands and workflow truth |
-| `docs/review_first_ai_file_organizer.md` | high-intent landing page for people comparing Fileyard against zero-review AI organizers |
+| `docs/review_first_ai_file_organizer.md` | high-intent landing page for people comparing Fileorganize against zero-review AI organizers |
 | `docs/photo_organizer.md` | use-case landing page for photo-heavy search intent |
 | `docs/screenshot_organizer.md` | use-case landing page for screenshot-heavy search intent |
 | `docs/receipt_organizer.md` | use-case landing page for receipt-heavy search intent |
@@ -68,17 +68,17 @@ These are valid future landing topics, but they should not be marketed as fully 
 
 | Future landing | Purpose | Status |
 | :-- | :-- | :-- |
-| `Fileyard Review` | explain review queue, triage, and human approval flow | current surface name, future dedicated landing |
-| `Fileyard Rules` | explain reusable rules and rule drafting | current surface name, future dedicated landing |
-| `Fileyard Inbox` | explain intake/watch-source workflow | current surface name, future dedicated landing |
-| `Fileyard Copilot` | explain review-only AI guidance, batch triage, and draft generation | current review-only surface |
-| `Fileyard MCP` | explain deeper agent workflows or future broader integration layers beyond v1 | current v1 exists; broader surface can expand later |
+| `Fileorganize Review` | explain review queue, triage, and human approval flow | current surface name, future dedicated landing |
+| `Fileorganize Rules` | explain reusable rules and rule drafting | current surface name, future dedicated landing |
+| `Fileorganize Inbox` | explain intake/watch-source workflow | current surface name, future dedicated landing |
+| `Fileorganize Copilot` | explain review-only AI guidance, batch triage, and draft generation | current review-only surface |
+| `Fileorganize MCP` | explain deeper agent workflows or future broader integration layers beyond v1 | current v1 exists; broader surface can expand later |
 
 ## Practical Copy Rules
 
 - Put `review-first`, `local-first`, `dry-run`, and `rollback-ready` near the top of every front-door surface.
 - Use `AI-assisted` when the user benefit is real, but pair it with the review boundary in the same paragraph.
-- Treat `Fileyard MCP v1` as a current extension surface, but not as the main headline that replaces the core review-first story.
+- Treat `Fileorganize MCP v1` as a current extension surface, but not as the main headline that replaces the core review-first story.
 - Treat `Codex` and `Claude Code` as current integration hooks only where the MCP surface already proves the claim.
 - Keep `OpenHands`, `OpenCode`, and `OpenClaw` out of the main hero unless the repo ships a stronger first-party integration surface.
 - Prefer concrete workflow nouns like `review queue`, `manifest`, `dry-run apply`, and `rollback` over generic AI slogans.

@@ -1,15 +1,15 @@
 ---
-title: Local Photo Organizer With Review-First AI Assistance | Fileyard
-description: Use Fileyard as a local photo organizer when you want AI-assisted planning, human review, dry-run safety, and rollback-ready recovery.
+title: Local Photo Organizer With Review-First AI Assistance | Fileorganize
+description: Use Fileorganize as a local photo organizer when you want AI-assisted planning, human review, dry-run safety, and rollback-ready recovery.
 ---
 
 ## Local Photo Organizer With Review-First AI Assistance
 
-Most photo organizers ask you to choose between two bad options: manual cleanup that takes forever, or automatic file mutation that starts moving images before you trust the plan.
+Most photo organizers ask you to choose between two bad options: manual cleanup that takes forever, or automatic file mutation that starts fileorganizeng images before you trust the plan.
 
-Fileyard is for the middle ground.
+Fileorganize is for the middle ground.
 
-## Why Fileyard Fits Photo Work
+## Why Fileorganize Fits Photo Work
 
 - Analyze drafts a manifest before files move
 - Review Queue lets you inspect the proposal first
@@ -32,4 +32,4 @@ Fileyard is for the middle ground.
 
 - [Quickstart](./quickstart.md)
 - [Operator Guide](./usage.md)
-- [Fileyard MCP v1](./mcp.md)
+- [Fileorganize MCP v1](./mcp.md)

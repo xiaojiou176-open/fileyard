@@ -1,16 +1,16 @@
-# Fileyard Public Proof
+# Fileorganize Public Proof
 
-This page is the outsider-facing proof map for Fileyard.
+This page is the outsider-facing proof map for Fileorganize.
 
-In plain language: it tells a first-time visitor what Fileyard already proves in public, where to click for live evidence, and what Fileyard still does **not** claim yet.
+In plain language: it tells a first-time visitor what Fileorganize already proves in public, where to click for live evidence, and what Fileorganize still does **not** claim yet.
 
-## What Fileyard Publicly Proves Today
+## What Fileorganize Publicly Proves Today
 
-- **The core story is real**: Fileyard ships a review-first local file organizer and workbench, not just a future concept.
+- **The core story is real**: Fileorganize ships a review-first local file organizer and workbench, not just a future concept.
 - **The safe path is real**: the repo contains a fixture-backed first-look route that goes `analyze -> manifest -> dry-run apply` without touching real folders by default.
-- **The public release surface is real**: Fileyard publishes a live source repo and release trail on GitHub.
+- **The public release surface is real**: Fileorganize publishes a live source repo and release trail on GitHub.
 - **The browser surface is real**: the GitHub Pages front door is already live.
-- **The agent surface is real, but secondary**: `Fileyard MCP v1` exists as a local-first stdio extension surface, but it is not the main product claim.
+- **The agent surface is real, but secondary**: `Fileorganize MCP v1` exists as a local-first stdio extension surface, but it is not the main product claim.
 
 ## Live Proof Routes
 
@@ -18,17 +18,17 @@ Use these routes when you want current public evidence instead of marketing pros
 
 | What you want to verify | Live route |
 | :-- | :-- |
-| Public source repo | [GitHub repository](https://github.com/xiaojiou176-open/fileyard) |
-| Public release trail | [GitHub Releases](https://github.com/xiaojiou176-open/fileyard/releases) |
-| Public front door | [GitHub Pages site](https://xiaojiou176-open.github.io/fileyard/) |
+| Public source repo | [GitHub repository](https://github.com/xiaojiou176-open/fileorganize) |
+| Public release trail | [GitHub Releases](https://github.com/xiaojiou176-open/fileorganize/releases) |
+| Public front door | [GitHub Pages site](https://xiaojiou176-open.github.io/fileorganize/) |
 | Current docs landing page | [docs/index.md](./index.md) |
 | Safe first-look workflow | [Quickstart](./quickstart.md) |
 | Review-first operator contract | [README.md](../README.md) and [Operator Guide](./usage.md) |
-| Agent/developer extension surface | [Fileyard MCP v1](./mcp.md) |
+| Agent/developer extension surface | [Fileorganize MCP v1](./mcp.md) |
 
-## What Fileyard Does Not Claim Yet
+## What Fileorganize Does Not Claim Yet
 
-Fileyard is intentionally explicit about the boundaries it has **not** crossed yet:
+Fileorganize is intentionally explicit about the boundaries it has **not** crossed yet:
 
 - not a hosted SaaS
 - not a zero-review automatic organizer
@@ -49,7 +49,7 @@ The current proof posture is best understood in three layers:
 
 ## Why This Page Exists
 
-Fileyard already had a lot of serious engineering proof, but too much of it was hidden in operator docs and workflow files.
+Fileorganize already had a lot of serious engineering proof, but too much of it was hidden in operator docs and workflow files.
 
 This page exists so the front door can answer three normal outsider questions faster:
 

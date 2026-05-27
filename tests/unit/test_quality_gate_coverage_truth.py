@@ -26,7 +26,7 @@ def test_quality_gate_writes_coverage_xml_only_from_full_non_live_suite() -> Non
         "run_step_with_heartbeat \\\n"
         "  pytest \\\n"
         "  run_pytest_with_isolated_tmp \\\n"
-        "  env -u PRE_COMMIT_FROM_REF -u PRE_COMMIT_TO_REF FILEYARD_RUN_LIVE_TESTS=0"
+        "  env -u PRE_COMMIT_FROM_REF -u PRE_COMMIT_TO_REF FILEORGANIZE_RUN_LIVE_TESTS=0"
     )
     threshold_step = 'run_step coverage-threshold "$VENV/bin/python" "$ROOT/scripts/check_coverage_thresholds.py"'
 

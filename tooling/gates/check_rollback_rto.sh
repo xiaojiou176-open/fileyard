@@ -12,7 +12,7 @@ load_governance_defaults "$REPO_ROOT"
 apply_runtime_env_defaults "$REPO_ROOT"
 VENV="$(governance_runtime_venv_path "$REPO_ROOT")"
 
-if [ "${FILEYARD_IN_CONTAINER:-0}" != "1" ] && [ "${FILEYARD_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
+if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ] && [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
   exec bash "$ROOT/scripts/container_exec.sh" --label rollback-rto -- bash tooling/gates/check_rollback_rto.sh "$@"
 fi
 
@@ -21,7 +21,7 @@ if [ ! -x "$VENV/bin/python" ]; then
   exit 1
 fi
 
-BUDGET_MS="${FILEYARD_ROLLBACK_RTO_BUDGET_MS:-3000}"
+BUDGET_MS="${FILEORGANIZE_ROLLBACK_RTO_BUDGET_MS:-3000}"
 SUMMARY_PATH="$(governance_runtime_logs_path "$REPO_ROOT")/rollback-rto-baseline.json"
 
 while [ "$#" -gt 0 ]; do
@@ -43,7 +43,7 @@ done
 
 mkdir -p "$(dirname "$SUMMARY_PATH")"
 
-"$VENV/bin/python" - "$REPO_ROOT" "$VENV/bin/python" "$REPO_ROOT/apps/cli/fileyard.py" "$BUDGET_MS" "$SUMMARY_PATH" <<'PY'
+"$VENV/bin/python" - "$REPO_ROOT" "$VENV/bin/python" "$REPO_ROOT/apps/cli/fileorganize.py" "$BUDGET_MS" "$SUMMARY_PATH" <<'PY'
 import json
 import os
 import subprocess
@@ -79,15 +79,15 @@ with tempfile.TemporaryDirectory(prefix="rollback-rto-", dir=str(runtime_temp_ro
         "media_type": "image",
         "run_id": run_id,
     }
-    old_key = os.environ.get("FILEYARD_ROLLBACK_HMAC_KEY")
-    os.environ["FILEYARD_ROLLBACK_HMAC_KEY"] = hmac_key
+    old_key = os.environ.get("FILEORGANIZE_ROLLBACK_HMAC_KEY")
+    os.environ["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = hmac_key
     try:
         row["rollback_sig"] = _sign_rollback_record(row, run_id)
     finally:
         if old_key is None:
-            os.environ.pop("FILEYARD_ROLLBACK_HMAC_KEY", None)
+            os.environ.pop("FILEORGANIZE_ROLLBACK_HMAC_KEY", None)
         else:
-            os.environ["FILEYARD_ROLLBACK_HMAC_KEY"] = old_key
+            os.environ["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = old_key
 
     manifest = root / "manifest.jsonl"
     manifest.write_text(json.dumps(row, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -105,7 +105,7 @@ with tempfile.TemporaryDirectory(prefix="rollback-rto-", dir=str(runtime_temp_ro
         "--overwrite",
     ]
     env = os.environ.copy()
-    env["FILEYARD_ROLLBACK_HMAC_KEY"] = hmac_key
+    env["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = hmac_key
     started = time.monotonic()
     proc = subprocess.run(cmd, cwd=str(repo_root), env=env, capture_output=True, text=True)
     elapsed_ms = int((time.monotonic() - started) * 1000)
@@ -115,7 +115,7 @@ summary = {
     "budget_ms": budget_ms,
     "actual_ms": elapsed_ms,
     "status": "pass" if elapsed_ms <= budget_ms and proc.returncode == 0 else "fail",
-    "command": "fileyard.py rollback --strict-integrity --dry-run --allowed-root <tmp>",
+    "command": "fileorganize.py rollback --strict-integrity --dry-run --allowed-root <tmp>",
 }
 summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 print(json.dumps(summary, ensure_ascii=False))

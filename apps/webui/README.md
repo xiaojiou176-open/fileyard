@@ -1,6 +1,6 @@
-# Fileyard WebUI
+# Fileorganize WebUI
 
-Web front-end for Fileyard, built with React + TypeScript + Vite.
+Web front-end for Fileorganize, built with React + TypeScript + Vite.
 
 ## Product Flow
 

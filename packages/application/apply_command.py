@@ -79,7 +79,7 @@ _verify_rollback_record = _rollback_integrity._verify_rollback_record
 
 
 def _is_test_hooks_enabled() -> bool:
-    return os.environ.get("FILEYARD_ENABLE_TEST_HOOKS", "") == "1" or bool(os.environ.get("PYTEST_CURRENT_TEST", ""))
+    return os.environ.get("FILEORGANIZE_ENABLE_TEST_HOOKS", "") == "1" or bool(os.environ.get("PYTEST_CURRENT_TEST", ""))
 
 
 def _resolve_apply_crash_inject(args) -> str:
@@ -298,7 +298,7 @@ def cmd_apply(args: argparse.Namespace) -> None:
         with open_jsonl_writer(partial_manifest) as fh, rollback_cm as rollback_fh:
             _write_apply_wal(
                 wal_marker,
-                phase="moving",
+                phase="fileorganizeng",
                 run_id=run_id,
                 out_manifest=out_manifest,
                 partial_manifest=partial_manifest,

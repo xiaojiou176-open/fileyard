@@ -67,7 +67,7 @@ def build_parser(
     handlers: Mapping[str, Any],
     default_report_out: str,
 ) -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser("fileyard")
+    parser = argparse.ArgumentParser("fileorganize")
     parser.add_argument("--config", default=config_path, help="Config file (.toml/.yaml/.json)")
     parser.add_argument(
         "--log-level",
@@ -98,7 +98,7 @@ def build_parser(
     pa.add_argument(
         "--input",
         default=str(cfg_value("analyze", "input", DEFAULT_INPUT_DIR)),
-        help="Input folder (default: ~/.fileyard/workspaces/default/data/raw)",
+        help="Input folder (default: ~/.fileorganize/workspaces/default/data/raw)",
     )
     pa.add_argument("--manifest", default=cfg_value("analyze", "manifest", ""), help="Output manifest .jsonl")
     pa.add_argument("--csv", default=cfg_value("analyze", "csv", ""), help="Optional CSV output path")

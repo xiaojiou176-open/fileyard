@@ -110,9 +110,9 @@ def acquire_file_lock(lock_path: Path, stale_after_s: int = 1800) -> int:
                 try:
                     fd = os.open(str(lock_path), flags, 0o644)
                 except FileExistsError as race_exc:
-                    raise RuntimeError(f"Another Fileyard task is already running; lock file exists: {lock_path}") from race_exc
+                    raise RuntimeError(f"Another Fileorganize task is already running; lock file exists: {lock_path}") from race_exc
             else:
-                raise RuntimeError(f"Another Fileyard task is already running; lock file exists: {lock_path}") from exc
+                raise RuntimeError(f"Another Fileorganize task is already running; lock file exists: {lock_path}") from exc
         else:
             stale = False
             try:
@@ -126,9 +126,9 @@ def acquire_file_lock(lock_path: Path, stale_after_s: int = 1800) -> int:
                 try:
                     fd = os.open(str(lock_path), flags, 0o644)
                 except FileExistsError as race_exc:
-                    raise RuntimeError(f"Another Fileyard task is already running; lock file exists: {lock_path}") from race_exc
+                    raise RuntimeError(f"Another Fileorganize task is already running; lock file exists: {lock_path}") from race_exc
             else:
-                raise RuntimeError(f"Another Fileyard task is already running; lock file exists: {lock_path}") from exc
+                raise RuntimeError(f"Another Fileorganize task is already running; lock file exists: {lock_path}") from exc
     payload = {
         "pid": os.getpid(),
         "ts": dt.datetime.now(dt.timezone.utc).timestamp(),

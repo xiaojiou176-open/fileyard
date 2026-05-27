@@ -49,7 +49,7 @@ def resolve_apply_crash_inject(
     is_test_hooks_enabled_fn: Callable[[], bool],
 ) -> str:
     test_mode = is_test_hooks_enabled_fn()
-    raw = str(getattr(args, "crash_inject", "") or os.environ.get("FILEYARD_APPLY_CRASH_AT", "")).strip()
+    raw = str(getattr(args, "crash_inject", "") or os.environ.get("FILEORGANIZE_APPLY_CRASH_AT", "")).strip()
     crash = raw.lower().replace("-", "_")
     if not crash:
         return ""

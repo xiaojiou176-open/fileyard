@@ -9,7 +9,7 @@ def test_full_pipeline_offline(tmp_path: Path):
     repo_root = Path(__file__).resolve().parents[2]
     venv_python = repo_root / ".runtime-cache" / "venv" / "default" / "bin" / "python"
     python_bin = venv_python if venv_python.exists() else Path(sys.executable)
-    entry = repo_root / "apps" / "cli" / "fileyard.py"
+    entry = repo_root / "apps" / "cli" / "fileorganize.py"
 
     input_dir = tmp_path / "input"
     output_dir = tmp_path / "output"
@@ -54,7 +54,7 @@ def test_full_pipeline_offline(tmp_path: Path):
         "none",
     ]
     env = os.environ.copy()
-    env["FILEYARD_ROLLBACK_HMAC_KEY"] = "e2e-test-rollback-key"
+    env["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = "e2e-test-rollback-key"
     subprocess.run(apply_cmd, check=True, cwd=str(repo_root), env=env)
 
     rows = [json.loads(line) for line in manifest.read_text(encoding="utf-8").splitlines() if line.strip()]

@@ -19,7 +19,7 @@ def _is_within_root(path: Path, root: Path) -> bool:
     except Exception as exc:
         # Fail-closed: if canonicalization fails, treat as outside the root.
         log_event(
-            logging.getLogger("fileyard"),
+            logging.getLogger("fileorganize"),
             logging.WARNING,
             "path_boundary_check_failed",
             "Path boundary check failed during canonicalization",

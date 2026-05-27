@@ -25,11 +25,11 @@ if ! bash tooling/scripts/check_runner_capabilities.sh; then
 fi
 governance_python "$REPO_ROOT" tooling/scripts/check_runner_inventory.py --mock
 bash tooling/runtime/run_webui_task.sh ci-install
-FILEYARD_ALLOW_HOST_EXECUTION=1 LINT_FRONTEND_SKIP_GEMINI_AUDIT=1 bash tooling/gates/lint_frontend.sh
+FILEORGANIZE_ALLOW_HOST_EXECUTION=1 LINT_FRONTEND_SKIP_GEMINI_AUDIT=1 bash tooling/gates/lint_frontend.sh
 bash tooling/runtime/run_webui_task.sh test
 bash tooling/runtime/run_webui_task.sh build
 bash tooling/gates/local_ci_matrix_gate.sh
-FILEYARD_ALLOW_HOST_EXECUTION=1 bash tooling/gates/functional_gate.sh
+FILEORGANIZE_ALLOW_HOST_EXECUTION=1 bash tooling/gates/functional_gate.sh
 bash tooling/docs/docs_smoke.sh --install-smoke
 bash tooling/cleanup/prune_repo_runtime.sh
 governance_python "$REPO_ROOT" tooling/scripts/check_ci_workflow_hardening.py --workflow .github/workflows/ci.yml | tee .runtime-cache/logs/ci-hardening.local.log

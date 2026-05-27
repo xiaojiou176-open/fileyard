@@ -1,6 +1,6 @@
 version: 1
 assets:
-  - path: apps/webui/public/fileyard-mark.svg
+  - path: apps/webui/public/fileorganize-mark.svg
     kind: public-brand-asset
     status: repository-authored
     license: MIT

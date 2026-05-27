@@ -159,11 +159,11 @@ def _wait_job(client: TestClient, job_id: str, timeout_s: float = 20.0) -> dict[
 def _prepare_env(monkeypatch, tmp_path: Path) -> None:
     repo = tmp_path / "repo"
     workspace = tmp_path / "workspace"
-    artifacts = workspace / ".fileyard" / "artifacts"
-    manifests = workspace / ".fileyard" / "manifests"
+    artifacts = workspace / ".fileorganize" / "artifacts"
+    manifests = workspace / ".fileorganize" / "manifests"
     input_root = workspace / "data" / "raw"
     output_root = workspace / "data" / "organized"
-    cli_entrypoint = repo / "apps" / "cli" / "fileyard.py"
+    cli_entrypoint = repo / "apps" / "cli" / "fileorganize.py"
     frontend_dist = repo / ".runtime-cache" / "apps" / "webui" / "build"
     cli_entrypoint.parent.mkdir(parents=True, exist_ok=True)
     cli_entrypoint.write_text("# test fixture entrypoint\n", encoding="utf-8")
@@ -175,7 +175,7 @@ def _prepare_env(monkeypatch, tmp_path: Path) -> None:
     (artifacts / "web_api" / "jobs").mkdir(parents=True, exist_ok=True)
     (artifacts / "web_api" / "uploads").mkdir(parents=True, exist_ok=True)
     (artifacts / "web_api" / "preferences").mkdir(parents=True, exist_ok=True)
-    (workspace / ".fileyard" / "preferences").mkdir(parents=True, exist_ok=True)
+    (workspace / ".fileorganize" / "preferences").mkdir(parents=True, exist_ok=True)
 
     monkeypatch.setattr(web_api, "REPO_ROOT", repo)
     monkeypatch.setattr(web_api, "CLI_ENTRYPOINT", cli_entrypoint)
@@ -183,7 +183,7 @@ def _prepare_env(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr(web_api, "WEB_ARTIFACT_ROOT", artifacts / "web_api")
     monkeypatch.setattr(web_api, "WEB_JOB_ROOT", artifacts / "web_api" / "jobs")
     monkeypatch.setattr(web_api, "WEB_UPLOAD_ROOT", artifacts / "web_api" / "uploads")
-    monkeypatch.setattr(web_api, "PREFERENCE_ROOT", workspace / ".fileyard" / "preferences")
+    monkeypatch.setattr(web_api, "PREFERENCE_ROOT", workspace / ".fileorganize" / "preferences")
     monkeypatch.setattr(web_api, "MANIFEST_ROOT", manifests)
     monkeypatch.setattr(web_api, "REPORT_ROOT", artifacts / "report")
     monkeypatch.setattr(web_api, "ROLLBACK_ROOT", artifacts / "rollback")
@@ -191,7 +191,7 @@ def _prepare_env(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr(web_api, "DEFAULT_INPUT_ROOT", input_root)
     monkeypatch.setattr(web_api, "DEFAULT_ALLOWED_ROOT", f"{input_root},{output_root}")
     monkeypatch.setattr(web_api, "FRONTEND_DIST_ROOT", frontend_dist)
-    monkeypatch.setenv("FILEYARD_ROLLBACK_HMAC_KEY", "unit-test-web-api-hmac-key")
+    monkeypatch.setenv("FILEORGANIZE_ROLLBACK_HMAC_KEY", "unit-test-web-api-hmac-key")
 
 
 def test_analyze_directory_and_read_manifest_report(monkeypatch, tmp_path: Path):
@@ -627,8 +627,8 @@ def test_runtime_settings_roundtrip(monkeypatch, tmp_path: Path):
     env_path = Path(payload["runtime_env_path"])
     rendered = env_path.read_text(encoding="utf-8")
     assert "GEMINI_API_KEY=live-key-for-runtime-roundtrip-12345" in rendered
-    assert f"FILEYARD_INPUT_ROOT={new_input.resolve()}" in rendered
-    assert f"FILEYARD_OUTPUT_ROOT={new_output.resolve()}" in rendered
+    assert f"FILEORGANIZE_INPUT_ROOT={new_input.resolve()}" in rendered
+    assert f"FILEORGANIZE_OUTPUT_ROOT={new_output.resolve()}" in rendered
 
     validated = client.post("/api/preferences/runtime/validate")
     assert validated.status_code == 200
@@ -1163,7 +1163,7 @@ def test_rollback_accepts_webui_fields(monkeypatch, tmp_path: Path):
 
 def test_rollback_strict_integrity_missing_key_fails_before_enqueue(monkeypatch, tmp_path: Path):
     _prepare_env(monkeypatch, tmp_path)
-    monkeypatch.delenv("FILEYARD_ROLLBACK_HMAC_KEY", raising=False)
+    monkeypatch.delenv("FILEORGANIZE_ROLLBACK_HMAC_KEY", raising=False)
     app = web_api.create_app(command_executor=_fake_executor)
     client = TestClient(app)
 
@@ -1192,13 +1192,13 @@ def test_rollback_strict_integrity_missing_key_fails_before_enqueue(monkeypatch,
         },
     )
     assert rollback_resp.status_code == 400
-    assert rollback_resp.json()["detail"] == "strict_integrity=true requires FILEYARD_ROLLBACK_HMAC_KEY"
+    assert rollback_resp.json()["detail"] == "strict_integrity=true requires FILEORGANIZE_ROLLBACK_HMAC_KEY"
     assert len(client.get("/api/jobs").json()) == jobs_before
 
 
 def test_rollback_non_strict_emits_integrity_relaxed_warning(monkeypatch, tmp_path: Path):
     _prepare_env(monkeypatch, tmp_path)
-    monkeypatch.delenv("FILEYARD_ROLLBACK_HMAC_KEY", raising=False)
+    monkeypatch.delenv("FILEORGANIZE_ROLLBACK_HMAC_KEY", raising=False)
     app = web_api.create_app(command_executor=_fake_executor)
     client = TestClient(app)
 
@@ -1364,7 +1364,7 @@ def test_web_api_validation_errors_and_static_hosting(monkeypatch, tmp_path: Pat
 
     invalid_mode = client.post(
         "/api/jobs/analyze",
-        data={"input_mode": "weird", "input_directory": "~/.fileyard/workspaces/default/data/raw"},
+        data={"input_mode": "weird", "input_directory": "~/.fileorganize/workspaces/default/data/raw"},
     )
     assert invalid_mode.status_code == 400
 

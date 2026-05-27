@@ -2,16 +2,16 @@
   <img src="https://em-content.zobj.net/source/apple/391/file-folder_1f4c1.png" width="120" alt="file folder" />
 </p>
 
-<h1 align="center">fileyard</h1>
+<h1 align="center">fileorganize</h1>
 
 <p align="center">
   <strong>messy folders in, organized library out</strong>
 </p>
 
 <p align="center">
-  <a href="https://github.com/xiaojiou176-open/fileyard/stargazers"><img src="https://img.shields.io/github/stars/xiaojiou176-open/fileyard?style=flat&color=yellow" alt="Stars"></a>
-  <a href="https://github.com/xiaojiou176-open/fileyard/commits/main"><img src="https://img.shields.io/github/last-commit/xiaojiou176-open/fileyard?style=flat" alt="Last Commit"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/xiaojiou176-open/fileyard?style=flat" alt="License"></a>
+  <a href="https://github.com/xiaojiou176-open/fileorganize/stargazers"><img src="https://img.shields.io/github/stars/xiaojiou176-open/fileorganize?style=flat&color=yellow" alt="Stars"></a>
+  <a href="https://github.com/xiaojiou176-open/fileorganize/commits/main"><img src="https://img.shields.io/github/last-commit/xiaojiou176-open/fileorganize?style=flat" alt="Last Commit"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/xiaojiou176-open/fileorganize?style=flat" alt="License"></a>
 </p>
 
 <p align="center">
@@ -23,7 +23,7 @@
 
 ---
 
-fileyard is a local-first file organizer. Drop a messy folder. Get a manifest, a plan, and a one-click apply. Your originals never move until you say so.
+fileorganize is a local-first file organizer. Drop a messy folder. Get a manifest, a plan, and a one-click apply. Your originals never move until you say so.
 
 ```
 ┌──────────────────────────────────────┐
@@ -41,9 +41,9 @@ fileyard is a local-first file organizer. Drop a messy folder. Get a manifest, a
 
 | Surface | What |
 |---|---|
-| `fileyard cli` | Scan, plan, manifest. Apply only when you nod. |
-| `fileyard webui` | Browse the plan. Approve, edit, or send back for another pass. |
-| `fileyard mcp` | Same engine, exposed as an MCP server for any agent. |
+| `fileorganize cli` | Scan, plan, manifest. Apply only when you nod. |
+| `fileorganize webui` | Browse the plan. Approve, edit, or send back for another pass. |
+| `fileorganize mcp` | Same engine, exposed as an MCP server for any agent. |
 | `contracts & manifest` | Plans are diffable. Plans are reviewable. Plans are receipts. |
 | `public skills` | Drop into Claude/Codex/OpenClaw. Hand it a folder. Get a library. |
 
@@ -53,14 +53,14 @@ fileyard is a local-first file organizer. Drop a messy folder. Get a manifest, a
 ## Install
 
 ```bash
-git clone https://github.com/xiaojiou176-open/fileyard.git
-cd fileyard
+git clone https://github.com/xiaojiou176-open/fileorganize.git
+cd fileorganize
 # follow the per-stack quickstart in INSTALL.md or docs/
 ```
 
 Three commands. No `curl | sh`. No login. Read what you run.
 
-Install break? Open your favorite agent and say *"Read AGENTS.md and bootstrap fileyard for me."* Agent fix own brain. Long version: [`docs/`](./docs/).
+Install break? Open your favorite agent and say *"Read AGENTS.md and bootstrap fileorganize for me."* Agent fix own brain. Long version: [`docs/`](./docs/).
 
 ## How It Work
 
@@ -69,7 +69,7 @@ The repo is seven layers — exactly the seven commits in `git log`. New work go
 | Layer | What |
 |---|---|
 | `chore: scaffold` | License, governance, hygiene gates, CI scaffolding. |
-| `feat(core)` | The primary engine. The reason fileyard exists. |
+| `feat(core)` | The primary engine. The reason fileorganize exists. |
 | `feat(modules)` | Packages, adapters, services, plugins. The second floor. |
 | `feat(contracts)` | Schemas, configs, public boundaries. Other code talks here. |
 | `test:` | Receipts. Everything in this layer must run. |
@@ -80,7 +80,7 @@ The repo is seven layers — exactly the seven commits in `git log`. New work go
 
 ## Ecosystem
 
-fileyard lives in the **yard family**: seven yards. one philosophy: structured input, structured output, structured proof.
+fileorganize lives in the **yard family**: seven yards. one philosophy: structured input, structured output, structured proof.
 
 | Repo | What |
 |---|---|
@@ -89,7 +89,7 @@ fileyard lives in the **yard family**: seven yards. one philosophy: structured i
 | [**noteyard**](https://github.com/xiaojiou176-open/noteyard) | your Apple Notes never really die |
 | [**dealyard**](https://github.com/xiaojiou176-open/dealyard) | let prices fight, you sit and watch |
 | [**docyard**](https://github.com/xiaojiou176-open/docyard) | docs site in, markdown out, no scraping by hand |
-| [**fileyard**](https://github.com/xiaojiou176-open/fileyard) *(you here)* | messy folders in, organized library out |
+| [**fileorganize**](https://github.com/xiaojiou176-open/fileorganize) *(you here)* | messy folders in, organized library out |
 | [**proofyard**](https://github.com/xiaojiou176-open/proofyard) | every claim ships with its receipt |
 
 Cross-family taste:
@@ -100,9 +100,9 @@ Cross-family taste:
 
 ## Star This Repo
 
-If fileyard saves you a click, an hour, or a headache — star costs zero. Fair trade. ⭐
+If fileorganize saves you a click, an hour, or a headache — star costs zero. Fair trade. ⭐
 
-[![Star History Chart](https://api.star-history.com/svg?repos=xiaojiou176-open/fileyard&type=Date)](https://star-history.com/#xiaojiou176-open/fileyard&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=xiaojiou176-open/fileorganize&type=Date)](https://star-history.com/#xiaojiou176-open/fileorganize&Date)
 
 ## Also by Yifeng[Terry] Yu
 

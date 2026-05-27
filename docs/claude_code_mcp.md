@@ -1,11 +1,11 @@
 ---
-title: Fileyard MCP For Claude Code
-description: Wire Fileyard MCP v1 into Claude Code when you want local-first review-safe file organization with MCP instead of direct file mutation.
+title: Fileorganize MCP For Claude Code
+description: Wire Fileorganize MCP v1 into Claude Code when you want local-first review-safe file organization with MCP instead of direct file mutation.
 ---
 
-## Fileyard MCP For Claude Code
+## Fileorganize MCP For Claude Code
 
-Fileyard already has a real Claude Code story today:
+Fileorganize already has a real Claude Code story today:
 
 - **Category**: review-first local AI file organizer
 - **Hotness hook**: stdio-first MCP for Claude Code
@@ -15,7 +15,7 @@ In plain language: Claude Code can help with the planning desk, but it still doe
 
 ## Why Claude Code Is A Real Fit
 
-Claude Code is a good current fit because Fileyard already ships:
+Claude Code is a good current fit because Fileorganize already ships:
 
 - a **local-first** stdio MCP server
 - review-safe tools that mirror the current app workflow
@@ -26,7 +26,7 @@ This is not “future roadmap” wording. It is the current shipped MCP boundary
 
 ## Current Best Uses
 
-Use Claude Code with Fileyard when you want it to:
+Use Claude Code with Fileorganize when you want it to:
 
 - inspect a messy batch before creating work
 - read review queues, reports, and manifests
@@ -43,37 +43,37 @@ Do **not** describe the current Claude Code integration as:
 - agent-driven execute mode
 - a backdoor around `apply`
 
-`apply.execute` is intentionally absent from `Fileyard MCP v1`.
+`apply.execute` is intentionally absent from `Fileorganize MCP v1`.
 
 ## Minimal Wiring
 
 Claude Code already exposes a first-party MCP management command, so the shortest current route is:
 
 ```bash
-claude mcp add fileyard -- bash /absolute/path/to/fileyard/tooling/runtime/run_mcp_stdio.sh
+claude mcp add fileorganize -- bash /absolute/path/to/fileorganize/tooling/runtime/run_mcp_stdio.sh
 ```
 
 If you want to inspect or remove the entry later:
 
 ```bash
 claude mcp list
-claude mcp remove fileyard
+claude mcp remove fileorganize
 ```
 
 If your Claude Code setup wants the raw stdio shape instead of the helper command, the portable core is:
 
 ```json
 {
-  "name": "fileyard",
+  "name": "fileorganize",
   "command": "bash",
-  "args": ["/absolute/path/to/fileyard/tooling/runtime/run_mcp_stdio.sh"]
+  "args": ["/absolute/path/to/fileorganize/tooling/runtime/run_mcp_stdio.sh"]
 }
 ```
 
-If you prefer an installed entrypoint, use `fileyard-mcp` when it is available in your environment.
+If you prefer an installed entrypoint, use `fileorganize-mcp` when it is available in your environment.
 
 ## What To Read Next
 
-- [Fileyard MCP v1](./mcp.md)
+- [Fileorganize MCP v1](./mcp.md)
 - [Developer And Agent Guide](./developer_guide.md)
 - [Review-First AI File Organizer](./review_first_ai_file_organizer.md)

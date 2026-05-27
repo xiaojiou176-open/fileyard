@@ -22,7 +22,7 @@ def test_offline_analyze_then_apply_minimal_flow(tmp_path: Path, monkeypatch) ->
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "analyze",
             "--input",
             str(input_dir),
@@ -46,7 +46,7 @@ def test_offline_analyze_then_apply_minimal_flow(tmp_path: Path, monkeypatch) ->
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "apply",
             "--manifest",
             str(manifest_path),
@@ -84,7 +84,7 @@ def test_apply_respects_manifest_new_path_override(tmp_path: Path, monkeypatch) 
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "analyze",
             "--input",
             str(input_dir),
@@ -108,7 +108,7 @@ def test_apply_respects_manifest_new_path_override(tmp_path: Path, monkeypatch) 
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "apply",
             "--manifest",
             str(manifest_path),

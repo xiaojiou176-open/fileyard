@@ -1,4 +1,4 @@
-title = "Fileyard gitleaks config"
+title = "Fileorganize gitleaks config"
 
 [extend]
 useDefault = true

@@ -73,7 +73,7 @@ def _extract_category_budgets_from_registry() -> dict[str, int]:
 def _extract_contract_vars_from_doc(env_doc: str) -> set[str]:
     # Keep only env-like tokens that belong to this repo's contract namespaces.
     allowed_prefixes = (
-        "FILEYARD_",
+        "FILEORGANIZE_",
         "GEMINI_",
         "LIVE_",
         "CLEAN_CACHE_",
@@ -167,7 +167,7 @@ def test_mutation_manual_workflow_uses_hash_locked_mutmut_install() -> None:
 
     _assert_contains(workflow_text, "name: mutation-image-contract", "manual mutation image contract artifact")
     _assert_contains(workflow_text, "Load CI runtime image from contract", "manual mutation image contract load step")
-    _assert_contains(workflow_text, 'echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"', "manual image env export")
+    _assert_contains(workflow_text, 'echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"', "manual image env export")
     _assert_contains(
         workflow_text,
         "bash tooling/scripts/container_exec.sh --label mutation-manual --",
@@ -191,7 +191,7 @@ def test_quality_gate_runs_fast_lane_before_full_pytest() -> None:
     post_mutation_hygiene = re.compile(r"run_step\s+post-mutation-cache-hygiene\s+run_post_mutation_cache_hygiene", re.MULTILINE)
     full_lane_pattern = (
         r"run_step_with_heartbeat\s+\\\s*pytest\s+\\\s*run_pytest_with_isolated_tmp"
-        r"\s+\\\s*env -u PRE_COMMIT_FROM_REF -u PRE_COMMIT_TO_REF FILEYARD_RUN_LIVE_TESTS=0"
+        r"\s+\\\s*env -u PRE_COMMIT_FROM_REF -u PRE_COMMIT_TO_REF FILEORGANIZE_RUN_LIVE_TESTS=0"
     )
     full_lane = re.compile(full_lane_pattern, re.MULTILINE)
     mutation_gate = "run_step mutation-canary"
@@ -504,7 +504,7 @@ def test_pre_commit_ai_context_and_ci_change_detection_are_config_driven() -> No
     _assert_contains(ci, "bash tooling/ci/detect_change_scope.sh", "ci change detection helper entry")
     _assert_contains(change_detection_script, "change_detection_scope.json", "ci change detection scope config")
     _assert_contains(change_detection_helper, "check_change_detection_scope.py", "change detection helper delegates to scope script")
-    assert 'step fast-lane env FILEYARD_ALLOW_HOST_EXECUTION=1 bash "$ROOT/scripts/local_quality_gate.sh" fast' not in pre_push_gate
+    assert 'step fast-lane env FILEORGANIZE_ALLOW_HOST_EXECUTION=1 bash "$ROOT/scripts/local_quality_gate.sh" fast' not in pre_push_gate
 
 
 def test_lock_drift_contract_uses_dev_lock_and_shell_forwarder() -> None:
@@ -537,7 +537,7 @@ def test_prepush_gate_defaults_to_standard_mode() -> None:
     Full mode: strict + full quality gate (5-15min)
     """
     pre_push_gate = (_repo_root() / "tooling" / "gates" / "pre_push_gate.sh").read_text(encoding="utf-8")
-    _assert_contains(pre_push_gate, 'MODE="${1:-${FILEYARD_PRE_PUSH_MODE:-standard}}"', "pre-push default mode standard")
+    _assert_contains(pre_push_gate, 'MODE="${1:-${FILEORGANIZE_PRE_PUSH_MODE:-standard}}"', "pre-push default mode standard")
 
 
 def test_ci_change_detection_expands_heavy_scope_and_catches_deletions() -> None:
@@ -551,7 +551,7 @@ def test_ci_change_detection_expands_heavy_scope_and_catches_deletions() -> None
     assert "AGENTS.md" in heavy_globs, "change-detection high-risk governance file AGENTS.md"
     assert "CLAUDE.md" in heavy_globs, "change-detection high-risk governance file CLAUDE.md"
     assert ".env.example" in heavy_globs, "change-detection high-risk env template"
-    assert "apps/cli/fileyard.py" in heavy_globs, "change-detection core CLI entrypoint"
+    assert "apps/cli/fileorganize.py" in heavy_globs, "change-detection core CLI entrypoint"
     assert "contracts/runtime/config.example.toml" in heavy_globs, "change-detection config template"
     assert "contracts/runtime/manifest.schema.json" in heavy_globs, "change-detection manifest schema"
     assert "tooling/requirements*.txt" in heavy_globs, "change-detection dependency lock/dev requirements"
@@ -578,12 +578,12 @@ def test_local_ci_matrix_gate_enforces_strict_pytest_markers_and_config() -> Non
     _assert_contains(matrix_gate, "--require-hashes -r requirements-dev.lock.txt", "local matrix installs dev lock")
     _assert_contains(
         matrix_gate,
-        "directly from /opt/fileyard-ci-venv",
+        "directly from /opt/fileorganize-ci-venv",
         "local matrix uses the image-baked runtime venv directly",
     )
     _assert_contains(
         matrix_gate,
-        'export FILEYARD_VENV_DIR="/opt/fileyard-ci-venv"',
+        'export FILEORGANIZE_VENV_DIR="/opt/fileorganize-ci-venv"',
         "local matrix documents matrix runtime venv dir contract",
     )
     _assert_contains(matrix_gate, "image-baked, hash-locked", "local matrix consumes image-baked runtime")
@@ -613,7 +613,7 @@ def test_live_integration_requires_secrets_and_uses_image_contract() -> None:
     _assert_contains(live_ci, "GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}", "live integration gemini model secret wiring")
     _assert_contains(live_ci, "missing required secret GEMINI_API_KEY", "live integration gemini key preflight")
     _assert_contains(live_ci, "missing required secret GEMINI_MODEL", "live integration gemini model preflight")
-    _assert_contains(live_ci, "missing required secret FILEYARD_LIVE_TEST_URL", "live integration url preflight")
+    _assert_contains(live_ci, "missing required secret FILEORGANIZE_LIVE_TEST_URL", "live integration url preflight")
 
 
 def test_env_contract_deprecated_vars_are_fully_removed() -> None:
@@ -658,8 +658,8 @@ def test_env_example_points_to_workspace_runtime_env() -> None:
     env_contract_doc = (repo_root / "docs" / "env_contract.md").read_text(encoding="utf-8")
     env_example = (repo_root / ".env.example").read_text(encoding="utf-8")
 
-    _assert_contains(env_contract_doc, "<workspace-root>/.fileyard/env/runtime.env", "env contract workspace runtime env path")
-    _assert_contains(env_example, "<workspace-root>/.fileyard/env/runtime.env", "env example workspace runtime env path")
+    _assert_contains(env_contract_doc, "<workspace-root>/.fileorganize/env/runtime.env", "env contract workspace runtime env path")
+    _assert_contains(env_example, "<workspace-root>/.fileorganize/env/runtime.env", "env example workspace runtime env path")
     _assert_contains(env_example, "repository root .env file is local-only convenience", "env example repo-root .env warning")
     assert "Copy to .env and fill real values." not in env_example
 
@@ -775,13 +775,13 @@ def test_env_contract_live_coverage_vars_and_budgets_are_consistent() -> None:
     budgets = _extract_category_budgets_from_registry()
 
     assert "LIVE_COVERAGE_FILE" in contract
-    assert "FILEYARD_LIVE_COVERAGE_FILE" in contract
+    assert "FILEORGANIZE_LIVE_COVERAGE_FILE" in contract
     assert len(contract) <= 59
 
     live_count = sum(1 for name in contract if name.startswith("LIVE_"))
-    movi_count = sum(1 for name in contract if name.startswith("FILEYARD_"))
+    fileorganize_count = sum(1 for name in contract if name.startswith("FILEORGANIZE_"))
     assert live_count <= budgets["LIVE_"]
-    assert movi_count <= budgets["FILEYARD_"]
+    assert fileorganize_count <= budgets["FILEORGANIZE_"]
 
 
 def test_run_web_stack_uses_compose_project_name_fallback() -> None:

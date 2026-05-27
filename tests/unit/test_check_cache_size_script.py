@@ -55,23 +55,23 @@ if args == ["system", "df", "-v"]:
     print(
         "Images space usage:\\n\\n"
         "REPOSITORY                     TAG      IMAGE ID       CREATED          SIZE      SHARED SIZE   UNIQUE SIZE   CONTAINERS\\n"
-        "fileyard-ci                        local    abc123         1 hour ago       3.32GB    0B            3.323GB       0\\n\\n"
+        "fileorganize-ci                        local    abc123         1 hour ago       3.32GB    0B            3.323GB       0\\n\\n"
         "Containers space usage:\\n\\n"
         "CONTAINER ID   IMAGE   COMMAND   LOCAL VOLUMES   SIZE   CREATED   STATUS   NAMES\\n\\n"
         "Local Volumes space usage:\\n\\n"
         "VOLUME NAME                              LINKS     SIZE\\n"
-        "fileyard-web-stack_movi_playwright           0         972MB\\n"
-        "fileyard-web-stack_movi_venv                 0         401.6MB\\n"
-        "fileyard-web-stack_movi_webui_node_modules   0         0B\\n\\n"
+        "fileorganize-web-stack_fileorganize_playwright           0         972MB\\n"
+        "fileorganize-web-stack_fileorganize_venv                 0         401.6MB\\n"
+        "fileorganize-web-stack_fileorganize_webui_node_modules   0         0B\\n\\n"
         "Build cache usage: 188MB\\n"
     )
     raise SystemExit(0)
-if args[:3] == ["image", "inspect", "fileyard-ci:local"]:
+if args[:3] == ["image", "inspect", "fileorganize-ci:local"]:
     print("884283278")
     raise SystemExit(0)
 if args[:2] == ["volume", "inspect"]:
     name = args[2]
-    print(f'{{"com.docker.compose.project":"fileyard-web-stack"}} /tmp/{name}')
+    print(f'{{"com.docker.compose.project":"fileorganize-web-stack"}} /tmp/{name}')
     raise SystemExit(0)
 if args == ["buildx", "du", "--verbose"]:
     print(
@@ -102,8 +102,8 @@ def test_check_cache_size_reports_four_sections_and_commands(tmp_path: Path) -> 
     (pycache / "x.pyc").write_text("x", encoding="utf-8")
 
     workspace = tmp_path / "workspace"
-    run_root = workspace / ".fileyard" / "runs"
-    artifact_root = workspace / ".fileyard" / "artifacts"
+    run_root = workspace / ".fileorganize" / "runs"
+    artifact_root = workspace / ".fileorganize" / "artifacts"
     for idx in range(3):
         run_dir = run_root / f"run-{idx}"
         run_dir.mkdir(parents=True, exist_ok=True)
@@ -124,8 +124,8 @@ def test_check_cache_size_reports_four_sections_and_commands(tmp_path: Path) -> 
     env["NPM_CONFIG_CACHE"] = str(machine_root / "npm")
     env["PLAYWRIGHT_BROWSERS_PATH"] = str(machine_root / "playwright")
     env["XDG_CACHE_HOME"] = str(machine_root / "xdg")
-    env["FILEYARD_RUN_BUNDLE_ROOT"] = str(run_root)
-    env["FILEYARD_ARTIFACT_ROOT"] = str(artifact_root)
+    env["FILEORGANIZE_RUN_BUNDLE_ROOT"] = str(run_root)
+    env["FILEORGANIZE_ARTIFACT_ROOT"] = str(artifact_root)
     env["PATH"] = f"{fake_bin}:{env['PATH']}"
 
     proc = subprocess.run(
@@ -160,8 +160,8 @@ def test_check_cache_size_json_output_contains_expected_sections(tmp_path: Path)
     (pycache / "x.pyc").write_text("x", encoding="utf-8")
 
     workspace = tmp_path / "workspace"
-    run_root = workspace / ".fileyard" / "runs"
-    artifact_root = workspace / ".fileyard" / "artifacts"
+    run_root = workspace / ".fileorganize" / "runs"
+    artifact_root = workspace / ".fileorganize" / "artifacts"
     run_dir = run_root / "run-0"
     run_dir.mkdir(parents=True, exist_ok=True)
     (run_dir / "summary.json").write_text('{"status":"ok"}\n', encoding="utf-8")
@@ -177,8 +177,8 @@ def test_check_cache_size_json_output_contains_expected_sections(tmp_path: Path)
     env["NPM_CONFIG_CACHE"] = str(machine_root / "npm")
     env["PLAYWRIGHT_BROWSERS_PATH"] = str(machine_root / "playwright")
     env["XDG_CACHE_HOME"] = str(machine_root / "xdg")
-    env["FILEYARD_RUN_BUNDLE_ROOT"] = str(run_root)
-    env["FILEYARD_ARTIFACT_ROOT"] = str(artifact_root)
+    env["FILEORGANIZE_RUN_BUNDLE_ROOT"] = str(run_root)
+    env["FILEORGANIZE_ARTIFACT_ROOT"] = str(artifact_root)
     env["PATH"] = f"{fake_bin}:{env['PATH']}"
 
     proc = subprocess.run(
@@ -194,7 +194,7 @@ def test_check_cache_size_json_output_contains_expected_sections(tmp_path: Path)
     assert "machine_cache" in payload
     assert "workspace_evidence" in payload
     assert "docker_runtime" in payload
-    image_entry = next(entry for entry in payload["docker_runtime"]["entries"] if entry["path_or_object"] == "docker image fileyard-ci:local")
+    image_entry = next(entry for entry in payload["docker_runtime"]["entries"] if entry["path_or_object"] == "docker image fileorganize-ci:local")
     assert image_entry["policy_size_mb"] > 0
     governance_summary = repo / ".runtime-cache" / "logs" / "runtime-governance" / "summary.json"
     assert governance_summary.exists()

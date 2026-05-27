@@ -337,13 +337,13 @@ def _build_upgrade_pack_summary(proof_contract: dict[str, Any]) -> dict[str, Any
 
 
 def _external_tmp_root() -> Path:
-    root = Path("/tmp/fileyard-ai-eval")
+    root = Path("/tmp/fileorganize-ai-eval")
     root.mkdir(parents=True, exist_ok=True)
     return root
 
 
 def _durable_artifact_root(repo_root: Path) -> Path:
-    raw = os.environ.get("FILEYARD_ARTIFACT_ROOT", "").strip()
+    raw = os.environ.get("FILEORGANIZE_ARTIFACT_ROOT", "").strip()
     if raw:
         return Path(raw).expanduser().resolve() / "ai-eval"
     return (repo_root / ".runtime-cache" / "logs" / "ai-eval" / "artifacts").resolve()
@@ -475,13 +475,13 @@ def _run_analyze(
         cmd.append("--offline")
 
     env = os.environ.copy()
-    env["FILEYARD_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
     external_tmp = _external_tmp_root()
     env["TMPDIR"] = str(external_tmp)
     env["TMP"] = str(external_tmp)
     env["TEMP"] = str(external_tmp)
     run_bundle_root.mkdir(parents=True, exist_ok=True)
-    env["FILEYARD_RUN_BUNDLE_ROOT"] = str(run_bundle_root)
+    env["FILEORGANIZE_RUN_BUNDLE_ROOT"] = str(run_bundle_root)
     proc = subprocess.run(cmd, cwd=repo_root, text=True, capture_output=True, check=False, env=env)
     if proc.returncode != 0:
         raise RuntimeError(f"analyze failed for {run_id}: {proc.stdout}\n{proc.stderr}")
@@ -595,7 +595,7 @@ def _run_suite(repo_root: Path, suite: dict[str, Any], baseline: dict[str, Any],
         input_dir,
         offline=(suite_mode == "offline"),
         run_id=f"ai_eval_{suite_id}",
-        run_bundle_root=tmp_root / ".fileyard" / "runs",
+        run_bundle_root=tmp_root / ".fileorganize" / "runs",
     )
     rows = _read_manifest(manifest_path)
 

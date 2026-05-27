@@ -1,18 +1,18 @@
 ---
-name: fileyard-review-first-bundle
-description: Teach an agent to install Movi's local MCP server, stay review-first, and use the safest manifest and batch-analysis tools before deeper mutation.
+name: fileorganize-review-first-bundle
+description: Teach an agent to install Fileorganize's local MCP server, stay review-first, and use the safest manifest and batch-analysis tools before deeper mutation.
 version: 1.0.0
 triggers:
-  - movi
-  - fileyard
+  - fileorganize
+  - fileorganize
   - review-first batch
   - manifest review
-  - openclaw movi
+  - openclaw fileorganize
 ---
 
-# Movi Review-First Bundle
+# Fileorganize Review-First Bundle
 
-Teach the agent how to install, connect, and use Movi as a local-first
+Teach the agent how to install, connect, and use Fileorganize as a local-first
 review-first MCP workflow.
 
 ## Use this skill when
@@ -24,8 +24,8 @@ review-first MCP workflow.
 
 ## What this package teaches
 
-- how to wire Movi MCP into Codex, Claude Code, OpenHands, or OpenClaw
-- which Movi tools are safe first when the work must stay review-first
+- how to wire Fileorganize MCP into Codex, Claude Code, OpenHands, or OpenClaw
+- which Fileorganize tools are safe first when the work must stay review-first
 - how to inspect jobs, manifests, and review rules before calling heavier
   mutation tools
 - how to keep listing claims honest while still proving the packet is real
@@ -52,7 +52,7 @@ review-first MCP workflow.
 
 ## Suggested first prompt
 
-Use Movi to inspect the current review-first workload. Start with `jobs.list`,
+Use Fileorganize to inspect the current review-first workload. Start with `jobs.list`,
 `review_queue.get`, and `manifest.get`. Summarize which batch needs attention
 first. If the manifest looks stable, use `analyze.create` to produce one
 analysis artifact. Do not call `manifest.patch_row`, `manifest.batch_patch`, or
@@ -60,14 +60,14 @@ analysis artifact. Do not call `manifest.patch_row`, `manifest.batch_patch`, or
 
 ## Success checks
 
-- the host can launch the local Movi MCP server from the provided config
+- the host can launch the local Fileorganize MCP server from the provided config
 - the packet proves one real job/review queue exists instead of describing an
   imaginary batch
 - the first analysis artifact is tied to a real manifest or job record
 
 ## Boundaries
 
-- Movi stays a local-first review-first MCP workflow, not a hosted SaaS
+- Fileorganize stays a local-first review-first MCP workflow, not a hosted SaaS
 - this packet does not claim a live OpenHands or ClawHub listing
 - this packet does not bypass `review-first -> dry-run -> execute`
 

@@ -23,11 +23,11 @@ def reset_logging_observability_context(monkeypatch):
         component="",
     )
     for key in (
-        "FILEYARD_TRACE_ID",
-        "FILEYARD_REQUEST_ID",
-        "FILEYARD_SESSION_ID",
-        "FILEYARD_USER_ID",
-        "FILEYARD_WORKSPACE_ROOT",
+        "FILEORGANIZE_TRACE_ID",
+        "FILEORGANIZE_REQUEST_ID",
+        "FILEORGANIZE_SESSION_ID",
+        "FILEORGANIZE_USER_ID",
+        "FILEORGANIZE_WORKSPACE_ROOT",
     ):
         monkeypatch.delenv(key, raising=False)
     yield
@@ -166,7 +166,7 @@ def test_log_event_auto_enriches_core_observability_fields(capsys):
     assert payload["request_id"] == "apply_001"
     assert payload["session_id"] == "apply_001"
     assert payload["span_id"].startswith("spn_")
-    assert payload["service"] == "fileyard"
+    assert payload["service"] == "fileorganize"
     assert payload["component"]
     assert payload["workspace_id"] == "default"
     assert payload["failure_domain"] == "repo_logic"
@@ -186,7 +186,7 @@ def test_log_event_preserves_explicit_failure_domain_and_upstream(capsys):
         failure_domain="upstream_image",
         upstream_id="ci-runtime-image",
         workspace_id="workspace-alpha",
-        service="fileyard-web-api",
+        service="fileorganize-web-api",
         component="apply-worker",
         error_type="RuntimeError",
         error_code="apply_move_failed",
@@ -197,7 +197,7 @@ def test_log_event_preserves_explicit_failure_domain_and_upstream(capsys):
     assert payload["failure_domain"] == "upstream_image"
     assert payload["upstream_id"] == "ci-runtime-image"
     assert payload["workspace_id"] == "workspace-alpha"
-    assert payload["service"] == "fileyard-web-api"
+    assert payload["service"] == "fileorganize-web-api"
     assert payload["component"] == "apply-worker"
     assert payload["error"]["type"] == "RuntimeError"
     assert payload["error"]["code"] == "apply_move_failed"
@@ -242,10 +242,10 @@ def test_log_event_builds_error_payload_from_exception_context(capsys):
 
 
 def test_log_event_uses_env_defaults_for_observability_ids(capsys, monkeypatch):
-    monkeypatch.setenv("FILEYARD_TRACE_ID", "trace_env")
-    monkeypatch.setenv("FILEYARD_REQUEST_ID", "req_env")
-    monkeypatch.setenv("FILEYARD_SESSION_ID", "sess_env")
-    monkeypatch.setenv("FILEYARD_USER_ID", "user_env")
+    monkeypatch.setenv("FILEORGANIZE_TRACE_ID", "trace_env")
+    monkeypatch.setenv("FILEORGANIZE_REQUEST_ID", "req_env")
+    monkeypatch.setenv("FILEORGANIZE_SESSION_ID", "sess_env")
+    monkeypatch.setenv("FILEORGANIZE_USER_ID", "user_env")
     logger = setup_logger("INFO", True)
 
     log_event(logger, logging.INFO, "apply.move.start", "begin")
@@ -277,10 +277,10 @@ def test_log_event_keeps_explicit_gate_bridge_fields(capsys):
 
 
 def test_log_event_explicit_fields_override_env_defaults(capsys, monkeypatch):
-    monkeypatch.setenv("FILEYARD_TRACE_ID", "trace_env")
-    monkeypatch.setenv("FILEYARD_REQUEST_ID", "req_env")
-    monkeypatch.setenv("FILEYARD_SESSION_ID", "sess_env")
-    monkeypatch.setenv("FILEYARD_USER_ID", "user_env")
+    monkeypatch.setenv("FILEORGANIZE_TRACE_ID", "trace_env")
+    monkeypatch.setenv("FILEORGANIZE_REQUEST_ID", "req_env")
+    monkeypatch.setenv("FILEORGANIZE_SESSION_ID", "sess_env")
+    monkeypatch.setenv("FILEORGANIZE_USER_ID", "user_env")
     logger = setup_logger("INFO", True)
 
     log_event(
@@ -302,7 +302,7 @@ def test_log_event_explicit_fields_override_env_defaults(capsys, monkeypatch):
 
 
 def test_log_event_explicit_gate_bridge_fields_survive_with_other_defaults(capsys, monkeypatch):
-    monkeypatch.setenv("FILEYARD_TRACE_ID", "trace_env")
+    monkeypatch.setenv("FILEORGANIZE_TRACE_ID", "trace_env")
     logger = setup_logger("INFO", True)
 
     log_event(

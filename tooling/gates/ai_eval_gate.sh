@@ -101,7 +101,7 @@ if [ "${1:-}" = "--prepare-upgrade-pack" ]; then
   exit 0
 fi
 
-if [ "${FILEYARD_IN_CONTAINER:-0}" != "1" ] && [ "${FILEYARD_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
+if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ] && [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
   exec bash "$ROOT/scripts/container_exec.sh" --label ai-eval -- bash tooling/gates/ai_eval_gate.sh "$@"
 fi
 

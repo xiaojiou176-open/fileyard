@@ -88,8 +88,8 @@ if [ "$STAGE" = "pre-checkout" ]; then
 fi
 
 if [ -n "$RUNNER_TEMP_DIR" ]; then
-  mkdir -p "$RUNNER_TEMP_DIR/fileyard-hygiene"
-  log "runner temp ready at $RUNNER_TEMP_DIR/fileyard-hygiene"
+  mkdir -p "$RUNNER_TEMP_DIR/fileorganize-hygiene"
+  log "runner temp ready at $RUNNER_TEMP_DIR/fileorganize-hygiene"
 else
   warn "RUNNER_TEMP is unset; skip temp preparation"
 fi

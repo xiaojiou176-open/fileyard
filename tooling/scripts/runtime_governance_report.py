@@ -76,7 +76,7 @@ def _fallback_log_event(
     redact_paths: bool = True,
     **fields: Any,
 ) -> None:
-    events_path = Path(os.environ["FILEYARD_RUN_EVENTS_PATH"])
+    events_path = Path(os.environ["FILEORGANIZE_RUN_EVENTS_PATH"])
     events_path.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "timestamp": _utc_now(),
@@ -127,7 +127,7 @@ def _run_paths(repo_root: Path, run_id: str) -> dict[str, Path]:
 
 def _prepare_logger(events_path: Path, run_id: str) -> logging.Logger:
     events_path.parent.mkdir(parents=True, exist_ok=True)
-    os.environ["FILEYARD_RUN_EVENTS_PATH"] = str(events_path)
+    os.environ["FILEORGANIZE_RUN_EVENTS_PATH"] = str(events_path)
     logger = SETUP_LOGGER("INFO", True)
     logger.handlers = [handler for handler in logger.handlers if isinstance(handler, logging.FileHandler)]
     SET_LOG_CONTEXT_DEFAULTS(
@@ -135,7 +135,7 @@ def _prepare_logger(events_path: Path, run_id: str) -> logging.Logger:
         request_id=run_id,
         session_id=run_id,
         user_id="runtime_governance",
-        service="fileyard",
+        service="fileorganize",
         component="runtime_governance",
     )
     return logger

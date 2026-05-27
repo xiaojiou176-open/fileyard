@@ -1,8 +1,8 @@
-# Movi Review-First Bundle Public Skill
+# Fileorganize Review-First Bundle Public Skill
 
 Status: `ClawHub listed_live (current page still shows suspicious.vt_suspicious); OpenHands/extensions#161 review pending`
 
-This folder is the current public, self-contained skill packet for Movi.
+This folder is the current public, self-contained skill packet for Fileorganize.
 
 The canonical public root for the product still lives at the repo root:
 `../../README.md` plus `../../manifest.yaml`.
@@ -17,8 +17,8 @@ forcing the reviewer to reopen the whole repo first.
 Use it when you want one portable skill folder that teaches five things inside
 the packet itself:
 
-- what Movi helps an agent do
-- how to install and attach the local Movi MCP server
+- what Fileorganize helps an agent do
+- how to install and attach the local Fileorganize MCP server
 - which tools are safe first for review-first batch work
 - what one good first-success path looks like
 - what the packet must not claim
@@ -38,7 +38,7 @@ the packet itself:
 - `references/OPENCLAW_MCP_CONFIG.json`
   - host config snippet for OpenClaw-style `mcp.servers`
 - `references/CAPABILITIES.md`
-  - exact Movi tool surface and safe-first order
+  - exact Fileorganize tool surface and safe-first order
 - `references/DEMO.md`
   - first-success prompt plus expected tool sequence
 - `references/TROUBLESHOOTING.md`
@@ -61,7 +61,7 @@ the packet itself:
 
 - no live OpenHands listing without fresh PR/read-back
 - no browser-extension marketplace listing
-- no hosted Movi SaaS or hidden execute shortcut
+- no hosted Fileorganize SaaS or hidden execute shortcut
 
 ## Existing repo-owned helper files
 

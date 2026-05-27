@@ -20,8 +20,8 @@ from urllib.request import Request, urlopen
 
 import pytest
 
-LIVE_FLAG = "FILEYARD_RUN_LIVE_TESTS"
-WEBUI_E2E_FLAG = "FILEYARD_RUN_WEBUI_E2E"
+LIVE_FLAG = "FILEORGANIZE_RUN_LIVE_TESTS"
+WEBUI_E2E_FLAG = "FILEORGANIZE_RUN_WEBUI_E2E"
 WAIT_TIMEOUT_S = 180
 READY_TIMEOUT_S = 60
 POLL_INTERVAL_S = 0.3
@@ -41,11 +41,11 @@ def _repo_root() -> Path:
 
 
 def _workspace_input_root() -> Path:
-    return Path(os.environ.get("FILEYARD_INPUT_ROOT", "~/.fileyard/workspaces/default/data/raw")).expanduser()
+    return Path(os.environ.get("FILEORGANIZE_INPUT_ROOT", "~/.fileorganize/workspaces/default/data/raw")).expanduser()
 
 
 def _workspace_output_root() -> Path:
-    return Path(os.environ.get("FILEYARD_OUTPUT_ROOT", "~/.fileyard/workspaces/default/data/organized")).expanduser()
+    return Path(os.environ.get("FILEORGANIZE_OUTPUT_ROOT", "~/.fileorganize/workspaces/default/data/organized")).expanduser()
 
 
 def _is_live_env_requested() -> bool:
@@ -113,7 +113,7 @@ def _activate_live_coverage_guard() -> None:
     coverage_xml = _repo_root() / "artifacts" / "coverage.xml"
     coverage_data = _repo_root() / ".coverage"
     _LIVE_COVERAGE_HAD_BASELINE = coverage_xml.exists()
-    _LIVE_COVERAGE_BACKUP_PATH = Path(tempfile.gettempdir()) / f"fileyard-live-coverage-{os.getpid()}.xml"
+    _LIVE_COVERAGE_BACKUP_PATH = Path(tempfile.gettempdir()) / f"fileorganize-live-coverage-{os.getpid()}.xml"
     if _LIVE_COVERAGE_HAD_BASELINE:
         _LIVE_COVERAGE_BACKUP_PATH.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(coverage_xml, _LIVE_COVERAGE_BACKUP_PATH)
@@ -121,13 +121,13 @@ def _activate_live_coverage_guard() -> None:
         if _LIVE_COVERAGE_BACKUP_PATH.exists():
             _LIVE_COVERAGE_BACKUP_PATH.unlink()
     _LIVE_COVERAGE_DATA_HAD_BASELINE = coverage_data.exists()
-    _LIVE_COVERAGE_DATA_BACKUP_PATH = Path(tempfile.gettempdir()) / f"fileyard-live-coverage-data-{os.getpid()}"
+    _LIVE_COVERAGE_DATA_BACKUP_PATH = Path(tempfile.gettempdir()) / f"fileorganize-live-coverage-data-{os.getpid()}"
     if _LIVE_COVERAGE_DATA_HAD_BASELINE:
         _LIVE_COVERAGE_DATA_BACKUP_PATH.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(coverage_data, _LIVE_COVERAGE_DATA_BACKUP_PATH)
     elif _LIVE_COVERAGE_DATA_BACKUP_PATH.exists():
         _LIVE_COVERAGE_DATA_BACKUP_PATH.unlink()
-    _LIVE_COVERAGE_DATA_ISOLATED_PATH = Path(tempfile.gettempdir()) / f"fileyard-live-cov-isolated-{os.getpid()}"
+    _LIVE_COVERAGE_DATA_ISOLATED_PATH = Path(tempfile.gettempdir()) / f"fileorganize-live-cov-isolated-{os.getpid()}"
     _LIVE_PREVIOUS_COVERAGE_FILE = os.environ.get("COVERAGE_FILE")
     os.environ["COVERAGE_FILE"] = str(_LIVE_COVERAGE_DATA_ISOLATED_PATH)
     for suffix in ("", "-shm", "-wal"):
@@ -260,8 +260,8 @@ _activate_live_coverage_guard()
 
 
 def _read_runtime_env_value(name: str) -> str:
-    workspace_root = Path(os.getenv("FILEYARD_WORKSPACE_ROOT", "~/.fileyard/workspaces/default")).expanduser()
-    env_path = workspace_root / ".fileyard" / "env" / "runtime.env"
+    workspace_root = Path(os.getenv("FILEORGANIZE_WORKSPACE_ROOT", "~/.fileorganize/workspaces/default")).expanduser()
+    env_path = workspace_root / ".fileorganize" / "env" / "runtime.env"
     if not env_path.exists():
         return ""
     for raw_line in env_path.read_text(encoding="utf-8").splitlines():
@@ -606,7 +606,7 @@ def test_live_webui_env_preflight():
     if not _resolve_live_var(LIVE_FLAG, "0") == "1":
         pytest.skip(f"set {LIVE_FLAG}=1 to run live browser tests")
     if not _resolve_live_var(WEBUI_E2E_FLAG, "0") == "1":
-        pytest.skip(f"set {WEBUI_E2E_FLAG}=1 to run Fileyard WebUI live e2e")
+        pytest.skip(f"set {WEBUI_E2E_FLAG}=1 to run Fileorganize WebUI live e2e")
     if shutil.which("npm") is None:
         pytest.fail("webui live e2e requires npm")
 
@@ -614,7 +614,7 @@ def test_live_webui_env_preflight():
 @pytest.mark.live_browser
 def test_live_webui_analyze_manifest_apply_rollback(live_cleanup_actions, tmp_path: Path):
     if not _is_live_enabled():
-        pytest.skip(f"set {LIVE_FLAG}=1 and {WEBUI_E2E_FLAG}=1 to run Fileyard WebUI live e2e")
+        pytest.skip(f"set {LIVE_FLAG}=1 and {WEBUI_E2E_FLAG}=1 to run Fileorganize WebUI live e2e")
 
     if shutil.which("npm") is None:
         pytest.fail("webui live e2e requires npm in PATH")
@@ -632,9 +632,9 @@ def test_live_webui_analyze_manifest_apply_rollback(live_cleanup_actions, tmp_pa
 
     run_env = os.environ.copy()
     run_env["PYTHONUNBUFFERED"] = run_env.get("PYTHONUNBUFFERED") or "1"
-    run_env["FILEYARD_ALLOW_HOST_EXECUTION"] = run_env.get("FILEYARD_ALLOW_HOST_EXECUTION") or "1"
-    run_env["FILEYARD_IN_CONTAINER"] = run_env.get("FILEYARD_IN_CONTAINER") or "0"
-    run_env["FILEYARD_ROLLBACK_HMAC_KEY"] = run_env.get("FILEYARD_ROLLBACK_HMAC_KEY") or "webui-live-e2e-key"
+    run_env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = run_env.get("FILEORGANIZE_ALLOW_HOST_EXECUTION") or "1"
+    run_env["FILEORGANIZE_IN_CONTAINER"] = run_env.get("FILEORGANIZE_IN_CONTAINER") or "0"
+    run_env["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = run_env.get("FILEORGANIZE_ROLLBACK_HMAC_KEY") or "webui-live-e2e-key"
 
     log_dir = tmp_path / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
@@ -654,10 +654,10 @@ def test_live_webui_analyze_manifest_apply_rollback(live_cleanup_actions, tmp_pa
     api_base = f"http://127.0.0.1:{api_port}"
     ui_base = f"http://127.0.0.1:{ui_port}"
     browser_ui_base = f"{api_base}/app" if build_ready else ui_base
-    run_env["FILEYARD_WEB_API_PROXY_TARGET"] = api_base
+    run_env["FILEORGANIZE_WEB_API_PROXY_TARGET"] = api_base
 
     with api_log.open("w", encoding="utf-8") as api_log_file, ui_log.open("w", encoding="utf-8") as ui_log_file:
-        _heartbeat("start isolated fileyard web api")
+        _heartbeat("start isolated fileorganize web api")
         api_proc = subprocess.Popen(
             [
                 str(python_bin),

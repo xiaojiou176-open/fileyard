@@ -17,7 +17,7 @@ def test_cli_analyze_parses_categories(monkeypatch):
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "analyze",
             "--manifest",
             "/tmp/manifest.jsonl",
@@ -46,7 +46,7 @@ def test_cli_apply_parses_flags(monkeypatch):
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "apply",
             "--manifest",
             "/tmp/manifest.jsonl",
@@ -83,7 +83,7 @@ def test_cli_rollback_parses(monkeypatch):
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "rollback",
             "--manifest",
             "/tmp/manifest.jsonl",
@@ -103,7 +103,7 @@ def test_cli_apply_rejects_crash_inject_outside_test_mode(monkeypatch):
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "apply",
             "--manifest",
             "/tmp/manifest.jsonl",
@@ -132,7 +132,7 @@ def test_cli_apply_accepts_crash_inject_in_test_mode(monkeypatch):
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "apply",
             "--manifest",
             "/tmp/manifest.jsonl",
@@ -233,7 +233,7 @@ GEMINI_MODEL_PRIMARY = "deprecated-model"
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "--config",
             str(config),
             "analyze",
@@ -254,19 +254,19 @@ def test_parse_categories_default_and_tuple():
 
 
 def test_is_test_hooks_enabled_by_env(monkeypatch):
-    monkeypatch.delenv("FILEYARD_ENABLE_TEST_HOOKS", raising=False)
+    monkeypatch.delenv("FILEORGANIZE_ENABLE_TEST_HOOKS", raising=False)
     monkeypatch.delenv("PYTEST_CURRENT_TEST", raising=False)
     assert cli_app._is_test_hooks_enabled() is False
 
-    monkeypatch.setenv("FILEYARD_ENABLE_TEST_HOOKS", "1")
+    monkeypatch.setenv("FILEORGANIZE_ENABLE_TEST_HOOKS", "1")
     assert cli_app._is_test_hooks_enabled() is True
 
 
 def test_read_runtime_env_value_and_resolve_env(tmp_path, monkeypatch):
     workspace_root = tmp_path / "workspace"
-    runtime_env = workspace_root / ".fileyard" / "env" / "runtime.env"
+    runtime_env = workspace_root / ".fileorganize" / "env" / "runtime.env"
     runtime_env.parent.mkdir(parents=True)
-    monkeypatch.setenv("FILEYARD_WORKSPACE_ROOT", str(workspace_root))
+    monkeypatch.setenv("FILEORGANIZE_WORKSPACE_ROOT", str(workspace_root))
     assert cli_app._read_runtime_env_value("GEMINI_API_KEY") == ""
 
     runtime_env.write_text(
@@ -310,8 +310,8 @@ def test_type_helper_predicates():
 
 def test_default_report_out_fallback_when_script_dir_missing(tmp_path, monkeypatch):
     monkeypatch.setattr(cli_app, "REPO_ROOT", tmp_path)
-    monkeypatch.setenv("FILEYARD_WORKSPACE_ROOT", str(tmp_path / "workspace"))
-    assert cli_app._default_report_out() == str(tmp_path / "workspace" / ".fileyard" / "artifacts" / "report" / "report_summary.json")
+    monkeypatch.setenv("FILEORGANIZE_WORKSPACE_ROOT", str(tmp_path / "workspace"))
+    assert cli_app._default_report_out() == str(tmp_path / "workspace" / ".fileorganize" / "artifacts" / "report" / "report_summary.json")
 
 
 def test_validate_output_path_conflicts_rejects_duplicates(tmp_path):
@@ -366,7 +366,7 @@ def test_cli_apply_rejects_unknown_crash_inject(monkeypatch):
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "apply",
             "--manifest",
             "/tmp/manifest.jsonl",
@@ -400,7 +400,7 @@ def test_cli_config_type_error_maps_to_type_invalid_code(monkeypatch):
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "--config",
             "/tmp/fake.toml",
             "analyze",
@@ -435,7 +435,7 @@ def test_cli_config_chinese_unknown_section_and_key_map_to_unknown_key_code(monk
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "--config",
             "/tmp/fake.toml",
             "analyze",
@@ -471,7 +471,7 @@ def test_cli_config_generic_error_uses_config_invalid_code(monkeypatch):
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "--config",
             "/tmp/fake.toml",
             "analyze",
@@ -498,7 +498,7 @@ def test_cli_config_load_failure_emits_error_log(monkeypatch):
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "--config",
             "/tmp/fake.toml",
             "analyze",
@@ -526,7 +526,7 @@ def test_cli_analyze_uses_strategy_pack_defaults_from_config(monkeypatch):
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "--config",
             "/tmp/fake.toml",
             "analyze",
@@ -561,7 +561,7 @@ def test_cli_lock_failure_releases_acquired_locks(tmp_path, monkeypatch):
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "analyze",
             "--manifest",
             str(tmp_path / "manifest.jsonl"),
@@ -594,7 +594,7 @@ def test_cli_report_locks_manifest_and_out(tmp_path, monkeypatch):
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "report",
             "--manifest",
             str(tmp_path / "manifest.jsonl"),
@@ -621,7 +621,7 @@ def test_cli_main_finalizes_run_bundle_as_fail_when_command_raises(monkeypatch):
         sys,
         "argv",
         [
-            "fileyard",
+            "fileorganize",
             "analyze",
             "--manifest",
             "/tmp/manifest.jsonl",

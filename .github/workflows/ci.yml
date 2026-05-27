@@ -58,7 +58,7 @@ jobs:
             echo "❌ build-ci-image: missing required secret GHCR_PUSH_TOKEN" >&2
             exit 1
           fi
-          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileyard-docker-config"
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileorganize-docker-config"
           mkdir -p "$DOCKER_CONFIG_DIR"
           printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
           export DOCKER_CONFIG="$DOCKER_CONFIG_DIR"
@@ -95,7 +95,7 @@ jobs:
           }
           CONTRACT_DIR=".runtime-cache/ci-contract"
           mkdir -p "$CONTRACT_DIR"
-          IMAGE_BASE="ghcr.io/${{ github.repository_owner }}/fileyard-ci"
+          IMAGE_BASE="ghcr.io/${{ github.repository_owner }}/fileorganize-ci"
           for variant in py310 py311 py312; do
             case "$variant" in
               py310) base_image="mcr.microsoft.com/devcontainers/python:1-3.10-bullseye@sha256:f9687cf8ff930028b32eb2fa7a1cb0b65dbd5180b46e0173faded888bfa14743" ;;
@@ -141,19 +141,19 @@ jobs:
         if: steps.provenance-eligibility.outputs.enabled == 'true'
         uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a
         with:
-          subject-name: ghcr.io/${{ github.repository_owner }}/fileyard-ci
+          subject-name: ghcr.io/${{ github.repository_owner }}/fileorganize-ci
           subject-digest: ${{ steps.py310-digest.outputs.digest }}
       - name: Generate py311 build provenance
         if: steps.provenance-eligibility.outputs.enabled == 'true'
         uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a
         with:
-          subject-name: ghcr.io/${{ github.repository_owner }}/fileyard-ci
+          subject-name: ghcr.io/${{ github.repository_owner }}/fileorganize-ci
           subject-digest: ${{ steps.py311-digest.outputs.digest }}
       - name: Generate py312 build provenance
         if: steps.provenance-eligibility.outputs.enabled == 'true'
         uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a
         with:
-          subject-name: ghcr.io/${{ github.repository_owner }}/fileyard-ci
+          subject-name: ghcr.io/${{ github.repository_owner }}/fileorganize-ci
           subject-digest: ${{ steps.py312-digest.outputs.digest }}
       - name: Collect runtime provenance artifact pointers
         if: always()
@@ -169,11 +169,11 @@ jobs:
           {
             "status": "generated",
             "subjects": [
-              "ghcr.io/${{ github.repository_owner }}/fileyard-ci@${py310_digest}",
-              "ghcr.io/${{ github.repository_owner }}/fileyard-ci@${py311_digest}",
-              "ghcr.io/${{ github.repository_owner }}/fileyard-ci@${py312_digest}"
+              "ghcr.io/${{ github.repository_owner }}/fileorganize-ci@${py310_digest}",
+              "ghcr.io/${{ github.repository_owner }}/fileorganize-ci@${py311_digest}",
+              "ghcr.io/${{ github.repository_owner }}/fileorganize-ci@${py312_digest}"
             ],
-            "verify_hint": "gh attestation verify oci://ghcr.io/${{ github.repository_owner }}/fileyard-ci@${py311_digest} --repo ${{ github.repository }}"
+            "verify_hint": "gh attestation verify oci://ghcr.io/${{ github.repository_owner }}/fileorganize-ci@${py311_digest} --repo ${{ github.repository }}"
           }
           EOF
           fi
@@ -345,7 +345,7 @@ jobs:
             echo "tag push: allow empty commit range for hosted primary gate"
           elif [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event_name }}" = "schedule" ]; then
             echo "workflow_dispatch/schedule: allow empty commit range for hosted primary gate"
-          elif [ "${FILEYARD_REQUIRE_NON_EMPTY_RANGE:-1}" = "1" ]; then
+          elif [ "${FILEORGANIZE_REQUIRE_NON_EMPTY_RANGE:-1}" = "1" ]; then
             RANGE_FLAGS+=(--require-non-empty-range)
           fi
           python3 tooling/scripts/check_commit_message.py --from-ref "$BASE_REF" --to-ref "$TO_REF" "${RANGE_FLAGS[@]}"
@@ -405,7 +405,7 @@ jobs:
             echo "tag push: allow empty commit range for fallback gate"
           elif [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event_name }}" = "schedule" ]; then
             echo "workflow_dispatch/schedule: allow empty commit range for fallback gate"
-          elif [ "${FILEYARD_REQUIRE_NON_EMPTY_RANGE:-1}" = "1" ]; then
+          elif [ "${FILEORGANIZE_REQUIRE_NON_EMPTY_RANGE:-1}" = "1" ]; then
             RANGE_FLAGS+=(--require-non-empty-range)
           fi
           python3 tooling/scripts/check_commit_message.py --from-ref "$BASE_REF" --to-ref "$TO_REF" "${RANGE_FLAGS[@]}"
@@ -478,7 +478,7 @@ jobs:
             echo "tag push: allow empty commit range for hosted primary gate"
           elif [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event_name }}" = "schedule" ]; then
             echo "workflow_dispatch/schedule: allow empty commit range for hosted primary gate"
-          elif [ "${FILEYARD_REQUIRE_NON_EMPTY_RANGE:-1}" = "1" ]; then
+          elif [ "${FILEORGANIZE_REQUIRE_NON_EMPTY_RANGE:-1}" = "1" ]; then
             RANGE_FLAGS+=(--require-non-empty-range)
           fi
           python3 tooling/scripts/check_atomic_commits.py --from-ref "$BASE_REF" --to-ref "$TO_REF" "${RANGE_FLAGS[@]}"
@@ -538,7 +538,7 @@ jobs:
             echo "tag push: allow empty commit range for fallback gate"
           elif [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event_name }}" = "schedule" ]; then
             echo "workflow_dispatch/schedule: allow empty commit range for fallback gate"
-          elif [ "${FILEYARD_REQUIRE_NON_EMPTY_RANGE:-1}" = "1" ]; then
+          elif [ "${FILEORGANIZE_REQUIRE_NON_EMPTY_RANGE:-1}" = "1" ]; then
             RANGE_FLAGS+=(--require-non-empty-range)
           fi
           python3 tooling/scripts/check_atomic_commits.py --from-ref "$BASE_REF" --to-ref "$TO_REF" "${RANGE_FLAGS[@]}"
@@ -950,7 +950,7 @@ jobs:
           printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           $DOCKER_BIN pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Fast-path skip (no heavy-impact code changes)
         if: needs.change-detection.outputs.run-heavy != 'true'
         run: |
@@ -997,7 +997,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-doc-drift -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_doc_drift.py \
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_doc_drift.py \
             --mode diff-range \
             --diff-base "'"$LINT_DIFF_BASE"'" \
             --diff-head HEAD \
@@ -1009,7 +1009,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-scope -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_scope.py --root .
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_docs_scope.py --root .
           '
       - name: Docs manual facts gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1017,7 +1017,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-manual-facts -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_manual_facts.py --root .
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_docs_manual_facts.py --root .
           '
       - name: Docs SSOT hash gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1025,7 +1025,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-ssot-hash -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_ssot_hash.py --root .
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_docs_ssot_hash.py --root .
           '
       - name: No Logs No Merge gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1033,7 +1033,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-no-logs-no-merge -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_no_logs_no_merge.py \
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_no_logs_no_merge.py \
             --root . \
             --mode diff-range \
             --diff-base "'"$LINT_DIFF_BASE"'" \
@@ -1045,7 +1045,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-write-before-search -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_write_before_search.py \
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_write_before_search.py \
             --root . \
             --mode diff-range \
             --diff-base "'"$LINT_DIFF_BASE"'" \
@@ -1057,7 +1057,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-env-contract -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_env_contract.py \
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_env_contract.py \
             --root . \
             --mode diff-range \
             --max-contract-size 59 \
@@ -1070,7 +1070,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-required-checks -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_required_checks_matrix.py
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_required_checks_matrix.py
           '
       - name: Docs render state gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1078,7 +1078,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-render-state -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_render_state.py --root .
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_docs_render_state.py --root .
           '
       - name: Env contract report
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1086,7 +1086,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-env-contract-report -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/generate_env_contract_report.py \
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/generate_env_contract_report.py \
             --root . \
             --output .runtime-cache/logs/env-contract-report.json
           '
@@ -1138,7 +1138,7 @@ jobs:
           printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           $DOCKER_BIN pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Fast-path skip (no heavy-impact code changes)
         if: needs.change-detection.outputs.run-heavy != 'true'
         run: |
@@ -1185,7 +1185,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-doc-drift -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_doc_drift.py \
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_doc_drift.py \
             --mode diff-range \
             --diff-base "'"$LINT_DIFF_BASE"'" \
             --diff-head HEAD \
@@ -1197,7 +1197,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-scope -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_scope.py --root .
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_docs_scope.py --root .
           '
       - name: Docs manual facts gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1205,7 +1205,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-manual-facts -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_manual_facts.py --root .
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_docs_manual_facts.py --root .
           '
       - name: Docs SSOT hash gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1213,7 +1213,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-ssot-hash -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_ssot_hash.py --root .
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_docs_ssot_hash.py --root .
           '
       - name: No Logs No Merge gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1221,7 +1221,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-no-logs-no-merge -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_no_logs_no_merge.py \
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_no_logs_no_merge.py \
             --root . \
             --mode diff-range \
             --diff-base "'"$LINT_DIFF_BASE"'" \
@@ -1233,7 +1233,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-write-before-search -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_write_before_search.py \
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_write_before_search.py \
             --root . \
             --mode diff-range \
             --diff-base "'"$LINT_DIFF_BASE"'" \
@@ -1245,7 +1245,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-env-contract -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_env_contract.py \
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_env_contract.py \
             --root . \
             --mode diff-range \
             --max-contract-size 59 \
@@ -1258,7 +1258,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-required-checks -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_required_checks_matrix.py
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_required_checks_matrix.py
           '
       - name: Docs render state gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1266,7 +1266,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-render-state -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_render_state.py --root .
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_docs_render_state.py --root .
           '
       - name: Env contract report
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1274,7 +1274,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-env-contract-report -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/generate_env_contract_report.py \
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/generate_env_contract_report.py \
             --root . \
             --output .runtime-cache/logs/env-contract-report.json
           '
@@ -1340,7 +1340,7 @@ jobs:
           printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           $DOCKER_BIN pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Fast-path skip (no heavy-impact code changes)
         if: needs.change-detection.outputs.run-heavy != 'true'
         run: |
@@ -1389,7 +1389,7 @@ jobs:
             echo "❌ ci semantic UI/UX audit: GEMINI_API_KEY is required when frontend files exist"
             exit 1
           fi
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/gemini_ui_ux_audit.py --model "${GEMINI_UI_AUDIT_MODEL}" "${ui_files[@]}"
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/gemini_ui_ux_audit.py --model "${GEMINI_UI_AUDIT_MODEL}" "${ui_files[@]}"
             '
       - name: Upload lint diagnostics
         if: always() && needs.change-detection.outputs.run-heavy == 'true'
@@ -1433,7 +1433,7 @@ jobs:
           printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           $DOCKER_BIN pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Fast-path skip (no heavy-impact code changes)
         if: needs.change-detection.outputs.run-heavy != 'true'
         run: |
@@ -1482,7 +1482,7 @@ jobs:
             echo "❌ ci semantic UI/UX audit: GEMINI_API_KEY is required when frontend files exist"
             exit 1
           fi
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/gemini_ui_ux_audit.py --model "${GEMINI_UI_AUDIT_MODEL}" "${ui_files[@]}"
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/gemini_ui_ux_audit.py --model "${GEMINI_UI_AUDIT_MODEL}" "${ui_files[@]}"
             '
       - name: Upload lint diagnostics
         if: always() && needs.change-detection.outputs.run-heavy == 'true'
@@ -1571,14 +1571,14 @@ jobs:
           if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
             DOCKER_BIN="sudo docker"
           fi
-          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileyard-docker-config"
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileorganize-docker-config"
           mkdir -p "$DOCKER_CONFIG_DIR"
           printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
           export DOCKER_CONFIG="$DOCKER_CONFIG_DIR"
           printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           $DOCKER_BIN pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Prepare artifacts dir
         run: mkdir -p .runtime-cache/logs .runtime-cache/ci
       - name: WebUI build + test gate
@@ -1704,14 +1704,14 @@ jobs:
           if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
             DOCKER_BIN="sudo docker"
           fi
-          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileyard-docker-config"
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileorganize-docker-config"
           mkdir -p "$DOCKER_CONFIG_DIR"
           printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
           export DOCKER_CONFIG="$DOCKER_CONFIG_DIR"
           printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           $DOCKER_BIN pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
           rm -rf .runtime-cache/ci-contract
       - name: Prepare artifacts dir
         run: mkdir -p .runtime-cache/logs .runtime-cache/ci
@@ -1756,14 +1756,14 @@ jobs:
           if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
             DOCKER_BIN="sudo docker"
           fi
-          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileyard-docker-config"
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileorganize-docker-config"
           mkdir -p "$DOCKER_CONFIG_DIR"
           printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
           export DOCKER_CONFIG="$DOCKER_CONFIG_DIR"
           printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           $DOCKER_BIN pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
           rm -rf .runtime-cache/ci-contract
       - name: Prepare artifacts dir
         run: mkdir -p .runtime-cache/logs .runtime-cache/ci
@@ -1860,7 +1860,7 @@ jobs:
           printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           $DOCKER_BIN pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Packaging usability gate
         run: |
           set -euo pipefail
@@ -1913,7 +1913,7 @@ jobs:
           printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           $DOCKER_BIN pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Prepare artifacts dir
         run: mkdir -p .runtime-cache/logs .runtime-cache/ci
       - name: Mutation canary gate
@@ -1921,7 +1921,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label mutation-canary -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_mutation_canary.py \
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_mutation_canary.py \
             --repo-root . \
             --json-output .runtime-cache/logs/mutation-canary-summary.json
           '
@@ -1965,7 +1965,7 @@ jobs:
           printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           $DOCKER_BIN pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Prepare artifacts dir
         run: mkdir -p .runtime-cache/logs .runtime-cache/ci
       - name: Mutation canary gate
@@ -1973,7 +1973,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label mutation-canary -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_mutation_canary.py \
+          $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_mutation_canary.py \
             --repo-root . \
             --json-output .runtime-cache/logs/mutation-canary-summary.json
           '
@@ -2015,10 +2015,10 @@ jobs:
     continue-on-error: true
     environment: owner-approved-sensitive
     env:
-      FILEYARD_RUN_LIVE_TESTS: "1"
+      FILEORGANIZE_RUN_LIVE_TESTS: "1"
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       GEMINI_MODEL: "gemini-3-flash-preview"
-      FILEYARD_LIVE_TEST_URL: "https://docs.github.com/en"
+      FILEORGANIZE_LIVE_TEST_URL: "https://docs.github.com/en"
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
@@ -2055,13 +2055,13 @@ jobs:
           if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
             DOCKER_BIN="sudo docker"
           fi
-          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileyard-docker-config"
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileorganize-docker-config"
           mkdir -p "$DOCKER_CONFIG_DIR"
           printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
           printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN --config "$DOCKER_CONFIG_DIR" login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           $DOCKER_BIN --config "$DOCKER_CONFIG_DIR" pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Prepare artifacts dir
         if: steps.preflight-scope.outputs.should_run == 'true'
         run: mkdir -p .runtime-cache/logs .runtime-cache/ci
@@ -2071,7 +2071,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label live-smoke-preflight -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
+          $HOME/.cache/fileorganize/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
             tests/e2e/test_live_llm_integration.py::test_live_llm_env_preflight \
             tests/e2e/test_live_external_site_playwright.py::test_live_browser_env_preflight
           '
@@ -2097,10 +2097,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: owner-approved-sensitive
     env:
-      FILEYARD_RUN_LIVE_TESTS: "1"
+      FILEORGANIZE_RUN_LIVE_TESTS: "1"
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       GEMINI_MODEL: "gemini-3-flash-preview"
-      FILEYARD_LIVE_TEST_URL: "https://docs.github.com/en"
+      FILEORGANIZE_LIVE_TEST_URL: "https://docs.github.com/en"
     steps:
       - name: Pre-checkout workspace hygiene
         run: |
@@ -2145,13 +2145,13 @@ jobs:
           if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
             DOCKER_BIN="sudo docker"
           fi
-          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileyard-docker-config"
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileorganize-docker-config"
           mkdir -p "$DOCKER_CONFIG_DIR"
           printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
           printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN --config "$DOCKER_CONFIG_DIR" login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           $DOCKER_BIN --config "$DOCKER_CONFIG_DIR" pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Prepare artifacts dir
         if: steps.preflight-scope.outputs.should_run == 'true'
         run: mkdir -p .runtime-cache/logs .runtime-cache/ci
@@ -2161,7 +2161,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label live-smoke-preflight -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
+          $HOME/.cache/fileorganize/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
             tests/e2e/test_live_llm_integration.py::test_live_llm_env_preflight \
             tests/e2e/test_live_external_site_playwright.py::test_live_browser_env_preflight
           '
@@ -2226,7 +2226,7 @@ jobs:
           printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           docker pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Prepare artifacts dir
         run: mkdir -p .runtime-cache/logs .runtime-cache/ci
       - name: Functional gate
@@ -2271,7 +2271,7 @@ jobs:
           printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           docker pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Prepare artifacts dir
         run: mkdir -p .runtime-cache/logs .runtime-cache/ci
       - name: Functional gate
@@ -2350,7 +2350,7 @@ jobs:
           esac
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh ".runtime-cache/ci-contract/${image_file}")"
           $DOCKER_BIN pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Prepare artifacts dir
         run: mkdir -p .runtime-cache/logs .runtime-cache/ci
       - name: Unit suite (all matrix versions)
@@ -2358,7 +2358,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label test-gates -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
+          $HOME/.cache/fileorganize/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
             --strict-config --strict-markers \
             --junitxml=.runtime-cache/ci/pytest-junit-unit.xml \
             tests/unit
@@ -2417,7 +2417,7 @@ jobs:
           esac
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh ".runtime-cache/ci-contract/${image_file}")"
           $DOCKER_BIN pull "$IMAGE_REF"
-          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Prepare artifacts dir
         run: mkdir -p .runtime-cache/logs .runtime-cache/ci
       - name: Unit suite (all matrix versions)
@@ -2425,7 +2425,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label test-gates -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/fileyard/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
+          $HOME/.cache/fileorganize/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
             --strict-config --strict-markers \
             --junitxml=.runtime-cache/ci/pytest-junit-unit.xml \
             tests/unit
@@ -2536,7 +2536,7 @@ jobs:
           echo "Before cleanup:"
           du -sh artifacts .runtime-cache .pytest_cache .mypy_cache .ruff_cache 2>/dev/null || true
           echo "==> Repo-local residue"
-          env FILEYARD_ALLOW_HOST_EXECUTION=1 bash tooling/cleanup/prune_repo_runtime.sh
+          env FILEORGANIZE_ALLOW_HOST_EXECUTION=1 bash tooling/cleanup/prune_repo_runtime.sh
 
           echo "==> Machine cache (safe)"
           bash tooling/cleanup/prune_machine_cache.sh --safe

@@ -70,14 +70,14 @@ def test_public_artifact_audit_fails_when_audited_file_is_undeclared(tmp_path: P
     (repo / "tests" / "fixtures" / "golden_input").mkdir(parents=True)
     (repo / "docs").mkdir(parents=True)
     _write_policy(repo)
-    (repo / "apps" / "webui" / "public" / "fileyard-mark.svg").write_text("<svg/>", encoding="utf-8")
+    (repo / "apps" / "webui" / "public" / "fileorganize-mark.svg").write_text("<svg/>", encoding="utf-8")
     (repo / "tests" / "fixtures" / "golden_input" / "doc.pdf").write_text("hello", encoding="utf-8")
     (repo / "contracts" / "governance" / "public_asset_provenance.yaml").write_text(
         "\n".join(
             [
                 "version: 1",
                 "assets:",
-                "  - path: apps/webui/public/fileyard-mark.svg",
+                "  - path: apps/webui/public/fileorganize-mark.svg",
                 "    kind: public-brand-asset",
                 "    status: repository-authored",
                 "    license: MIT",
@@ -111,14 +111,14 @@ def test_public_artifact_audit_fails_on_forbidden_extension_or_secret_like_conte
     (repo / "tests" / "fixtures" / "golden_input").mkdir(parents=True)
     (repo / "docs").mkdir(parents=True)
     _write_policy(repo)
-    (repo / "apps" / "webui" / "public" / "fileyard-mark.svg").write_text("Authorization: Bearer token\n", encoding="utf-8")
+    (repo / "apps" / "webui" / "public" / "fileorganize-mark.svg").write_text("Authorization: Bearer token\n", encoding="utf-8")
     (repo / "tests" / "fixtures" / "golden_input" / "capture.har").write_text("{}", encoding="utf-8")
     (repo / "contracts" / "governance" / "public_asset_provenance.yaml").write_text(
         "\n".join(
             [
                 "version: 1",
                 "assets:",
-                "  - path: apps/webui/public/fileyard-mark.svg",
+                "  - path: apps/webui/public/fileorganize-mark.svg",
                 "    kind: public-brand-asset",
                 "    status: repository-authored",
                 "    license: MIT",

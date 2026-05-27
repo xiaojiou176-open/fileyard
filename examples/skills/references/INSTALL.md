@@ -1,14 +1,14 @@
-# Install And Attach Movi MCP
+# Install And Attach Fileorganize MCP
 
-Use this when the host runtime does not already have Movi connected.
+Use this when the host runtime does not already have Fileorganize connected.
 
 ## Local repo setup
 
 1. Clone the public repo:
 
 ```bash
-git clone https://github.com/xiaojiou176-open/fileyard.git
-cd fileyard
+git clone https://github.com/xiaojiou176-open/fileorganize.git
+cd fileorganize
 npm install
 ```
 

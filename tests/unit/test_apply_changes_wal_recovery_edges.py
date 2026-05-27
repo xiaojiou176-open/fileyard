@@ -118,7 +118,7 @@ def test_apply_wal_recovery_fail_exits(monkeypatch, tmp_path: Path):
     partial = Path(str(manifest) + ".partial")
     partial.write_text("x\n", encoding="utf-8")
     wal = Path(str(manifest) + ".apply.wal.json")
-    wal.write_text('{"phase":"moving"}', encoding="utf-8")
+    wal.write_text('{"phase":"fileorganizeng"}', encoding="utf-8")
 
     original_replace = apply_changes.Path.replace
 

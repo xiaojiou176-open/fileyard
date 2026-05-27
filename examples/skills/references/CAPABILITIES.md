@@ -1,6 +1,6 @@
-# Movi MCP Capabilities
+# Fileorganize MCP Capabilities
 
-These are the current repo-owned Movi MCP tools exposed by `npm run mcp:tools`.
+These are the current repo-owned Fileorganize MCP tools exposed by `npm run mcp:tools`.
 
 ## Best first tools
 

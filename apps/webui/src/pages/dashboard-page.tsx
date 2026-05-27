@@ -13,10 +13,10 @@ import { formatDate, progressToPercent } from '@/lib/utils'
 import { createRouteIntentPrefetchHandlers } from '@/routes/lazy-routes'
 
 const DASHBOARD_DOC_LINKS = {
-  codex: 'https://github.com/xiaojiou176-open/fileyard/blob/main/docs/codex_mcp.md',
-  claude: 'https://github.com/xiaojiou176-open/fileyard/blob/main/docs/claude_code_mcp.md',
-  mcp: 'https://github.com/xiaojiou176-open/fileyard/blob/main/docs/mcp.md',
-  developerGuide: 'https://github.com/xiaojiou176-open/fileyard/blob/main/docs/developer_guide.md',
+  codex: 'https://github.com/xiaojiou176-open/fileorganize/blob/main/docs/codex_mcp.md',
+  claude: 'https://github.com/xiaojiou176-open/fileorganize/blob/main/docs/claude_code_mcp.md',
+  mcp: 'https://github.com/xiaojiou176-open/fileorganize/blob/main/docs/mcp.md',
+  developerGuide: 'https://github.com/xiaojiou176-open/fileorganize/blob/main/docs/developer_guide.md',
 } as const
 
 type NextStepKind = 'setup' | 'analyze' | 'review' | 'apply' | 'report'

@@ -11,12 +11,12 @@ const mocks = vi.hoisted(() => ({
   getJobMock: vi.fn<() => Promise<Job | undefined>>(async () => undefined),
   getRuntimeSettingsMock: vi.fn(async () => ({
     workspace_root: '/tmp/workspace',
-    runtime_env_path: '/tmp/workspace/.fileyard/env/runtime.env',
+    runtime_env_path: '/tmp/workspace/.fileorganize/env/runtime.env',
     input_root: '/tmp/workspace/data/raw',
     output_root: '/tmp/workspace/data/organized',
     allowed_root: '/tmp/workspace/data/raw,/tmp/workspace/data/organized',
-    manifest_root: '/tmp/workspace/.fileyard/manifests',
-    artifact_root: '/tmp/workspace/.fileyard/artifacts',
+    manifest_root: '/tmp/workspace/.fileorganize/manifests',
+    artifact_root: '/tmp/workspace/.fileorganize/artifacts',
     has_api_key: true,
     api_key_masked: '***',
     api_key_source: 'env', // pragma: allowlist secret
@@ -93,8 +93,8 @@ describe('RollbackPage', () => {
       makeJob({
         id: 'source-job',
         status: 'succeeded',
-        manifest_path: '/tmp/workspace/.fileyard/manifests/manifest.jsonl',
-        rollback_manifest_path: '/tmp/workspace/.fileyard/manifests/rollback.jsonl',
+        manifest_path: '/tmp/workspace/.fileorganize/manifests/manifest.jsonl',
+        rollback_manifest_path: '/tmp/workspace/.fileorganize/manifests/rollback.jsonl',
         summary: {
           total: 2,
           with_error: 0,

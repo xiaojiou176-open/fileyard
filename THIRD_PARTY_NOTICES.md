@@ -17,7 +17,7 @@ Canonical provenance ledger for repository-authored public assets and synthetic 
 Repo-side trust posture for those public assets and synthetic fixtures is enforced by:
 `bash tooling/gates/public_artifact_audit.sh`
 
-- `apps/webui/public/fileyard-mark.svg`
+- `apps/webui/public/fileorganize-mark.svg`
   - Status: repository-authored asset
   - License: MIT (same as repository)
   - Notes: replaces the default Vite favicon for clearer provenance.

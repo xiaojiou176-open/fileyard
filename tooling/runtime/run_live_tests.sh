@@ -17,7 +17,7 @@ apply_runtime_env_defaults "$REPO_ROOT"
 VENV="$(governance_runtime_venv_path "$REPO_ROOT")"
 RUNTIME_ENV_FILE="$(governance_runtime_env_file_path "$REPO_ROOT")"
 
-if [ "${FILEYARD_IN_CONTAINER:-0}" != "1" ] && [ "${FILEYARD_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
+if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ] && [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
   exec bash "$ROOT/scripts/container_exec.sh" --label run-live-tests -- bash tooling/runtime/run_live_tests.sh "$@"
 fi
 
@@ -250,7 +250,7 @@ run_live_pytest_with_heartbeat() {
 }
 
 resolve_var_prefer_env_then_runtime_env GEMINI_MODEL ""
-resolve_var_prefer_env_then_runtime_env FILEYARD_LIVE_TEST_URL ""
+resolve_var_prefer_env_then_runtime_env FILEORGANIZE_LIVE_TEST_URL ""
 resolve_var_prefer_runtime_env GEMINI_API_KEY ""
 resolve_var_prefer_runtime_env LIVE_HEARTBEAT_INTERVAL_SECONDS "20"
 resolve_var_prefer_runtime_env LIVE_MAX_DURATION_SECONDS "600"
@@ -279,9 +279,9 @@ if [ -z "${GEMINI_MODEL}" ]; then
   exit 1
 fi
 
-if [ -z "${FILEYARD_LIVE_TEST_URL}" ]; then
-  echo "❌ run_live_tests: FILEYARD_LIVE_TEST_URL is required for live browser tests" >&2
-  echo "Tip: set FILEYARD_LIVE_TEST_URL in $RUNTIME_ENV_FILE or current shell env." >&2
+if [ -z "${FILEORGANIZE_LIVE_TEST_URL}" ]; then
+  echo "❌ run_live_tests: FILEORGANIZE_LIVE_TEST_URL is required for live browser tests" >&2
+  echo "Tip: set FILEORGANIZE_LIVE_TEST_URL in $RUNTIME_ENV_FILE or current shell env." >&2
   exit 1
 fi
 
@@ -290,9 +290,9 @@ if looks_like_placeholder_key "${GEMINI_API_KEY}"; then
   exit 1
 fi
 
-if ! validate_url "${FILEYARD_LIVE_TEST_URL}"; then
-  echo "❌ run_live_tests: FILEYARD_LIVE_TEST_URL must be an absolute https URL to a real external host." >&2
-  echo "Current value: ${FILEYARD_LIVE_TEST_URL}" >&2
+if ! validate_url "${FILEORGANIZE_LIVE_TEST_URL}"; then
+  echo "❌ run_live_tests: FILEORGANIZE_LIVE_TEST_URL must be an absolute https URL to a real external host." >&2
+  echo "Current value: ${FILEORGANIZE_LIVE_TEST_URL}" >&2
   exit 1
 fi
 
@@ -305,9 +305,9 @@ if ! printf '%s' "${GEMINI_MODEL}" | grep -Eqi '^gemini-'; then
   exit 1
 fi
 
-export FILEYARD_RUN_LIVE_TESTS=1
-export FILEYARD_RUN_WEBUI_E2E=1
-LIVE_COVERAGE_FILE="${FILEYARD_LIVE_COVERAGE_FILE:-$(governance_runtime_ci_path "$REPO_ROOT")/.coverage-live-$$}"
+export FILEORGANIZE_RUN_LIVE_TESTS=1
+export FILEORGANIZE_RUN_WEBUI_E2E=1
+LIVE_COVERAGE_FILE="${FILEORGANIZE_LIVE_COVERAGE_FILE:-$(governance_runtime_ci_path "$REPO_ROOT")/.coverage-live-$$}"
 export COVERAGE_FILE="$LIVE_COVERAGE_FILE"
 rm -f "$LIVE_COVERAGE_FILE" "$LIVE_COVERAGE_FILE-shm" "$LIVE_COVERAGE_FILE-wal" || true
 echo "==> Isolated live coverage data file: $LIVE_COVERAGE_FILE"
@@ -334,7 +334,7 @@ LOG_DIR="$(governance_runtime_ci_path "$REPO_ROOT")"
 LOG_FILE="$LOG_DIR/live-tests.log"
 JUNIT_FILE="$LOG_DIR/live-tests-junit.xml"
 mkdir -p "$LOG_DIR"
-host="$("$VENV/bin/python" - "${FILEYARD_LIVE_TEST_URL}" <<'PY'
+host="$("$VENV/bin/python" - "${FILEORGANIZE_LIVE_TEST_URL}" <<'PY'
 from urllib.parse import urlparse
 import sys
 print((urlparse(sys.argv[1]).hostname or "").strip())

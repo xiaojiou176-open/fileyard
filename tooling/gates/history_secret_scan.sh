@@ -11,7 +11,7 @@ CONFIG_LIB="$ROOT/scripts/lib_config.sh"
 load_governance_defaults "$REPO_ROOT"
 apply_runtime_env_defaults "$REPO_ROOT"
 
-if [ "${FILEYARD_IN_CONTAINER:-0}" != "1" ] && [ "${FILEYARD_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
+if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ] && [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
   exec bash "$ROOT/scripts/container_exec.sh" --label history-secret-scan -- bash tooling/gates/history_secret_scan.sh "$@"
 fi
 

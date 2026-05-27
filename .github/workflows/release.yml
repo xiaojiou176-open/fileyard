@@ -57,7 +57,7 @@ jobs:
 
       - name: Fresh repo-side verification before release assets
         env:
-          FILEYARD_ALLOW_HOST_EXECUTION: "1"
+          FILEORGANIZE_ALLOW_HOST_EXECUTION: "1"
           GH_TOKEN: ${{ secrets.RELEASE_AUDIT_TOKEN || github.token }}
         run: |
           set -euo pipefail
