@@ -404,12 +404,12 @@ def test_normalization_more_edges(tmp_path: Path):
 
 
 def test_cli_helpers_cover_edges(monkeypatch, tmp_path: Path):
-    monkeypatch.setenv("FILEORGANIZE_ENABLE_TEST_HOOKS", "1")
+    monkeypatch.setenv("FILEMAN_ENABLE_TEST_HOOKS", "1")
     assert cli_app._is_test_hooks_enabled() is True
 
     workspace_root = tmp_path / "workspace"
-    monkeypatch.setenv("FILEORGANIZE_WORKSPACE_ROOT", str(workspace_root))
-    assert cli_app._default_report_out() == str(workspace_root / ".fileorganize" / "artifacts" / "report" / "report_summary.json")
+    monkeypatch.setenv("FILEMAN_WORKSPACE_ROOT", str(workspace_root))
+    assert cli_app._default_report_out() == str(workspace_root / ".fileman" / "artifacts" / "report" / "report_summary.json")
 
     assert "其他" in cli_app._parse_categories(("工作", "旅行"))
 
@@ -496,7 +496,7 @@ def test_cli_main_config_load_fail_logs_and_exits(monkeypatch, tmp_path: Path):
         lambda *_args, **kwargs: events.append(kwargs.get("error_code")),
     )
 
-    monkeypatch.setattr(sys, "argv", ["fileorganize", "--config", str(tmp_path / "bad.toml"), "report", "--manifest", "m", "--out", "o"])
+    monkeypatch.setattr(sys, "argv", ["fileman", "--config", str(tmp_path / "bad.toml"), "report", "--manifest", "m", "--out", "o"])
 
     with pytest.raises(SystemExit, match="Failed to load config"):
         cli_app.main()
@@ -511,7 +511,7 @@ def test_cli_main_invalid_crash_inject(monkeypatch):
         sys,
         "argv",
         [
-            "fileorganize",
+            "fileman",
             "apply",
             "--manifest",
             "/tmp/m.jsonl",
@@ -551,7 +551,7 @@ def test_cli_main_collects_analyze_and_apply_lock_targets(monkeypatch, tmp_path:
         sys,
         "argv",
         [
-            "fileorganize",
+            "fileman",
             "analyze",
             "--manifest",
             str(manifest),
@@ -567,7 +567,7 @@ def test_cli_main_collects_analyze_and_apply_lock_targets(monkeypatch, tmp_path:
         sys,
         "argv",
         [
-            "fileorganize",
+            "fileman",
             "apply",
             "--manifest",
             str(manifest),
@@ -607,7 +607,7 @@ def test_cli_main_lock_fail_releases_previously_acquired(monkeypatch, tmp_path: 
         sys,
         "argv",
         [
-            "fileorganize",
+            "fileman",
             "report",
             "--manifest",
             str(tmp_path / "m.jsonl"),

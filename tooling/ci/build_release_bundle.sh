@@ -34,7 +34,7 @@ evidence_path="$OUTPUT_DIR/release-evidence.json"
 manifest_path="$OUTPUT_DIR/release-manifest.json"
 python_sbom_path="$OUTPUT_DIR/python-runtime-sbom.cdx.json"
 node_sbom_path="$OUTPUT_DIR/webui-runtime-sbom.cdx.json"
-source_archive_path="$OUTPUT_DIR/fileorganize-${VERSION_TAG}.tar.gz"
+source_archive_path="$OUTPUT_DIR/fileman-${VERSION_TAG}.tar.gz"
 checksums_path="$OUTPUT_DIR/SHA256SUMS.txt"
 
 "$VENV/bin/python" "$ROOT/ci/prepare_release_draft.py" --root "$REPO_ROOT" --output "$notes_path"
@@ -55,7 +55,7 @@ npm --prefix "$REPO_ROOT/apps/webui" sbom \
 
 git -C "$REPO_ROOT" archive \
   --format=tar.gz \
-  --prefix="fileorganize-${VERSION_TAG}/" \
+  --prefix="fileman-${VERSION_TAG}/" \
   -o "$source_archive_path" HEAD
 
 python3 - <<'PY' "$manifest_path" "$VERSION_TAG" "$REPO_ROOT" "$notes_path" "$evidence_path" "$python_sbom_path" "$node_sbom_path" "$source_archive_path" "$checksums_path"

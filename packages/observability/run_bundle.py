@@ -32,14 +32,14 @@ def _now_iso() -> str:
 
 
 def _workspace_root() -> Path:
-    return Path(os.environ.get("FILEORGANIZE_WORKSPACE_ROOT", "~/.fileorganize/workspaces/default")).expanduser()
+    return Path(os.environ.get("FILEMAN_WORKSPACE_ROOT", "~/.fileman/workspaces/default")).expanduser()
 
 
 def run_bundle_root() -> Path:
-    raw = os.environ.get("FILEORGANIZE_RUN_BUNDLE_ROOT", "").strip()
+    raw = os.environ.get("FILEMAN_RUN_BUNDLE_ROOT", "").strip()
     if raw:
         return Path(raw).expanduser()
-    return _workspace_root() / ".fileorganize" / "runs"
+    return _workspace_root() / ".fileman" / "runs"
 
 
 def run_bundle_dir(run_id: str) -> Path:
@@ -134,11 +134,11 @@ def initialize_run_bundle(run_id: str, command: str, *, gate_run_id: str | None 
     _write_json(evidence_index_path, evidence_payload)
     stderr_path.touch()
 
-    os.environ["FILEORGANIZE_RUN_DIR"] = str(bundle_dir)
-    os.environ["FILEORGANIZE_RUN_EVENTS_PATH"] = str(events_path)
-    os.environ["FILEORGANIZE_RUN_STDERR_PATH"] = str(stderr_path)
-    os.environ["FILEORGANIZE_RUN_SUMMARY_PATH"] = str(summary_path)
-    os.environ["FILEORGANIZE_RUN_EVIDENCE_INDEX_PATH"] = str(evidence_index_path)
+    os.environ["FILEMAN_RUN_DIR"] = str(bundle_dir)
+    os.environ["FILEMAN_RUN_EVENTS_PATH"] = str(events_path)
+    os.environ["FILEMAN_RUN_STDERR_PATH"] = str(stderr_path)
+    os.environ["FILEMAN_RUN_SUMMARY_PATH"] = str(summary_path)
+    os.environ["FILEMAN_RUN_EVIDENCE_INDEX_PATH"] = str(evidence_index_path)
 
     _install_stderr_tee(stderr_path)
 

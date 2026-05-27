@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="650" viewBox="0 0 1400 650" role="img" aria-labelledby="title desc">
-  <title id="title">Fileyard 10-second tour</title>
+  <title id="title">Fileman 10-second tour</title>
   <desc id="desc">Three cards showing intake, manifest review, and dry-run apply with rollback-ready output.</desc>
   <defs>
     <linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="100%">
@@ -13,7 +13,7 @@
   </defs>
   <rect width="1400" height="650" fill="url(#bg)" rx="28" />
   <text x="80" y="92" fill="#21323b" font-family="Georgia, 'Times New Roman', serif" font-size="42" font-weight="700">
-    See Fileyard in 10 seconds
+    See Fileman in 10 seconds
   </text>
   <text x="80" y="132" fill="#50626a" font-family="'Helvetica Neue', Arial, sans-serif" font-size="23">
     Intake chaos goes through review-first AI, then ends as a dry-run plan you can trust before any real move happens.

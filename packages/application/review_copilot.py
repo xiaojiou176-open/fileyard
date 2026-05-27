@@ -131,7 +131,7 @@ def build_review_copilot_summary(
                 key="low_confidence",
                 title="Low-confidence rows are driving the review queue",
                 count=len(low_confidence),
-                detail=f"Fileorganize currently sends rows below {int(LOW_CONFIDENCE_THRESHOLD * 100)}% confidence into manual review.",
+                detail=f"Fileman currently sends rows below {int(LOW_CONFIDENCE_THRESHOLD * 100)}% confidence into manual review.",
             )
         )
     if learned_rows:

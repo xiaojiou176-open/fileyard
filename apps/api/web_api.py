@@ -111,7 +111,7 @@ from packages.infrastructure.watch_source_store import WatchSource, load_watch_s
 def _discover_repo_root() -> Path:
     candidates = [Path.cwd().resolve(), *Path(__file__).resolve().parents]
     for candidate in candidates:
-        has_cli = (candidate / "apps" / "cli" / "fileorganize.py").exists()
+        has_cli = (candidate / "apps" / "cli" / "fileman.py").exists()
         has_schema = (candidate / "contracts" / "runtime" / "manifest.schema.json").exists()
         if has_cli and has_schema:
             return candidate
@@ -121,14 +121,14 @@ def _discover_repo_root() -> Path:
 PIPELINE_ROOT = Path(__file__).resolve().parent
 PACKAGES_ROOT = PIPELINE_ROOT.parent
 REPO_ROOT = _discover_repo_root()
-CLI_ENTRYPOINT = REPO_ROOT / "apps" / "cli" / "fileorganize.py"
-WORKSPACE_ROOT = Path(os.environ.get("FILEORGANIZE_WORKSPACE_ROOT", "~/.fileorganize/workspaces/default")).expanduser()
-DEFAULT_INPUT_ROOT = Path(os.environ.get("FILEORGANIZE_INPUT_ROOT", str(WORKSPACE_ROOT / "data" / "raw"))).expanduser()
-DEFAULT_OUTPUT_ROOT = Path(os.environ.get("FILEORGANIZE_OUTPUT_ROOT", str(WORKSPACE_ROOT / "data" / "organized"))).expanduser()
-MANIFEST_ROOT = Path(os.environ.get("FILEORGANIZE_MANIFEST_ROOT", str(WORKSPACE_ROOT / ".fileorganize" / "manifests"))).expanduser()
-ARTIFACT_ROOT = Path(os.environ.get("FILEORGANIZE_ARTIFACT_ROOT", str(WORKSPACE_ROOT / ".fileorganize" / "artifacts"))).expanduser()
+CLI_ENTRYPOINT = REPO_ROOT / "apps" / "cli" / "fileman.py"
+WORKSPACE_ROOT = Path(os.environ.get("FILEMAN_WORKSPACE_ROOT", "~/.fileman/workspaces/default")).expanduser()
+DEFAULT_INPUT_ROOT = Path(os.environ.get("FILEMAN_INPUT_ROOT", str(WORKSPACE_ROOT / "data" / "raw"))).expanduser()
+DEFAULT_OUTPUT_ROOT = Path(os.environ.get("FILEMAN_OUTPUT_ROOT", str(WORKSPACE_ROOT / "data" / "organized"))).expanduser()
+MANIFEST_ROOT = Path(os.environ.get("FILEMAN_MANIFEST_ROOT", str(WORKSPACE_ROOT / ".fileman" / "manifests"))).expanduser()
+ARTIFACT_ROOT = Path(os.environ.get("FILEMAN_ARTIFACT_ROOT", str(WORKSPACE_ROOT / ".fileman" / "artifacts"))).expanduser()
 DEFAULT_ALLOWED_ROOT = os.environ.get(
-    "FILEORGANIZE_ALLOWED_ROOT",
+    "FILEMAN_ALLOWED_ROOT",
     f"{DEFAULT_INPUT_ROOT},{DEFAULT_OUTPUT_ROOT}",
 )
 
@@ -142,9 +142,9 @@ FRONTEND_DIST_ROOT = REPO_ROOT / ".runtime-cache" / "build" / "apps" / "webui"
 RUNTIME_SETTINGS_KEYS = (
     "GEMINI_API_KEY",
     "GEMINI_MODEL",
-    "FILEORGANIZE_INPUT_ROOT",
-    "FILEORGANIZE_OUTPUT_ROOT",
-    "FILEORGANIZE_ROLLBACK_HMAC_KEY",
+    "FILEMAN_INPUT_ROOT",
+    "FILEMAN_OUTPUT_ROOT",
+    "FILEMAN_ROLLBACK_HMAC_KEY",
 )
 UPLOAD_COPY_CHUNK_SIZE = 1024 * 1024
 RUNTIME_DEFAULTS_FILENAME = "runtime_defaults.json"
@@ -440,17 +440,17 @@ def _refresh_runtime_defaults(*, input_root: Path | None = None, output_root: Pa
     global DEFAULT_INPUT_ROOT, DEFAULT_OUTPUT_ROOT, DEFAULT_ALLOWED_ROOT
     if input_root is not None:
         DEFAULT_INPUT_ROOT = input_root
-        os.environ["FILEORGANIZE_INPUT_ROOT"] = str(DEFAULT_INPUT_ROOT)
+        os.environ["FILEMAN_INPUT_ROOT"] = str(DEFAULT_INPUT_ROOT)
     if output_root is not None:
         DEFAULT_OUTPUT_ROOT = output_root
-        os.environ["FILEORGANIZE_OUTPUT_ROOT"] = str(DEFAULT_OUTPUT_ROOT)
+        os.environ["FILEMAN_OUTPUT_ROOT"] = str(DEFAULT_OUTPUT_ROOT)
     DEFAULT_ALLOWED_ROOT = f"{DEFAULT_INPUT_ROOT},{DEFAULT_OUTPUT_ROOT}"
 
 
 def _bootstrap_runtime_defaults() -> None:
     runtime_env_values = _read_runtime_env_map()
-    input_root = _normalize_runtime_path(runtime_env_values.get("FILEORGANIZE_INPUT_ROOT"), DEFAULT_INPUT_ROOT)
-    output_root = _normalize_runtime_path(runtime_env_values.get("FILEORGANIZE_OUTPUT_ROOT"), DEFAULT_OUTPUT_ROOT)
+    input_root = _normalize_runtime_path(runtime_env_values.get("FILEMAN_INPUT_ROOT"), DEFAULT_INPUT_ROOT)
+    output_root = _normalize_runtime_path(runtime_env_values.get("FILEMAN_OUTPUT_ROOT"), DEFAULT_OUTPUT_ROOT)
     _refresh_runtime_defaults(input_root=input_root, output_root=output_root)
 
 
@@ -459,8 +459,8 @@ def _runtime_settings_view() -> RuntimeSettingsView:
     model_default = "gemini-3-flash-preview"
     model, model_source = _resolve_runtime_value("GEMINI_MODEL", model_default)
     active_strategy_pack_id = get_active_strategy_pack_id(WORKSPACE_ROOT)
-    input_root_raw, _ = _resolve_runtime_value("FILEORGANIZE_INPUT_ROOT", str(DEFAULT_INPUT_ROOT))
-    output_root_raw, _ = _resolve_runtime_value("FILEORGANIZE_OUTPUT_ROOT", str(DEFAULT_OUTPUT_ROOT))
+    input_root_raw, _ = _resolve_runtime_value("FILEMAN_INPUT_ROOT", str(DEFAULT_INPUT_ROOT))
+    output_root_raw, _ = _resolve_runtime_value("FILEMAN_OUTPUT_ROOT", str(DEFAULT_OUTPUT_ROOT))
     input_root = _normalize_runtime_path(input_root_raw, DEFAULT_INPUT_ROOT)
     output_root = _normalize_runtime_path(output_root_raw, DEFAULT_OUTPUT_ROOT)
     analyze_defaults = _read_runtime_analyze_defaults()
@@ -490,10 +490,10 @@ def _runtime_settings_view() -> RuntimeSettingsView:
         missing.append("GEMINI_MODEL")
     if not input_root.exists():
         warnings.append("Photo source folder does not exist yet")
-        missing.append("FILEORGANIZE_INPUT_ROOT")
+        missing.append("FILEMAN_INPUT_ROOT")
     if not output_root.exists():
         warnings.append("Organized output folder does not exist yet")
-        missing.append("FILEORGANIZE_OUTPUT_ROOT")
+        missing.append("FILEMAN_OUTPUT_ROOT")
 
     ready = len(missing) == 0
     if api_key_source == "env":  # pragma: allowlist secret
@@ -687,8 +687,8 @@ def _update_runtime_settings(payload: RuntimeSettingsUpdateRequest) -> RuntimeSe
         runtime_env_values["GEMINI_API_KEY"] = next_api_key
         os.environ["GEMINI_API_KEY"] = next_api_key
     runtime_env_values["GEMINI_MODEL"] = next_model
-    runtime_env_values["FILEORGANIZE_INPUT_ROOT"] = str(next_input_root)
-    runtime_env_values["FILEORGANIZE_OUTPUT_ROOT"] = str(next_output_root)
+    runtime_env_values["FILEMAN_INPUT_ROOT"] = str(next_input_root)
+    runtime_env_values["FILEMAN_OUTPUT_ROOT"] = str(next_output_root)
     os.environ["GEMINI_MODEL"] = next_model
     _write_runtime_env_map(runtime_env_values)
     next_strategy_pack_id = str(payload.active_strategy_pack_id or current_settings.active_strategy_pack_id or "").strip()
@@ -979,7 +979,7 @@ def _write_preference_items(path: Path, items: Dict[str, Dict[str, Any]]) -> Non
 
 
 def create_app(command_executor: CommandExecutor | None = None) -> FastAPI:
-    app = FastAPI(title="Fileorganize Web API", version="2.0.0")
+    app = FastAPI(title="Fileman Web API", version="2.0.0")
     router = APIRouter()
 
     _migrate_preference_roots()
@@ -1275,7 +1275,7 @@ def create_app(command_executor: CommandExecutor | None = None) -> FastAPI:
 
     @router.get("/healthz")
     def healthz() -> Dict[str, str]:
-        return {"status": "ok", "service": "fileorganize-web-api"}
+        return {"status": "ok", "service": "fileman-web-api"}
 
     @router.get("/api/jobs/history")
     def get_jobs_history(limit: int = Query(default=200, ge=1, le=2000)) -> Dict[str, Any]:
@@ -1749,7 +1749,7 @@ def create_app(command_executor: CommandExecutor | None = None) -> FastAPI:
         execute = bool(payload.execute)
         strict_integrity = bool(payload.strict_integrity)
         if strict_integrity and not _has_strong_rollback_signing_key():
-            raise HTTPException(status_code=400, detail="strict_integrity=true requires FILEORGANIZE_ROLLBACK_HMAC_KEY")
+            raise HTTPException(status_code=400, detail="strict_integrity=true requires FILEMAN_ROLLBACK_HMAC_KEY")
         job_payload = {
             "manifest_path": str(manifest_path),
             "execute": execute,
@@ -1981,7 +1981,7 @@ def create_app(command_executor: CommandExecutor | None = None) -> FastAPI:
         return {
             "items": rules,
             "count": len(rules),
-            "path": str(WORKSPACE_ROOT / ".fileorganize" / "preferences" / "learned_rules.json"),
+            "path": str(WORKSPACE_ROOT / ".fileman" / "preferences" / "learned_rules.json"),
         }
 
     @router.delete("/api/preferences/learned-rules")
@@ -1997,7 +1997,7 @@ def create_app(command_executor: CommandExecutor | None = None) -> FastAPI:
             payload = source.to_dict()
             payload["strategy_pack"] = pack_index.get(source.strategy_pack_id)
             items.append(payload)
-        return {"items": items, "count": len(items), "path": str(WORKSPACE_ROOT / ".fileorganize" / "preferences" / "watch_sources.json")}
+        return {"items": items, "count": len(items), "path": str(WORKSPACE_ROOT / ".fileman" / "preferences" / "watch_sources.json")}
 
     @router.post("/api/preferences/watch-sources")
     def upsert_watch_source(payload: WatchSourceUpsertRequest) -> Dict[str, Any]:

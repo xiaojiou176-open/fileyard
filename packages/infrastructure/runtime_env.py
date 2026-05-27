@@ -5,16 +5,16 @@ import os
 from pathlib import Path
 from typing import Mapping
 
-DEFAULT_WORKSPACE_ROOT = "~/.fileorganize/workspaces/default"
+DEFAULT_WORKSPACE_ROOT = "~/.fileman/workspaces/default"
 
 
 def workspace_root() -> Path:
-    return Path(os.environ.get("FILEORGANIZE_WORKSPACE_ROOT", DEFAULT_WORKSPACE_ROOT)).expanduser()
+    return Path(os.environ.get("FILEMAN_WORKSPACE_ROOT", DEFAULT_WORKSPACE_ROOT)).expanduser()
 
 
 def runtime_env_file(root: Path | None = None) -> Path:
     base = root.expanduser() if root is not None else workspace_root()
-    return base / ".fileorganize" / "env" / "runtime.env"
+    return base / ".fileman" / "env" / "runtime.env"
 
 
 def read_runtime_env(root: Path | None = None) -> dict[str, str]:

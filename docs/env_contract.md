@@ -17,7 +17,7 @@ The template entrypoint is:
 ## Runtime Sources and Priority
 
 - Allowed runtime sources:
-  - `<workspace-root>/.fileorganize/env/runtime.env`
+  - `<workspace-root>/.fileman/env/runtime.env`
   - current process environment variables
 - Priority:
   - current process environment
@@ -27,13 +27,13 @@ The repository root `.env` file is local-only, must remain untracked, and is not
 
 Use the workspace runtime env file when you need a durable runtime source:
 
-- `<workspace-root>/.fileorganize/env/runtime.env`
+- `<workspace-root>/.fileman/env/runtime.env`
 
 Treat the repository root `.env` file as a local operator convenience only. It must not become the canonical runtime truth, and repository docs or UI copy must not describe it as the supported runtime source.
 
 ## Policy Notes
 
-- Sensitive values such as `GEMINI_API_KEY` and `FILEORGANIZE_ROLLBACK_HMAC_KEY` must never be committed.
+- Sensitive values such as `GEMINI_API_KEY` and `FILEMAN_ROLLBACK_HMAC_KEY` must never be committed.
 - `.env.example` stays minimal and public-safe.
 - Contract enforcement is checked by the gate stack and docs rendering checks.
 - Do not modify the baseline outside a governance cycle.

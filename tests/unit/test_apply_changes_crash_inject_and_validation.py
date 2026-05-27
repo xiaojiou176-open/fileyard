@@ -224,7 +224,7 @@ def test_cmd_apply_manifest_input_root_allowlist_rejects_row(tmp_path: Path):
 
 
 def test_cmd_rollback_row_skipped_under_strict_integrity_without_run_metadata(tmp_path: Path, monkeypatch):
-    monkeypatch.setenv("FILEORGANIZE_ROLLBACK_HMAC_KEY", "f-shard-key")
+    monkeypatch.setenv("FILEMAN_ROLLBACK_HMAC_KEY", "f-shard-key")
 
     src = tmp_path / "moved.txt"
     dst = tmp_path / "origin.txt"
@@ -252,7 +252,7 @@ def test_cmd_rollback_row_skipped_under_strict_integrity_without_run_metadata(tm
 
 
 def test_cmd_rollback_removed_legacy_flag_is_ignored(tmp_path: Path, monkeypatch):
-    monkeypatch.setenv("FILEORGANIZE_ROLLBACK_HMAC_KEY", "f-shard-key")
+    monkeypatch.setenv("FILEMAN_ROLLBACK_HMAC_KEY", "f-shard-key")
     manifest = tmp_path / "rollback_manifest.jsonl"
     write_jsonl(manifest, [])
 

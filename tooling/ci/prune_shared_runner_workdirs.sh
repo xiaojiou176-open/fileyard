@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DEFAULT_ROOT="$HOME/.cache/fileorganize-shared-runners"
+DEFAULT_ROOT="$HOME/.cache/fileman-shared-runners"
 
 usage() {
   cat <<'EOF'

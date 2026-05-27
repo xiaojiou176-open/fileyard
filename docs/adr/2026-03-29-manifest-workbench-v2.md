@@ -27,7 +27,7 @@ The accepted constraints are:
 2. Make the post-analyze default landing surface review-first through `Review Queue`, not direct row-table editing.
 3. Model `ReviewRule` as a first-class object and let `Rule Studio` generate overlay patches only.
 4. Keep `saved views` and `naming templates` as separate preference objects; they do not silently become the rule system.
-5. Store durable workbench state under `<workspace-root>/.fileorganize/preferences/`, not repo root and not `.runtime-cache/`.
+5. Store durable workbench state under `<workspace-root>/.fileman/preferences/`, not repo root and not `.runtime-cache/`.
 6. Ship `Strategy Packs` from the repo as curated presets instead of opening a plugin marketplace or multi-user control plane.
 7. Allow `Watch Inbox` to create analyze jobs and feed the review queue, but never auto-apply filesystem changes.
 8. Keep the product local-first; this wave explicitly rejects DB-first, SaaS-first, and multi-user scope expansion.

@@ -126,7 +126,7 @@ def test_ai_eval_runner_passes_offline_mode(tmp_path: Path) -> None:
     output = tmp_path / "summary.json"
     spec, baseline = _write_runner_smoke_spec(tmp_path)
     env = os.environ.copy()
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
 
     proc = subprocess.run(
         [
@@ -191,7 +191,7 @@ def test_ai_eval_runner_skips_live_suite_without_credentials(tmp_path: Path) -> 
     output = tmp_path / "summary.json"
     spec, baseline = _write_live_only_spec(tmp_path)
     env = os.environ.copy()
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
     env.pop("GEMINI_API_KEY", None)
     env.pop("GEMINI_MODEL", None)
 
@@ -251,12 +251,12 @@ def test_run_ai_eval_analyze_uses_isolated_run_bundle_root(monkeypatch, tmp_path
         tmp_path / "input",
         offline=True,
         run_id="ai_eval_offline-audio-contract",
-        run_bundle_root=tmp_path / ".fileorganize" / "runs",
+        run_bundle_root=tmp_path / ".fileman" / "runs",
     )
 
     env = captured["env"]
     assert isinstance(env, dict)
-    assert env["FILEORGANIZE_RUN_BUNDLE_ROOT"] == str((tmp_path / ".fileorganize" / "runs").resolve())
+    assert env["FILEMAN_RUN_BUNDLE_ROOT"] == str((tmp_path / ".fileman" / "runs").resolve())
     assert manifest_path.name == "manifest.jsonl"
 
 
@@ -265,7 +265,7 @@ def test_ai_eval_runner_recreates_nested_output_parent(tmp_path: Path) -> None:
     output = tmp_path / "nested" / "ai-eval" / "summary.json"
     spec, baseline = _write_live_only_spec(tmp_path)
     env = os.environ.copy()
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
     env.pop("GEMINI_API_KEY", None)
     env.pop("GEMINI_MODEL", None)
 
@@ -302,7 +302,7 @@ def test_ai_eval_runner_rejects_template_human_rubric(tmp_path: Path) -> None:
     output = tmp_path / "summary.json"
     spec, baseline = _write_live_only_spec(tmp_path)
     env = os.environ.copy()
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
     env.pop("GEMINI_API_KEY", None)
     env.pop("GEMINI_MODEL", None)
 
@@ -363,7 +363,7 @@ def test_ai_eval_runner_rejects_placeholder_recorded_human_rubric(tmp_path: Path
         encoding="utf-8",
     )
     env = os.environ.copy()
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
     env.pop("GEMINI_API_KEY", None)
     env.pop("GEMINI_MODEL", None)
 
@@ -423,7 +423,7 @@ def test_ai_eval_runner_accepts_recorded_human_rubric(tmp_path: Path) -> None:
         encoding="utf-8",
     )
     env = os.environ.copy()
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
     env.pop("GEMINI_API_KEY", None)
     env.pop("GEMINI_MODEL", None)
 
@@ -467,8 +467,8 @@ def test_ai_eval_runner_uses_isolated_run_bundle_root(tmp_path: Path) -> None:
     spec, baseline = _write_runner_smoke_spec(tmp_path)
     poisoned_root = _poison_run_bundle_root(tmp_path / "poisoned-runs", "ai_eval_offline-audio-contract")
     env = os.environ.copy()
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
-    env["FILEORGANIZE_RUN_BUNDLE_ROOT"] = str(poisoned_root)
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_RUN_BUNDLE_ROOT"] = str(poisoned_root)
 
     proc = subprocess.run(
         [

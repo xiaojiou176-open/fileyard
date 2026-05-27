@@ -23,7 +23,7 @@ def _load_yaml(path: Path) -> dict:
 
 def _run(cmd: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
     env = os.environ.copy()
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
     return subprocess.run(cmd, cwd=str(cwd), env=env, text=True, capture_output=True, check=False)
 
 

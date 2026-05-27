@@ -32,7 +32,7 @@ targets:
     required_substrings:
       - "Page not found"
       - "Back to home"
-      - "This route is not assigned to an Fileorganize WebUI workflow yet."
+      - "This route is not assigned to an Fileman WebUI workflow yet."
     forbidden_regex:
       - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
   - path: apps/webui/src/pages/setup-page.tsx
@@ -257,7 +257,7 @@ targets:
   - path: packages/application/rollback_command.py
     class: maintainer-facing
     required_substrings:
-      - "strict_integrity=true requires FILEORGANIZE_ROLLBACK_HMAC_KEY"
+      - "strict_integrity=true requires FILEMAN_ROLLBACK_HMAC_KEY"
       - "strict_integrity validation failed: rollback candidates exist but all are invalid"
     forbidden_regex:
       - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"

@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for helping improve Fileorganize.
+Thank you for helping improve Fileman.
 
 Think of this file like the sign next to a workshop door: it tells you
 what kind of help is useful, what to check before walking in, and what is
@@ -16,7 +16,7 @@ If you are new, use this quick route:
 3. If you still want to contribute code or docs, start with a small,
    reproducible change.
 4. If your idea is larger than a bug fix or docs change, start in
-   [GitHub Discussions](https://github.com/xiaojiou176-open/fileorganize/discussions)
+   [GitHub Discussions](https://github.com/xiaojiou176-open/fileman/discussions)
    before building a large diff.
 
 ## Good First Contributions
@@ -139,7 +139,7 @@ history through governance exceptions.
 - Usage question: go to [SUPPORT.md](SUPPORT.md)
 - Security issue: go to [SECURITY.md](SECURITY.md)
 - Workflow idea or broad discussion: start in
-  [GitHub Discussions](https://github.com/xiaojiou176-open/fileorganize/discussions)
+  [GitHub Discussions](https://github.com/xiaojiou176-open/fileman/discussions)
 - Small docs or typo fix: open a focused pull request
 - Bigger feature idea: describe the problem first before building a large diff
 

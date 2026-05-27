@@ -1,16 +1,16 @@
-# Fileorganize Public Proof
+# Fileman Public Proof
 
-This page is the outsider-facing proof map for Fileorganize.
+This page is the outsider-facing proof map for Fileman.
 
-In plain language: it tells a first-time visitor what Fileorganize already proves in public, where to click for live evidence, and what Fileorganize still does **not** claim yet.
+In plain language: it tells a first-time visitor what Fileman already proves in public, where to click for live evidence, and what Fileman still does **not** claim yet.
 
-## What Fileorganize Publicly Proves Today
+## What Fileman Publicly Proves Today
 
-- **The core story is real**: Fileorganize ships a review-first local file organizer and workbench, not just a future concept.
+- **The core story is real**: Fileman ships a review-first local file organizer and workbench, not just a future concept.
 - **The safe path is real**: the repo contains a fixture-backed first-look route that goes `analyze -> manifest -> dry-run apply` without touching real folders by default.
-- **The public release surface is real**: Fileorganize publishes a live source repo and release trail on GitHub.
+- **The public release surface is real**: Fileman publishes a live source repo and release trail on GitHub.
 - **The browser surface is real**: the GitHub Pages front door is already live.
-- **The agent surface is real, but secondary**: `Fileorganize MCP v1` exists as a local-first stdio extension surface, but it is not the main product claim.
+- **The agent surface is real, but secondary**: `Fileman MCP v1` exists as a local-first stdio extension surface, but it is not the main product claim.
 
 ## Live Proof Routes
 
@@ -18,17 +18,17 @@ Use these routes when you want current public evidence instead of marketing pros
 
 | What you want to verify | Live route |
 | :-- | :-- |
-| Public source repo | [GitHub repository](https://github.com/xiaojiou176-open/fileorganize) |
-| Public release trail | [GitHub Releases](https://github.com/xiaojiou176-open/fileorganize/releases) |
-| Public front door | [GitHub Pages site](https://xiaojiou176-open.github.io/fileorganize/) |
+| Public source repo | [GitHub repository](https://github.com/xiaojiou176-open/fileman) |
+| Public release trail | [GitHub Releases](https://github.com/xiaojiou176-open/fileman/releases) |
+| Public front door | [GitHub Pages site](https://xiaojiou176-open.github.io/fileman/) |
 | Current docs landing page | [docs/index.md](./index.md) |
 | Safe first-look workflow | [Quickstart](./quickstart.md) |
 | Review-first operator contract | [README.md](../README.md) and [Operator Guide](./usage.md) |
-| Agent/developer extension surface | [Fileorganize MCP v1](./mcp.md) |
+| Agent/developer extension surface | [Fileman MCP v1](./mcp.md) |
 
-## What Fileorganize Does Not Claim Yet
+## What Fileman Does Not Claim Yet
 
-Fileorganize is intentionally explicit about the boundaries it has **not** crossed yet:
+Fileman is intentionally explicit about the boundaries it has **not** crossed yet:
 
 - not a hosted SaaS
 - not a zero-review automatic organizer
@@ -49,7 +49,7 @@ The current proof posture is best understood in three layers:
 
 ## Why This Page Exists
 
-Fileorganize already had a lot of serious engineering proof, but too much of it was hidden in operator docs and workflow files.
+Fileman already had a lot of serious engineering proof, but too much of it was hidden in operator docs and workflow files.
 
 This page exists so the front door can answer three normal outsider questions faster:
 

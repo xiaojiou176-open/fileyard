@@ -1,9 +1,9 @@
 {
   "mcpServers": {
-    "fileorganize": {
+    "fileman": {
       "command": "bash",
       "args": [
-        "/absolute/path/to/fileorganize/tooling/runtime/run_mcp_stdio.sh"
+        "/absolute/path/to/fileman/tooling/runtime/run_mcp_stdio.sh"
       ]
     }
   }

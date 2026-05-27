@@ -5,7 +5,7 @@ describing a workflow.
 
 ## Demo prompt
 
-Use Fileorganize to inspect the current review-first batch queue. Start with
+Use Fileman to inspect the current review-first batch queue. Start with
 `jobs.list`, `review_queue.get`, and `manifest.get`. Summarize which batch needs
 attention first. If the manifest is present and stable, run `analyze.create` to
 produce one analysis artifact. Stop before `manifest.patch_row`,
@@ -21,7 +21,7 @@ change.
 
 ## Visible success criteria
 
-- the host attaches the local Fileorganize MCP server
+- the host attaches the local Fileman MCP server
 - the agent names at least one real job or review queue item
 - the analysis step points back to a real manifest or batch artifact
 - the agent keeps the workflow review-first instead of jumping into mutation

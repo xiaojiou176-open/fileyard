@@ -32,7 +32,7 @@ def test_golden_offline_manifest(tmp_path: Path):
         str(report),
     ]
     env = os.environ.copy()
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
     subprocess.run(cmd, check=True, cwd=str(script_root), env=env)
 
     actual_rows = []

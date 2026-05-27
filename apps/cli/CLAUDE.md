@@ -4,7 +4,7 @@ Quick execution memory for the CLI layer.
 
 ## Main files
 
-- `fileorganize.py`
+- `fileman.py`
 - `cli_app.py`
 - `cli_config_schema.py`
 

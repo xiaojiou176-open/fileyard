@@ -14,17 +14,17 @@ def main() -> int:
     repo_root = Path(__file__).resolve().parents[2]
     pyproject = tomllib.loads((repo_root / "pyproject.toml").read_text(encoding="utf-8"))
     scripts = pyproject.get("project", {}).get("scripts", {})
-    required_entrypoints = pyproject.get("tool", {}).get("fileorganize", {}).get("package_smoke", {}).get("required_entrypoints", [])
+    required_entrypoints = pyproject.get("tool", {}).get("fileman", {}).get("package_smoke", {}).get("required_entrypoints", [])
 
     issues: list[str] = []
-    if scripts.get("fileorganize-mcp") != "apps.mcp.server:main":
-        issues.append("pyproject.toml must expose fileorganize-mcp -> apps.mcp.server:main")
-    if "fileorganize-mcp" not in required_entrypoints:
-        issues.append("package smoke required_entrypoints must include fileorganize-mcp")
+    if scripts.get("fileman-mcp") != "apps.mcp.server:main":
+        issues.append("pyproject.toml must expose fileman-mcp -> apps.mcp.server:main")
+    if "fileman-mcp" not in required_entrypoints:
+        issues.append("package smoke required_entrypoints must include fileman-mcp")
     if not (repo_root / "apps" / "mcp" / "server.py").exists():
-        issues.append("apps/mcp/server.py is required for Fileorganize MCP")
+        issues.append("apps/mcp/server.py is required for Fileman MCP")
     if not (repo_root / "tooling" / "runtime" / "run_mcp_stdio.sh").exists():
-        issues.append("tooling/runtime/run_mcp_stdio.sh is required for Fileorganize MCP")
+        issues.append("tooling/runtime/run_mcp_stdio.sh is required for Fileman MCP")
     package_json = json.loads((repo_root / "package.json").read_text(encoding="utf-8"))
     npm_scripts = package_json.get("scripts", {})
     if npm_scripts.get("mcp:stdio") != "bash tooling/runtime/run_mcp_stdio.sh":
@@ -33,7 +33,7 @@ def main() -> int:
     required_docs = [
         repo_root / "docs" / "mcp.md",
         repo_root / "docs" / "developer_guide.md",
-        repo_root / "docs" / "review_first_ai_file_organizer.md",
+        repo_root / "docs" / "review_first_ai_file_manr.md",
     ]
     for path in required_docs:
         if not path.exists():

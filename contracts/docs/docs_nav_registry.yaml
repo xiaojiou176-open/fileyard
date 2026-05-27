@@ -87,7 +87,7 @@ docs:
     layer: human-authored
     scope: strict
     command_smoke: false
-  - path: docs/review_first_ai_file_organizer.md
+  - path: docs/review_first_ai_file_manr.md
     layer: human-authored
     scope: strict
     command_smoke: false

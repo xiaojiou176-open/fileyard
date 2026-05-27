@@ -37,7 +37,7 @@ def _run_apply(
 ) -> subprocess.CompletedProcess[str]:
     cmd = [
         sys.executable,
-        str(repo_root / "apps" / "cli" / "fileorganize.py"),
+        str(repo_root / "apps" / "cli" / "fileman.py"),
         "apply",
         "--manifest",
         str(manifest),
@@ -49,11 +49,11 @@ def _run_apply(
         "none",
     ]
     env = os.environ.copy()
-    env["FILEORGANIZE_ENABLE_TEST_HOOKS"] = "1"
+    env["FILEMAN_ENABLE_TEST_HOOKS"] = "1"
     if crash_point:
-        env["FILEORGANIZE_APPLY_CRASH_AT"] = crash_point
+        env["FILEMAN_APPLY_CRASH_AT"] = crash_point
     else:
-        env.pop("FILEORGANIZE_APPLY_CRASH_AT", None)
+        env.pop("FILEMAN_APPLY_CRASH_AT", None)
     return subprocess.run(cmd, cwd=str(repo_root), text=True, capture_output=True, env=env)
 
 

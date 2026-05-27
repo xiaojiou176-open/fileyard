@@ -60,7 +60,7 @@ def _apply_once(manifest: Path, input_root: Path, output_root: Path) -> None:
 
 
 def test_rollback_strict_integrity_allows_signed_row(tmp_path: Path, monkeypatch):
-    monkeypatch.setenv("FILEORGANIZE_ROLLBACK_HMAC_KEY", "unit-test-rollback-key")
+    monkeypatch.setenv("FILEMAN_ROLLBACK_HMAC_KEY", "unit-test-rollback-key")
     input_root = tmp_path / "input"
     output_root = tmp_path / "output"
     input_root.mkdir()
@@ -95,7 +95,7 @@ def test_rollback_strict_integrity_allows_signed_row(tmp_path: Path, monkeypatch
 
 
 def test_rollback_strict_integrity_rejects_tampered_signature(tmp_path: Path, monkeypatch):
-    monkeypatch.setenv("FILEORGANIZE_ROLLBACK_HMAC_KEY", "unit-test-rollback-key")
+    monkeypatch.setenv("FILEMAN_ROLLBACK_HMAC_KEY", "unit-test-rollback-key")
     input_root = tmp_path / "input"
     output_root = tmp_path / "output"
     input_root.mkdir()
@@ -134,7 +134,7 @@ def test_rollback_strict_integrity_rejects_tampered_signature(tmp_path: Path, mo
 
 
 def test_rollback_strict_integrity_allows_non_executable_signed_candidate(tmp_path: Path, monkeypatch):
-    monkeypatch.setenv("FILEORGANIZE_ROLLBACK_HMAC_KEY", "unit-test-rollback-key")
+    monkeypatch.setenv("FILEMAN_ROLLBACK_HMAC_KEY", "unit-test-rollback-key")
     input_root = tmp_path / "input"
     output_root = tmp_path / "output"
     input_root.mkdir()
@@ -168,7 +168,7 @@ def test_rollback_strict_integrity_allows_non_executable_signed_candidate(tmp_pa
 
 
 def test_rollback_strict_integrity_requires_hmac_key(tmp_path: Path, monkeypatch):
-    monkeypatch.delenv("FILEORGANIZE_ROLLBACK_HMAC_KEY", raising=False)
+    monkeypatch.delenv("FILEMAN_ROLLBACK_HMAC_KEY", raising=False)
 
     moved = tmp_path / "moved.txt"
     origin = tmp_path / "origin.txt"
@@ -189,7 +189,7 @@ def test_rollback_strict_integrity_requires_hmac_key(tmp_path: Path, monkeypatch
         encoding="utf-8",
     )
 
-    with pytest.raises(SystemExit, match="strict_integrity=true requires FILEORGANIZE_ROLLBACK_HMAC_KEY"):
+    with pytest.raises(SystemExit, match="strict_integrity=true requires FILEMAN_ROLLBACK_HMAC_KEY"):
         cmd_rollback(
             argparse.Namespace(
                 manifest=str(manifest),

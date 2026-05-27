@@ -13,9 +13,9 @@ if str(REPO_ROOT) not in sys.path:
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run the Fileorganize Web API server.")
-    parser.add_argument("--host", default=os.environ.get("FILEORGANIZE_WEB_API_HOST", "127.0.0.1"))
-    parser.add_argument("--port", type=int, default=int(os.environ.get("FILEORGANIZE_WEB_API_PORT", "18080")))
+    parser = argparse.ArgumentParser(description="Run the Fileman Web API server.")
+    parser.add_argument("--host", default=os.environ.get("FILEMAN_WEB_API_HOST", "127.0.0.1"))
+    parser.add_argument("--port", type=int, default=int(os.environ.get("FILEMAN_WEB_API_PORT", "18080")))
     parser.add_argument("--log-level", default="info")
     parser.add_argument("--reload", action="store_true")
     return parser.parse_args(list(argv) if argv is not None else None)

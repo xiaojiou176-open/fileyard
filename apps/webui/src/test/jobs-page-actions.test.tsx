@@ -143,7 +143,7 @@ describe('JobsPage status actions', () => {
     const job = makeJob({ id: 'job-running', status: 'running', phase: 'apply' })
     mocks.mockJobs = [job]
     mocks.mockSelectedJob = job
-    window.localStorage.setItem('fileorganize.locale', 'zh-CN')
+    window.localStorage.setItem('fileman.locale', 'zh-CN')
 
     renderJobsPage()
 

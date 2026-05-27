@@ -84,14 +84,14 @@ jobs:
           GHCR_LOGIN_ACTOR: ${{ github.actor }}
         run: |
           set -euo pipefail
-          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileorganize-docker-config"
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileman-docker-config"
           mkdir -p "$DOCKER_CONFIG_DIR"
           printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
           export DOCKER_CONFIG="$DOCKER_CONFIG_DIR"
           printf '%s' "$GHCR_LOGIN_TOKEN" | docker login ghcr.io -u "$GHCR_LOGIN_ACTOR" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           docker pull "$IMAGE_REF"
-          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEMAN_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Prepare artifacts dir
         run: mkdir -p .runtime-cache/logs .runtime-cache/ci
       - name: Run mutmut (python)
@@ -102,10 +102,10 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label mutation-manual -- bash -lc '
             set -euo pipefail
-            $HOME/.cache/fileorganize/venv/default/bin/mutmut run \
+            $HOME/.cache/fileman/venv/default/bin/mutmut run \
               --paths-to-mutate "${MATRIX_MUTATE_PATH}" \
               --tests-dir tests/unit \
-              --runner "$HOME/.cache/fileorganize/venv/default/bin/python -m pytest -q ${MATRIX_TESTS}"
+              --runner "$HOME/.cache/fileman/venv/default/bin/python -m pytest -q ${MATRIX_TESTS}"
           '
       - name: Mutation fail gate (no survived mutants)
         env:
@@ -114,8 +114,8 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label mutation-manual-report -- bash -lc '
             set -euo pipefail
-            $HOME/.cache/fileorganize/venv/default/bin/mutmut results | tee ".runtime-cache/logs/mutmut-results-${MATRIX_MODULE}.txt"
-            $HOME/.cache/fileorganize/venv/default/bin/python tooling/scripts/check_mutation_report.py \
+            $HOME/.cache/fileman/venv/default/bin/mutmut results | tee ".runtime-cache/logs/mutmut-results-${MATRIX_MODULE}.txt"
+            $HOME/.cache/fileman/venv/default/bin/python tooling/scripts/check_mutation_report.py \
               --input ".runtime-cache/logs/mutmut-results-${MATRIX_MODULE}.txt" \
               --max-survived 0 \
               --max-timed-out 0 \
@@ -164,14 +164,14 @@ jobs:
           GHCR_LOGIN_ACTOR: ${{ github.actor }}
         run: |
           set -euo pipefail
-          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileorganize-docker-config"
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileman-docker-config"
           mkdir -p "$DOCKER_CONFIG_DIR"
           printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
           export DOCKER_CONFIG="$DOCKER_CONFIG_DIR"
           printf '%s' "$GHCR_LOGIN_TOKEN" | docker login ghcr.io -u "$GHCR_LOGIN_ACTOR" --password-stdin # pragma: allowlist secret
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           docker pull "$IMAGE_REF"
-          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEMAN_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Run Stryker (js/ts)
         run: |
           set -euo pipefail

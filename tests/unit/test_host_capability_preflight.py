@@ -333,7 +333,7 @@ def test_host_capability_preflight_reports_detected_and_unsupported_states(tmp_p
     summary_path = tmp_path / "summary.json"
 
     env = os.environ.copy()
-    env["FILEORGANIZE_ENABLE_TEST_HOOKS"] = "1"
+    env["FILEMAN_ENABLE_TEST_HOOKS"] = "1"
     env["PATH"] = str(ffmpeg_bin.parent) + os.pathsep + env.get("PATH", "")
 
     proc = _run(

@@ -1,75 +1,75 @@
 services:
-  fileorganize-ci:
-    image: ${FILEORGANIZE_CI_IMAGE:-fileorganize-ci:local}
+  fileman-ci:
+    image: ${FILEMAN_CI_IMAGE:-fileman-ci:local}
     working_dir: /workspace
     volumes:
       - ../..:/workspace
-      - fileorganize_venv:/root/.cache/fileorganize/venv/default
-      - fileorganize_playwright:/root/.cache/fileorganize/playwright
-      - fileorganize_webui_node_modules:/workspace/apps/webui/node_modules
+      - fileman_venv:/root/.cache/fileman/venv/default
+      - fileman_playwright:/root/.cache/fileman/playwright
+      - fileman_webui_node_modules:/workspace/apps/webui/node_modules
     environment:
       PIP_DISABLE_PIP_VERSION_CHECK: "1"
       PYTHONDONTWRITEBYTECODE: "1"
       PYTHONUNBUFFERED: "1"
-      FILEORGANIZE_IN_CONTAINER: "1"
-      FILEORGANIZE_ALLOW_HOST_EXECUTION: "0"
+      FILEMAN_IN_CONTAINER: "1"
+      FILEMAN_ALLOW_HOST_EXECUTION: "0"
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       GEMINI_MODEL: ${GEMINI_MODEL:-}
-      FILEORGANIZE_LIVE_TEST_URL: ${FILEORGANIZE_LIVE_TEST_URL:-}
-      FILEORGANIZE_ROLLBACK_HMAC_KEY: ${FILEORGANIZE_ROLLBACK_HMAC_KEY:-}
-      FILEORGANIZE_TRACE_ID: ${FILEORGANIZE_TRACE_ID:-}
-      FILEORGANIZE_SESSION_ID: ${FILEORGANIZE_SESSION_ID:-}
-      FILEORGANIZE_REQUEST_ID: ${FILEORGANIZE_REQUEST_ID:-}
-      FILEORGANIZE_USER_ID: ${FILEORGANIZE_USER_ID:-}
+      FILEMAN_LIVE_TEST_URL: ${FILEMAN_LIVE_TEST_URL:-}
+      FILEMAN_ROLLBACK_HMAC_KEY: ${FILEMAN_ROLLBACK_HMAC_KEY:-}
+      FILEMAN_TRACE_ID: ${FILEMAN_TRACE_ID:-}
+      FILEMAN_SESSION_ID: ${FILEMAN_SESSION_ID:-}
+      FILEMAN_REQUEST_ID: ${FILEMAN_REQUEST_ID:-}
+      FILEMAN_USER_ID: ${FILEMAN_USER_ID:-}
       TZ: "America/Los_Angeles"
     tty: true
 
-  fileorganize-web-api:
-    image: ${FILEORGANIZE_CI_IMAGE:-fileorganize-ci:local}
+  fileman-web-api:
+    image: ${FILEMAN_CI_IMAGE:-fileman-ci:local}
     working_dir: /workspace
     volumes:
       - ../..:/workspace
-      - fileorganize_venv:/root/.cache/fileorganize/venv/default
-      - fileorganize_webui_node_modules:/workspace/apps/webui/node_modules
+      - fileman_venv:/root/.cache/fileman/venv/default
+      - fileman_webui_node_modules:/workspace/apps/webui/node_modules
     environment:
       PIP_DISABLE_PIP_VERSION_CHECK: "1"
       PYTHONDONTWRITEBYTECODE: "1"
       PYTHONUNBUFFERED: "1"
-      FILEORGANIZE_IN_CONTAINER: "1"
-      FILEORGANIZE_ALLOW_HOST_EXECUTION: "0"
+      FILEMAN_IN_CONTAINER: "1"
+      FILEMAN_ALLOW_HOST_EXECUTION: "0"
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       GEMINI_MODEL: ${GEMINI_MODEL:-}
-      FILEORGANIZE_ROLLBACK_HMAC_KEY: ${FILEORGANIZE_ROLLBACK_HMAC_KEY:-}
-      FILEORGANIZE_WEB_API_HOST: ${FILEORGANIZE_WEB_API_HOST:-0.0.0.0}
-      FILEORGANIZE_WEB_API_PORT: ${FILEORGANIZE_WEB_API_PORT:-18080}
-      FILEORGANIZE_WEBUI_HOST: ${FILEORGANIZE_WEBUI_HOST:-0.0.0.0}
-      FILEORGANIZE_WEBUI_PORT: ${FILEORGANIZE_WEBUI_PORT:-5173}
+      FILEMAN_ROLLBACK_HMAC_KEY: ${FILEMAN_ROLLBACK_HMAC_KEY:-}
+      FILEMAN_WEB_API_HOST: ${FILEMAN_WEB_API_HOST:-0.0.0.0}
+      FILEMAN_WEB_API_PORT: ${FILEMAN_WEB_API_PORT:-18080}
+      FILEMAN_WEBUI_HOST: ${FILEMAN_WEBUI_HOST:-0.0.0.0}
+      FILEMAN_WEBUI_PORT: ${FILEMAN_WEBUI_PORT:-5173}
       TZ: "America/Los_Angeles"
     command: ["bash", "tooling/runtime/run_web_api.sh", "--host", "0.0.0.0", "--port", "18080"]
     ports:
-      - "${FILEORGANIZE_WEB_API_PORT:-18080}:18080"
-      - "${FILEORGANIZE_WEBUI_PORT:-5173}:5173"
+      - "${FILEMAN_WEB_API_PORT:-18080}:18080"
+      - "${FILEMAN_WEBUI_PORT:-5173}:5173"
     tty: true
 
-  fileorganize-webui:
-    image: ${FILEORGANIZE_CI_IMAGE:-fileorganize-ci:local}
+  fileman-webui:
+    image: ${FILEMAN_CI_IMAGE:-fileman-ci:local}
     working_dir: /workspace
     volumes:
       - ../..:/workspace
-      - fileorganize_webui_node_modules:/workspace/apps/webui/node_modules
+      - fileman_webui_node_modules:/workspace/apps/webui/node_modules
     environment:
-      FILEORGANIZE_IN_CONTAINER: "1"
-      FILEORGANIZE_ALLOW_HOST_EXECUTION: "0"
-      FILEORGANIZE_WEBUI_HOST: ${FILEORGANIZE_WEBUI_HOST:-0.0.0.0}
-      FILEORGANIZE_WEBUI_PORT: ${FILEORGANIZE_WEBUI_PORT:-5173}
+      FILEMAN_IN_CONTAINER: "1"
+      FILEMAN_ALLOW_HOST_EXECUTION: "0"
+      FILEMAN_WEBUI_HOST: ${FILEMAN_WEBUI_HOST:-0.0.0.0}
+      FILEMAN_WEBUI_PORT: ${FILEMAN_WEBUI_PORT:-5173}
       TZ: "America/Los_Angeles"
     command: ["bash", "tooling/runtime/run_webui.sh", "--host", "0.0.0.0", "--port", "5173"]
     depends_on:
-      - fileorganize-web-api
-    network_mode: "service:fileorganize-web-api"
+      - fileman-web-api
+    network_mode: "service:fileman-web-api"
     tty: true
 
 volumes:
-  fileorganize_venv:
-  fileorganize_playwright:
-  fileorganize_webui_node_modules:
+  fileman_venv:
+  fileman_playwright:
+  fileman_webui_node_modules:

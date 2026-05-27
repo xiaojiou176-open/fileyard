@@ -16,9 +16,9 @@ SKIP_PREFIXES = (".git/", ".runtime-cache/", ".agents/")
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Fail when durable workbench state leaks outside <workspace-root>/.fileorganize")
+    parser = argparse.ArgumentParser(description="Fail when durable workbench state leaks outside <workspace-root>/.fileman")
     parser.add_argument("--root", default=".")
-    parser.add_argument("--workspace-root", default=os.environ.get("FILEORGANIZE_WORKSPACE_ROOT", "~/.fileorganize/workspaces/default"))
+    parser.add_argument("--workspace-root", default=os.environ.get("FILEMAN_WORKSPACE_ROOT", "~/.fileman/workspaces/default"))
     args = parser.parse_args()
 
     repo_root = Path(args.root).resolve()

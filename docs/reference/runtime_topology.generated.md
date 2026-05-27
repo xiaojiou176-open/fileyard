@@ -9,27 +9,27 @@
 
 | service | ports | network_mode | command |
 | --- | --- | --- | --- |
-| `fileorganize-ci` | — | `default` | — |
-| `fileorganize-web-api` | `${FILEORGANIZE_WEB_API_PORT:-18080}:18080`, `${FILEORGANIZE_WEBUI_PORT:-5173}:5173` | `default` | `bash tooling/runtime/run_web_api.sh --host 0.0.0.0 --port 18080` |
-| `fileorganize-webui` | — | `service:fileorganize-web-api` | `bash tooling/runtime/run_webui.sh --host 0.0.0.0 --port 5173` |
+| `fileman-ci` | — | `default` | — |
+| `fileman-web-api` | `${FILEMAN_WEB_API_PORT:-18080}:18080`, `${FILEMAN_WEBUI_PORT:-5173}:5173` | `default` | `bash tooling/runtime/run_web_api.sh --host 0.0.0.0 --port 18080` |
+| `fileman-webui` | — | `service:fileman-web-api` | `bash tooling/runtime/run_webui.sh --host 0.0.0.0 --port 5173` |
 
 ## Runtime Paths
 
 | key | value |
 | --- | --- |
-| `GOVERNANCE_PERSISTENT_ARTIFACTS_DIR` | `<workspace-root>/.fileorganize/artifacts` |
+| `GOVERNANCE_PERSISTENT_ARTIFACTS_DIR` | `<workspace-root>/.fileman/artifacts` |
 | `GOVERNANCE_RUNTIME_BUILD_DIR` | `<repo-runtime-cache>/build` |
 | `GOVERNANCE_RUNTIME_CACHE_ROOT` | `<repo-runtime-cache>` |
 | `GOVERNANCE_RUNTIME_CI_CONTRACT_DIR` | `<repo-runtime-cache>/ci-contract` |
 | `GOVERNANCE_RUNTIME_CI_DIR` | `<repo-runtime-cache>/ci` |
 | `GOVERNANCE_RUNTIME_CODEGEN_DIR` | `<repo-runtime-cache>/codegen` |
-| `GOVERNANCE_RUNTIME_ENV_FILE` | `<workspace-root>/.fileorganize/env/runtime.env` |
+| `GOVERNANCE_RUNTIME_ENV_FILE` | `<workspace-root>/.fileman/env/runtime.env` |
 | `GOVERNANCE_RUNTIME_LOG_DIR` | `<repo-runtime-cache>/logs` |
 | `GOVERNANCE_RUNTIME_MUTMUT_CACHE_FILE` | `<repo-runtime-cache>/test/mutation/.mutmut-cache` |
 | `GOVERNANCE_RUNTIME_TEMP_DIR` | `<repo-runtime-cache>/tmp` |
 | `GOVERNANCE_RUNTIME_TEST_DIR` | `<repo-runtime-cache>/test` |
-| `GOVERNANCE_RUNTIME_VENV_DIR` | `~/.cache/fileorganize/venv/default` |
-| `GOVERNANCE_WEBUI_LOCK_HASH_FILE` | `<repo-runtime-cache>/build/apps/webui/.fileorganize_webui_lock_hash` |
+| `GOVERNANCE_RUNTIME_VENV_DIR` | `~/.cache/fileman/venv/default` |
+| `GOVERNANCE_WEBUI_LOCK_HASH_FILE` | `<repo-runtime-cache>/build/apps/webui/.fileman_webui_lock_hash` |
 
 ## Default Runtime Knobs
 
@@ -46,28 +46,28 @@
 - **docker runtime**: `bash tooling/cleanup/prune_docker_runtime.sh --dry-run`, `bash tooling/cleanup/prune_docker_runtime.sh --rebuildable`, `bash tooling/cleanup/prune_docker_runtime.sh --aggressive`
   Canonical runtime rail backed by the current Docker image, named volumes, and repo-related build cache.
 - **destructive workspace reset**: `bash tooling/runtime/runtime_reset.sh --confirm-workspace-reset`
-  Clears workspace .fileorganize state; not a routine cache cleanup command.
+  Clears workspace .fileman state; not a routine cache cleanup command.
 
 ### Container-First Defaults
 
-- Canonical Docker image: `fileorganize-ci:local`
-- Protected Docker volumes: `fileorganize-web-stack_fileorganize_playwright`, `fileorganize-web-stack_fileorganize_venv`
-- Optional Docker volumes: `fileorganize-web-stack_fileorganize_webui_node_modules`
+- Canonical Docker image: `fileman-ci:local`
+- Protected Docker volumes: `fileman-web-stack_fileman_playwright`, `fileman-web-stack_fileman_venv`
+- Optional Docker volumes: `fileman-web-stack_fileman_webui_node_modules`
 - Shared-related surface: `docker build cache`
 
 ## Entrypoints
 
 ### Python entrypoints
 
-- `fileorganize` -> `apps.cli.fileorganize:main`
-- `fileorganize-web-api` -> `apps.api.server:main`
-- `fileorganize-mcp` -> `apps.mcp.server:main`
+- `fileman` -> `apps.cli.fileman:main`
+- `fileman-web-api` -> `apps.api.server:main`
+- `fileman-mcp` -> `apps.mcp.server:main`
 
 ### Package smoke required entrypoints
 
-- `fileorganize`
-- `fileorganize-web-api`
-- `fileorganize-mcp`
+- `fileman`
+- `fileman-web-api`
+- `fileman-mcp`
 
 ### Workspace scripts
 

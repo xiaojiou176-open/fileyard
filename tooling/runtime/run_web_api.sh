@@ -13,8 +13,8 @@ apply_runtime_env_defaults "$REPO_ROOT"
 
 VENV="$(governance_runtime_venv_path "$REPO_ROOT")"
 
-HOST="${FILEORGANIZE_WEB_API_HOST:-127.0.0.1}"
-PORT="${FILEORGANIZE_WEB_API_PORT:-18080}"
+HOST="${FILEMAN_WEB_API_HOST:-127.0.0.1}"
+PORT="${FILEMAN_WEB_API_PORT:-18080}"
 
 usage() {
   echo "Usage: bash tooling/runtime/run_web_api.sh [--host <ip>] [--port <port>]" >&2
@@ -54,7 +54,7 @@ REQ_HASH="$(
     | shasum -a 256 \
     | awk '{print $1}'
 )"
-REQ_HASH_FILE="$VENV/.fileorganize_req_hash"
+REQ_HASH_FILE="$VENV/.fileman_req_hash"
 PREV_HASH=""
 if [ -f "$REQ_HASH_FILE" ]; then
   PREV_HASH="$(cat "$REQ_HASH_FILE" 2>/dev/null || true)"

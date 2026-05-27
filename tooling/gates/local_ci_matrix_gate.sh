@@ -51,7 +51,7 @@ else
 fi
 
 require_host_matrix_override() {
-  if [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" = "1" ]; then
+  if [ "${FILEMAN_ALLOW_HOST_EXECUTION:-0}" = "1" ]; then
     echo "⚠️ local_ci_matrix_gate: emergency host execution requested, but matrix parity now requires Docker-backed CI images." >&2
   fi
 }
@@ -67,7 +67,7 @@ resolve_base_image() {
 
 ensure_matrix_image() {
   local py_ver="$1"
-  local image_var_name="FILEORGANIZE_CI_IMAGE_PY${py_ver/./}"
+  local image_var_name="FILEMAN_CI_IMAGE_PY${py_ver/./}"
   local image="${!image_var_name:-}"
   local local_tag=""
   local base_image=""
@@ -82,7 +82,7 @@ ensure_matrix_image() {
     exit 1
   fi
 
-  local_tag="fileorganize-ci:local-py${py_ver/./}"
+  local_tag="fileman-ci:local-py${py_ver/./}"
   if docker image inspect "$local_tag" >/dev/null 2>&1; then
     printf '%s' "$local_tag"
     return 0
@@ -101,7 +101,7 @@ ensure_matrix_image() {
 
 matrix_venv_volume() {
   local py_ver="$1"
-  printf 'fileorganize-matrix-venv-py%s' "${py_ver/./}"
+  printf 'fileman-matrix-venv-py%s' "${py_ver/./}"
 }
 
 run_one() {
@@ -118,14 +118,14 @@ run_one() {
     "$image" \
     bash -lc '
       set -euo pipefail
-      # Matrix contract note: export FILEORGANIZE_VENV_DIR="/opt/fileorganize-ci-venv"
+      # Matrix contract note: export FILEMAN_VENV_DIR="/opt/fileman-ci-venv"
       # The py3.10/py3.12 local matrix consumes the image-baked, hash-locked runtime
-      # directly from /opt/fileorganize-ci-venv. Do not shadow it with a mounted repo/runtime venv.
+      # directly from /opt/fileman-ci-venv. Do not shadow it with a mounted repo/runtime venv.
       # The image contract is built from the same hash-locked install command:
       # python -m pip install --require-hashes -r requirements-dev.lock.txt
       # Docker build contract also keeps the same bootstrap guard text:
       # requirements-dev.lock.txt is missing a setuptools pin
-      /opt/fileorganize-ci-venv/bin/pytest -q -o addopts= --maxfail=1 --strict-config --strict-markers tests/unit
+      /opt/fileman-ci-venv/bin/pytest -q -o addopts= --maxfail=1 --strict-config --strict-markers tests/unit
     ' 2>&1 | tee "$log_file"; then
     echo "✅ [local_ci_matrix_gate] py${py_ver} passed"
     return 0

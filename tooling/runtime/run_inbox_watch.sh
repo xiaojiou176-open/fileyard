@@ -12,7 +12,7 @@ load_governance_defaults "$REPO_ROOT"
 apply_runtime_env_defaults "$REPO_ROOT"
 VENV="$(governance_runtime_venv_path "$REPO_ROOT")"
 
-if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ] && [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
+if [ "${FILEMAN_IN_CONTAINER:-0}" != "1" ] && [ "${FILEMAN_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
   exec bash "$ROOT/scripts/container_exec.sh" --label run-inbox-watch -- bash tooling/runtime/run_inbox_watch.sh "$@"
 fi
 
@@ -32,7 +32,7 @@ from pathlib import Path
 from packages.application.inbox_watch import scan_watch_sources_once
 from packages.infrastructure.watch_source_store import load_watch_sources
 
-workspace_root = Path(os.environ.get("FILEORGANIZE_WORKSPACE_ROOT", "~/.fileorganize/workspaces/default")).expanduser()
+workspace_root = Path(os.environ.get("FILEMAN_WORKSPACE_ROOT", "~/.fileman/workspaces/default")).expanduser()
 batches = [batch.to_dict() for batch in scan_watch_sources_once(load_watch_sources(workspace_root))]
 print(json.dumps({"count": len(batches), "items": batches}, ensure_ascii=False, indent=2))
 PY

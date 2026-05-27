@@ -9,12 +9,12 @@ CONFIG_LIB="$ROOT/scripts/lib_config.sh"
 MODE="local"
 ACTION="up"
 DETACH=0
-API_HOST="${FILEORGANIZE_WEB_API_HOST:-127.0.0.1}"
-WEB_HOST="${FILEORGANIZE_WEBUI_HOST:-127.0.0.1}"
-API_PORT="${FILEORGANIZE_WEB_API_PORT:-18080}"
-WEB_PORT="${FILEORGANIZE_WEBUI_PORT:-5173}"
+API_HOST="${FILEMAN_WEB_API_HOST:-127.0.0.1}"
+WEB_HOST="${FILEMAN_WEBUI_HOST:-127.0.0.1}"
+API_PORT="${FILEMAN_WEB_API_PORT:-18080}"
+WEB_PORT="${FILEMAN_WEBUI_PORT:-5173}"
 
-COMPOSE_FILE="${FILEORGANIZE_COMPOSE_FILE:-ops/compose/docker-compose.yml}"
+COMPOSE_FILE="${FILEMAN_COMPOSE_FILE:-ops/compose/docker-compose.yml}"
 COMPOSE_ARGS=()
 COMPOSE_PROJECT_NAME_FALLBACK="${COMPOSE_PROJECT_NAME:-}"
 
@@ -129,26 +129,26 @@ run_compose() {
   fi
 
   if [ "$ACTION" = "down" ]; then
-    echo "==> [web-stack-compose] phase=down services=fileorganize-webui,fileorganize-web-api"
-    env COMPOSE_PROJECT_NAME="$COMPOSE_PROJECT_NAME_FALLBACK" docker compose "${COMPOSE_ARGS[@]}" stop fileorganize-webui fileorganize-web-api >/dev/null 2>&1 || true
-    env COMPOSE_PROJECT_NAME="$COMPOSE_PROJECT_NAME_FALLBACK" docker compose "${COMPOSE_ARGS[@]}" rm -f fileorganize-webui fileorganize-web-api >/dev/null 2>&1 || true
+    echo "==> [web-stack-compose] phase=down services=fileman-webui,fileman-web-api"
+    env COMPOSE_PROJECT_NAME="$COMPOSE_PROJECT_NAME_FALLBACK" docker compose "${COMPOSE_ARGS[@]}" stop fileman-webui fileman-web-api >/dev/null 2>&1 || true
+    env COMPOSE_PROJECT_NAME="$COMPOSE_PROJECT_NAME_FALLBACK" docker compose "${COMPOSE_ARGS[@]}" rm -f fileman-webui fileman-web-api >/dev/null 2>&1 || true
     echo "✅ [web-stack-compose] action=down finished"
     return 0
   fi
 
   detect_static_mount_gap
-  local up_args=(up --build fileorganize-web-api fileorganize-webui)
+  local up_args=(up --build fileman-web-api fileman-webui)
   if [ "$DETACH" = "1" ]; then
-    up_args=(up --build -d fileorganize-web-api fileorganize-webui)
+    up_args=(up --build -d fileman-web-api fileman-webui)
   fi
 
   echo "==> [web-stack-compose] phase=up detach=${DETACH}"
   echo "==> [web-stack-compose] urls api=http://127.0.0.1:${API_PORT} webui=http://127.0.0.1:${WEB_PORT}"
   echo "==> [web-stack-compose] note=/app static hosting kept as secondary path while asset base mismatch exists"
-  FILEORGANIZE_WEB_API_HOST=0.0.0.0 \
-  FILEORGANIZE_WEBUI_HOST=0.0.0.0 \
-  FILEORGANIZE_WEB_API_PORT="$API_PORT" \
-  FILEORGANIZE_WEBUI_PORT="$WEB_PORT" \
+  FILEMAN_WEB_API_HOST=0.0.0.0 \
+  FILEMAN_WEBUI_HOST=0.0.0.0 \
+  FILEMAN_WEB_API_PORT="$API_PORT" \
+  FILEMAN_WEBUI_PORT="$WEB_PORT" \
     env COMPOSE_PROJECT_NAME="$COMPOSE_PROJECT_NAME_FALLBACK" docker compose "${COMPOSE_ARGS[@]}" "${up_args[@]}"
 }
 

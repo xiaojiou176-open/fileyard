@@ -70,7 +70,7 @@ case "$TASK" in
     ;;
 esac
 
-if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ]; then
+if [ "${FILEMAN_IN_CONTAINER:-0}" != "1" ]; then
   cleanup_host_webui_mountpoint() {
     if [ ! -d "$REPO_ROOT/apps/webui/node_modules" ]; then
       return 0
@@ -84,9 +84,9 @@ if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ]; then
     rmdir "$REPO_ROOT/apps/webui/node_modules" 2>/dev/null || true
   }
 
-  if [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" = "1" ]; then
+  if [ "${FILEMAN_ALLOW_HOST_EXECUTION:-0}" = "1" ]; then
     if is_ci_context; then
-      echo "❌ run_webui_task: FILEORGANIZE_ALLOW_HOST_EXECUTION=1 is forbidden in CI" >&2
+      echo "❌ run_webui_task: FILEMAN_ALLOW_HOST_EXECUTION=1 is forbidden in CI" >&2
       exit 1
     fi
     echo "⚠️ run_webui_task: emergency host execution enabled; canonical webui task path stays containerized by default" >&2
@@ -98,7 +98,7 @@ if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ]; then
         CONTAINER_TASK_COMMAND+=("${EXTRA_ARGS[@]}")
       fi
       CONTAINER_SKIP_INSTALL_COMMAND="$(join_shell_command "${CONTAINER_TASK_COMMAND[@]}")"
-      env FILEORGANIZE_COMPOSE_SERVICE=fileorganize-web-api bash "$ROOT/scripts/container_exec.sh" --label "webui-${TASK}" -- bash -lc "${CONTAINER_INSTALL_COMMAND} && ${CONTAINER_SKIP_INSTALL_COMMAND}"
+      env FILEMAN_COMPOSE_SERVICE=fileman-web-api bash "$ROOT/scripts/container_exec.sh" --label "webui-${TASK}" -- bash -lc "${CONTAINER_INSTALL_COMMAND} && ${CONTAINER_SKIP_INSTALL_COMMAND}"
     else
       CONTAINER_ARGS=(bash tooling/runtime/run_webui_task.sh "$TASK")
       if [ "$SKIP_INSTALL" = "1" ]; then
@@ -107,7 +107,7 @@ if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ]; then
       if [ "${#EXTRA_ARGS[@]}" -gt 0 ]; then
         CONTAINER_ARGS+=("${EXTRA_ARGS[@]}")
       fi
-      env FILEORGANIZE_COMPOSE_SERVICE=fileorganize-web-api bash "$ROOT/scripts/container_exec.sh" --label "webui-${TASK}" -- "${CONTAINER_ARGS[@]}"
+      env FILEMAN_COMPOSE_SERVICE=fileman-web-api bash "$ROOT/scripts/container_exec.sh" --label "webui-${TASK}" -- "${CONTAINER_ARGS[@]}"
     fi
     task_rc=$?
     cleanup_host_webui_mountpoint

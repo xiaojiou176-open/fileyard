@@ -54,7 +54,7 @@ def _build_rollback_from_manifest(manifest_rows: Iterable[Dict[str, Any]]) -> Li
 
 
 def _rollback_signing_key(run_id: str) -> bytes:
-    secret = str(os.environ.get("FILEORGANIZE_ROLLBACK_HMAC_KEY", "") or "").strip()
+    secret = str(os.environ.get("FILEMAN_ROLLBACK_HMAC_KEY", "") or "").strip()
     if secret:
         return secret.encode("utf-8")
     # Without a dedicated secret, bind the signature to run_id to block cross-run replay.
@@ -62,7 +62,7 @@ def _rollback_signing_key(run_id: str) -> bytes:
 
 
 def _has_strong_rollback_signing_key() -> bool:
-    return bool(str(os.environ.get("FILEORGANIZE_ROLLBACK_HMAC_KEY", "") or "").strip())
+    return bool(str(os.environ.get("FILEMAN_ROLLBACK_HMAC_KEY", "") or "").strip())
 
 
 def _rollback_signature_payload(row: Dict[str, Any], run_id: str) -> str:

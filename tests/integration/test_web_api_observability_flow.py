@@ -22,11 +22,11 @@ def _read_jsonl(path: Path) -> list[dict[str, Any]]:
 def _prepare_env(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     repo = tmp_path / "repo"
     workspace = tmp_path / "workspace"
-    artifacts = workspace / ".fileorganize" / "artifacts"
-    manifests = workspace / ".fileorganize" / "manifests"
+    artifacts = workspace / ".fileman" / "artifacts"
+    manifests = workspace / ".fileman" / "manifests"
     input_root = workspace / "data" / "raw"
     output_root = workspace / "data" / "organized"
-    cli_entrypoint = repo / "apps" / "cli" / "fileorganize.py"
+    cli_entrypoint = repo / "apps" / "cli" / "fileman.py"
     frontend_dist = repo / ".runtime-cache" / "apps" / "webui" / "build"
     cli_entrypoint.parent.mkdir(parents=True, exist_ok=True)
     cli_entrypoint.write_text("# test fixture entrypoint\n", encoding="utf-8")
@@ -38,7 +38,7 @@ def _prepare_env(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     (artifacts / "web_api" / "jobs").mkdir(parents=True, exist_ok=True)
     (artifacts / "web_api" / "uploads").mkdir(parents=True, exist_ok=True)
     (artifacts / "web_api" / "preferences").mkdir(parents=True, exist_ok=True)
-    (workspace / ".fileorganize" / "preferences").mkdir(parents=True, exist_ok=True)
+    (workspace / ".fileman" / "preferences").mkdir(parents=True, exist_ok=True)
 
     monkeypatch.setattr(web_api, "REPO_ROOT", repo)
     monkeypatch.setattr(web_api, "CLI_ENTRYPOINT", cli_entrypoint)
@@ -46,7 +46,7 @@ def _prepare_env(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.setattr(web_api, "WEB_ARTIFACT_ROOT", artifacts / "web_api")
     monkeypatch.setattr(web_api, "WEB_JOB_ROOT", artifacts / "web_api" / "jobs")
     monkeypatch.setattr(web_api, "WEB_UPLOAD_ROOT", artifacts / "web_api" / "uploads")
-    monkeypatch.setattr(web_api, "PREFERENCE_ROOT", workspace / ".fileorganize" / "preferences")
+    monkeypatch.setattr(web_api, "PREFERENCE_ROOT", workspace / ".fileman" / "preferences")
     monkeypatch.setattr(web_api, "MANIFEST_ROOT", manifests)
     monkeypatch.setattr(web_api, "REPORT_ROOT", artifacts / "report")
     monkeypatch.setattr(web_api, "ROLLBACK_ROOT", artifacts / "rollback")
@@ -212,7 +212,7 @@ def test_web_api_analyze_history_events_audit_consistency(monkeypatch: pytest.Mo
 
 def test_web_api_rollback_strict_integrity_missing_key_rejected_before_queue(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _prepare_env(monkeypatch, tmp_path)
-    monkeypatch.delenv("FILEORGANIZE_ROLLBACK_HMAC_KEY", raising=False)
+    monkeypatch.delenv("FILEMAN_ROLLBACK_HMAC_KEY", raising=False)
 
     good_manifest = web_api.MANIFEST_ROOT / "rollback-strict-missing-key.jsonl"
     good_manifest.write_text(
@@ -241,7 +241,7 @@ def test_web_api_rollback_strict_integrity_missing_key_rejected_before_queue(mon
             },
         )
         assert resp.status_code == 400
-        assert resp.json()["detail"] == "strict_integrity=true requires FILEORGANIZE_ROLLBACK_HMAC_KEY"
+        assert resp.json()["detail"] == "strict_integrity=true requires FILEMAN_ROLLBACK_HMAC_KEY"
         assert len(client.get("/api/jobs").json()) == jobs_before
 
 

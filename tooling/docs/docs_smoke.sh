@@ -129,8 +129,8 @@ except ModuleNotFoundError:  # pragma: no cover
 path = Path(sys.argv[1])
 data = tomllib.loads(path.read_text(encoding="utf-8"))
 tool = data.get("tool", {})
-fileorganize = tool.get("fileorganize", {}) if isinstance(tool, dict) else {}
-package_smoke = fileorganize.get("package_smoke", {}) if isinstance(fileorganize, dict) else {}
+fileman = tool.get("fileman", {}) if isinstance(tool, dict) else {}
+package_smoke = fileman.get("package_smoke", {}) if isinstance(fileman, dict) else {}
 entrypoints = package_smoke.get("required_entrypoints", []) if isinstance(package_smoke, dict) else []
 for name in entrypoints:
     print(str(name))
@@ -307,8 +307,8 @@ check_command_block() {
       fi
     fi
 
-    if [[ "$line" == python\ apps/cli/fileorganize.py* ]] && [ ! -f "$REPO_ROOT/apps/cli/fileorganize.py" ]; then
-      fail "$rel_doc:$line_no missing apps/cli/fileorganize.py"
+    if [[ "$line" == python\ apps/cli/fileman.py* ]] && [ ! -f "$REPO_ROOT/apps/cli/fileman.py" ]; then
+      fail "$rel_doc:$line_no missing apps/cli/fileman.py"
     fi
   done <"$doc_path"
 }
@@ -322,7 +322,7 @@ if [ "$INSTALL_SMOKE" -eq 1 ]; then
   local_venv="$(governance_runtime_venv_path "$REPO_ROOT")"
   # Keep the packaging smoke mirror outside the repo tree so concurrent
   # governance scans and archive copies never race on repo-local temp paths.
-  install_root="${DOCS_SMOKE_INSTALL_ROOT:-${XDG_CACHE_HOME:-$HOME/.cache}/fileorganize/docs-smoke-install}"
+  install_root="${DOCS_SMOKE_INSTALL_ROOT:-${XDG_CACHE_HOME:-$HOME/.cache}/fileman/docs-smoke-install}"
   mkdir -p "$install_root"
   install_tmp="$(mktemp -d "$install_root/docs-smoke.XXXXXX")"
   install_runtime_tmp="$install_tmp/tmp"

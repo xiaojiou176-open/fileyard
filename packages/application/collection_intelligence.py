@@ -164,4 +164,4 @@ def _collection_next_step(kind: str) -> str:
         return "Confirm the shared meeting context before batch triage or naming changes."
     if kind == "chat_export":
         return "Review this export bundle as one batch before deciding ignore or naming actions."
-    return "Review this batch together before fileorganizeng toward Apply."
+    return "Review this batch together before moving toward Apply."

@@ -178,7 +178,7 @@ def test_cmd_apply_manifest_input_root_missing_when_trusted(tmp_path: Path):
 
 
 def test_cmd_rollback_strict_integrity_invalid_rows_fail_closed(monkeypatch, tmp_path: Path):
-    monkeypatch.setenv("FILEORGANIZE_ROLLBACK_HMAC_KEY", "key-c")
+    monkeypatch.setenv("FILEMAN_ROLLBACK_HMAC_KEY", "key-c")
 
     src1 = tmp_path / "moved1.txt"
     src2 = tmp_path / "moved2.txt"
@@ -234,7 +234,7 @@ def test_cmd_rollback_strict_integrity_valid_signature_with_missing_source_does_
     monkeypatch,
     tmp_path: Path,
 ):
-    monkeypatch.setenv("FILEORGANIZE_ROLLBACK_HMAC_KEY", "key-c")
+    monkeypatch.setenv("FILEMAN_ROLLBACK_HMAC_KEY", "key-c")
     run_id = "apply_20260225_000000_abcd"
     src_missing = tmp_path / "missing.txt"
     dst = tmp_path / "orig.txt"

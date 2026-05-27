@@ -5,12 +5,12 @@ import os
 from collections.abc import Mapping
 from pathlib import Path
 
-DEFAULT_WORKSPACE_ROOT = "~/.fileorganize/workspaces/default"
-RUNTIME_ENV_RELATIVE_PATH = Path(".fileorganize") / "env" / "runtime.env"
+DEFAULT_WORKSPACE_ROOT = "~/.fileman/workspaces/default"
+RUNTIME_ENV_RELATIVE_PATH = Path(".fileman") / "env" / "runtime.env"
 
 
 def runtime_env_file(workspace_root: str | Path | None = None) -> Path:
-    resolved_workspace = Path(workspace_root or os.environ.get("FILEORGANIZE_WORKSPACE_ROOT", DEFAULT_WORKSPACE_ROOT)).expanduser()
+    resolved_workspace = Path(workspace_root or os.environ.get("FILEMAN_WORKSPACE_ROOT", DEFAULT_WORKSPACE_ROOT)).expanduser()
     return resolved_workspace / RUNTIME_ENV_RELATIVE_PATH
 
 

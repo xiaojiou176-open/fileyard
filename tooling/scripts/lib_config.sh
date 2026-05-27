@@ -83,9 +83,9 @@ resolve_allow_external_with_source() {
   local default_value="${1:-0}"
   local raw source normalized
 
-  if [ -n "${FILEORGANIZE_ALLOW_EXTERNAL:-}" ]; then
-    raw="${FILEORGANIZE_ALLOW_EXTERNAL}"
-    source="env(FILEORGANIZE_ALLOW_EXTERNAL)"
+  if [ -n "${FILEMAN_ALLOW_EXTERNAL:-}" ]; then
+    raw="${FILEMAN_ALLOW_EXTERNAL}"
+    source="env(FILEMAN_ALLOW_EXTERNAL)"
   else
     raw="$default_value"
     source="config"
@@ -175,48 +175,48 @@ governance_runtime_ci_contract_path() {
 
 governance_runtime_venv_path() {
   local repo_root="$1"
-  local venv_rel="${FILEORGANIZE_VENV_DIR:-$GOVERNANCE_RUNTIME_VENV_DIR}"
+  local venv_rel="${FILEMAN_VENV_DIR:-$GOVERNANCE_RUNTIME_VENV_DIR}"
   resolve_repo_path "$repo_root" "$venv_rel"
 }
 
 governance_workspace_root_path() {
   local repo_root="$1"
-  local workspace_rel="${FILEORGANIZE_WORKSPACE_ROOT:-$GOVERNANCE_WORKSPACE_ROOT}"
+  local workspace_rel="${FILEMAN_WORKSPACE_ROOT:-$GOVERNANCE_WORKSPACE_ROOT}"
   resolve_repo_path "$repo_root" "$workspace_rel"
 }
 
 governance_workspace_input_root_path() {
   local repo_root="$1"
-  local input_rel="${FILEORGANIZE_INPUT_ROOT:-$GOVERNANCE_WORKSPACE_INPUT_DIR}"
+  local input_rel="${FILEMAN_INPUT_ROOT:-$GOVERNANCE_WORKSPACE_INPUT_DIR}"
   resolve_repo_path "$repo_root" "$input_rel"
 }
 
 governance_workspace_output_root_path() {
   local repo_root="$1"
-  local output_rel="${FILEORGANIZE_OUTPUT_ROOT:-$GOVERNANCE_WORKSPACE_OUTPUT_DIR}"
+  local output_rel="${FILEMAN_OUTPUT_ROOT:-$GOVERNANCE_WORKSPACE_OUTPUT_DIR}"
   resolve_repo_path "$repo_root" "$output_rel"
 }
 
 governance_manifest_root_path() {
   local repo_root="$1"
-  local manifest_rel="${FILEORGANIZE_MANIFEST_ROOT:-$GOVERNANCE_MANIFEST_ROOT}"
+  local manifest_rel="${FILEMAN_MANIFEST_ROOT:-$GOVERNANCE_MANIFEST_ROOT}"
   resolve_repo_path "$repo_root" "$manifest_rel"
 }
 
 governance_artifact_root_path() {
   local repo_root="$1"
-  local artifact_rel="${FILEORGANIZE_ARTIFACT_ROOT:-$GOVERNANCE_PERSISTENT_ARTIFACTS_DIR}"
+  local artifact_rel="${FILEMAN_ARTIFACT_ROOT:-$GOVERNANCE_PERSISTENT_ARTIFACTS_DIR}"
   resolve_repo_path "$repo_root" "$artifact_rel"
 }
 
 governance_evidence_bundle_path() {
   local repo_root="$1"
-  resolve_repo_path "$repo_root" "${FILEORGANIZE_EVIDENCE_BUNDLE_PATH:-$GOVERNANCE_EVIDENCE_BUNDLE_PATH}"
+  resolve_repo_path "$repo_root" "${FILEMAN_EVIDENCE_BUNDLE_PATH:-$GOVERNANCE_EVIDENCE_BUNDLE_PATH}"
 }
 
 governance_run_bundle_root_path() {
   local repo_root="$1"
-  resolve_repo_path "$repo_root" "${FILEORGANIZE_RUN_BUNDLE_ROOT:-$GOVERNANCE_RUN_BUNDLE_ROOT}"
+  resolve_repo_path "$repo_root" "${FILEMAN_RUN_BUNDLE_ROOT:-$GOVERNANCE_RUN_BUNDLE_ROOT}"
 }
 
 governance_run_bundle_dir() {
@@ -298,13 +298,13 @@ apply_runtime_env_defaults() {
   export TMPDIR="${TMPDIR:-$(governance_runtime_temp_path "$repo_root")}"
   export TMP="${TMP:-$TMPDIR}"
   export TEMP="${TEMP:-$TMPDIR}"
-  export FILEORGANIZE_WORKSPACE_ROOT="${FILEORGANIZE_WORKSPACE_ROOT:-$(governance_workspace_root_path "$repo_root")}"
-  export FILEORGANIZE_INPUT_ROOT="${FILEORGANIZE_INPUT_ROOT:-$(governance_workspace_input_root_path "$repo_root")}"
-  export FILEORGANIZE_OUTPUT_ROOT="${FILEORGANIZE_OUTPUT_ROOT:-$(governance_workspace_output_root_path "$repo_root")}"
-  export FILEORGANIZE_MANIFEST_ROOT="${FILEORGANIZE_MANIFEST_ROOT:-$(governance_manifest_root_path "$repo_root")}"
-  export FILEORGANIZE_ARTIFACT_ROOT="${FILEORGANIZE_ARTIFACT_ROOT:-$(governance_artifact_root_path "$repo_root")}"
-  export FILEORGANIZE_EVIDENCE_BUNDLE_PATH="${FILEORGANIZE_EVIDENCE_BUNDLE_PATH:-$(governance_evidence_bundle_path "$repo_root")}"
-  export FILEORGANIZE_RUN_BUNDLE_ROOT="${FILEORGANIZE_RUN_BUNDLE_ROOT:-$(governance_run_bundle_root_path "$repo_root")}"
+  export FILEMAN_WORKSPACE_ROOT="${FILEMAN_WORKSPACE_ROOT:-$(governance_workspace_root_path "$repo_root")}"
+  export FILEMAN_INPUT_ROOT="${FILEMAN_INPUT_ROOT:-$(governance_workspace_input_root_path "$repo_root")}"
+  export FILEMAN_OUTPUT_ROOT="${FILEMAN_OUTPUT_ROOT:-$(governance_workspace_output_root_path "$repo_root")}"
+  export FILEMAN_MANIFEST_ROOT="${FILEMAN_MANIFEST_ROOT:-$(governance_manifest_root_path "$repo_root")}"
+  export FILEMAN_ARTIFACT_ROOT="${FILEMAN_ARTIFACT_ROOT:-$(governance_artifact_root_path "$repo_root")}"
+  export FILEMAN_EVIDENCE_BUNDLE_PATH="${FILEMAN_EVIDENCE_BUNDLE_PATH:-$(governance_evidence_bundle_path "$repo_root")}"
+  export FILEMAN_RUN_BUNDLE_ROOT="${FILEMAN_RUN_BUNDLE_ROOT:-$(governance_run_bundle_root_path "$repo_root")}"
 
   mkdir -p \
     "$XDG_CACHE_HOME" \
@@ -314,13 +314,13 @@ apply_runtime_env_defaults() {
     "$PYTHONPYCACHEPREFIX" \
     "$MYPY_CACHE_DIR" \
     "$TMPDIR" \
-    "$FILEORGANIZE_WORKSPACE_ROOT" \
-    "$FILEORGANIZE_INPUT_ROOT" \
-    "$FILEORGANIZE_OUTPUT_ROOT" \
-    "$FILEORGANIZE_MANIFEST_ROOT" \
-    "$FILEORGANIZE_ARTIFACT_ROOT" \
-    "$FILEORGANIZE_RUN_BUNDLE_ROOT" \
-    "$(dirname "$FILEORGANIZE_EVIDENCE_BUNDLE_PATH")"
+    "$FILEMAN_WORKSPACE_ROOT" \
+    "$FILEMAN_INPUT_ROOT" \
+    "$FILEMAN_OUTPUT_ROOT" \
+    "$FILEMAN_MANIFEST_ROOT" \
+    "$FILEMAN_ARTIFACT_ROOT" \
+    "$FILEMAN_RUN_BUNDLE_ROOT" \
+    "$(dirname "$FILEMAN_EVIDENCE_BUNDLE_PATH")"
 }
 
 governance_python() {

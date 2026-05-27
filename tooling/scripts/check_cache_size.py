@@ -222,11 +222,11 @@ def main() -> int:
 
     machine_cache = dict(contract.get("machine_cache", {}))
     workspace_runtime = dict(contract.get("workspace_runtime", {}))
-    in_container = os.environ.get("FILEORGANIZE_IN_CONTAINER", "0") == "1"
+    in_container = os.environ.get("FILEMAN_IN_CONTAINER", "0") == "1"
 
     machine_root = resolve_path(
         repo_root,
-        str(machine_cache.get("root", "~/.cache/fileorganize")),
+        str(machine_cache.get("root", "~/.cache/fileman")),
         env_name="GOVERNANCE_MACHINE_CACHE_ROOT",
     )
     machine_targets = {
@@ -235,18 +235,18 @@ def main() -> int:
         "npm": resolve_path(repo_root, str(machine_root / "npm"), env_name="NPM_CONFIG_CACHE"),
         "playwright": resolve_path(repo_root, str(machine_root / "playwright"), env_name="PLAYWRIGHT_BROWSERS_PATH"),
         "xdg": resolve_path(repo_root, str(machine_root / "xdg"), env_name="XDG_CACHE_HOME"),
-        "venv": resolve_path(repo_root, str(machine_root / "venv/default"), env_name="FILEORGANIZE_VENV_DIR"),
+        "venv": resolve_path(repo_root, str(machine_root / "venv/default"), env_name="FILEMAN_VENV_DIR"),
     }
 
     run_root = resolve_path(
         repo_root,
-        str(workspace_runtime.get("run_bundle_root", "~/.fileorganize/workspaces/default/.fileorganize/runs")),
-        env_name="FILEORGANIZE_RUN_BUNDLE_ROOT",
+        str(workspace_runtime.get("run_bundle_root", "~/.fileman/workspaces/default/.fileman/runs")),
+        env_name="FILEMAN_RUN_BUNDLE_ROOT",
     )
     artifact_root = resolve_path(
         repo_root,
-        str(workspace_runtime.get("artifact_root", "~/.fileorganize/workspaces/default/.fileorganize/artifacts")),
-        env_name="FILEORGANIZE_ARTIFACT_ROOT",
+        str(workspace_runtime.get("artifact_root", "~/.fileman/workspaces/default/.fileman/artifacts")),
+        env_name="FILEMAN_ARTIFACT_ROOT",
     )
 
     repo_targets = {

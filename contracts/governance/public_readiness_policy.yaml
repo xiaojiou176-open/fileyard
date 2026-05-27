@@ -27,7 +27,7 @@ required_repo_surface_files:
   - docs/seo_landing_map.md
   - docs/mcp.md
   - docs/developer_guide.md
-  - docs/review_first_ai_file_organizer.md
+  - docs/review_first_ai_file_manr.md
   - apps/mcp/README.md
   - examples/skills/README.md
   - examples/skills/SKILL.md
@@ -44,7 +44,7 @@ required_runbook_snippets:
   - bash tooling/gates/platform_alignment_gate.sh
 required_asset_provenance_entries:
   - tests/fixtures/golden_input/archive.pdf
-  - apps/webui/public/fileorganize-mark.svg
+  - apps/webui/public/fileman-mark.svg
   - tests/fixtures/golden_input/doc.pdf
   - tests/fixtures/golden_input/invoice.pdf
   - tests/fixtures/golden_input/my_screenshot.png

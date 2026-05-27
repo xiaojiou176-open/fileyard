@@ -1,5 +1,5 @@
 {
-  "name": "fileorganize",
+  "name": "fileman",
   "description": "Review-first local AI file organizer with stdio-first MCP for Codex and Claude Code",
   "private": true,
   "version": "4.0.5",

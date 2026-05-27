@@ -12,7 +12,7 @@ load_governance_defaults "$REPO_ROOT"
 apply_runtime_env_defaults "$REPO_ROOT"
 VENV="$(governance_runtime_venv_path "$REPO_ROOT")"
 
-if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ] && [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
+if [ "${FILEMAN_IN_CONTAINER:-0}" != "1" ] && [ "${FILEMAN_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
   exec bash "$ROOT/scripts/container_exec.sh" --label cli-perf-baseline -- bash tooling/gates/check_cli_perf_baseline.sh "$@"
 fi
 
@@ -21,7 +21,7 @@ if [ ! -x "$VENV/bin/python" ]; then
   exit 1
 fi
 
-BUDGET_MS="${FILEORGANIZE_CLI_REPORT_BUDGET_MS:-1500}"
+BUDGET_MS="${FILEMAN_CLI_REPORT_BUDGET_MS:-1500}"
 MANIFEST_PATH="$ROOT/tests/fixtures/golden_expected/manifest.jsonl"
 SUMMARY_PATH="$(governance_runtime_logs_path "$REPO_ROOT")/cli-perf-baseline.json"
 
@@ -48,7 +48,7 @@ done
 
 mkdir -p "$(dirname "$SUMMARY_PATH")"
 
-"$VENV/bin/python" - "$VENV/bin/python" "$ROOT/fileorganize.py" "$MANIFEST_PATH" "$BUDGET_MS" "$SUMMARY_PATH" <<'PY'
+"$VENV/bin/python" - "$VENV/bin/python" "$ROOT/fileman.py" "$MANIFEST_PATH" "$BUDGET_MS" "$SUMMARY_PATH" <<'PY'
 import json
 import subprocess
 import sys
@@ -89,7 +89,7 @@ summary = {
     "actual_ms": elapsed_ms,
     "status": "pass" if elapsed_ms <= budget_ms and proc.returncode == 0 else "fail",
     "manifest": str(manifest),
-    "command": "fileorganize report --manifest <manifest> --out <tmp> --validate --chunk-size 200",
+    "command": "fileman report --manifest <manifest> --out <tmp> --validate --chunk-size 200",
 }
 summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 print(json.dumps(summary, ensure_ascii=False))

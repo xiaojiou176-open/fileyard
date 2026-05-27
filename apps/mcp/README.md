@@ -1,6 +1,6 @@
 # apps/mcp
 
-`apps/mcp` is the runtime implementation path for Fileorganize MCP v1.
+`apps/mcp` is the runtime implementation path for Fileman MCP v1.
 
 The canonical public root for the product still lives at the repo root
 (`README.md` + `manifest.yaml`), and the canonical machine-readable descriptor
@@ -26,7 +26,7 @@ the repo storefront or a live registry listing.
 - `server.py`
   - FastMCP entrypoint and tool/resource registration
 - `service.py`
-  - thin facade over the review-first Fileorganize workflow
+  - thin facade over the review-first Fileman workflow
 - `__main__.py`
   - package entrypoint for local execution
 

@@ -14,7 +14,7 @@ def test_run_value_proof_prepare_upgrade_pack_creates_editable_manual_baseline(t
     repo_root = _repo_root()
     target = tmp_path / "value-proof-pack"
     env = os.environ.copy()
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
 
     proc = subprocess.run(
         ["bash", "tooling/runtime/run_value_proof.sh", "--prepare-upgrade-pack", str(target)],
@@ -51,7 +51,7 @@ def test_ai_eval_prepare_upgrade_pack_creates_editable_human_rubric(tmp_path: Pa
     repo_root = _repo_root()
     target = tmp_path / "ai-eval-pack"
     env = os.environ.copy()
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
 
     proc = subprocess.run(
         ["bash", "tooling/gates/ai_eval_gate.sh", "--prepare-upgrade-pack", str(target)],
@@ -88,7 +88,7 @@ def test_proof_upgrade_pack_prepares_value_and_ai_upgrade_inputs(tmp_path: Path)
     repo_root = _repo_root()
     target = tmp_path / "proof-pack"
     env = os.environ.copy()
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
 
     proc = subprocess.run(
         ["bash", "tooling/gates/proof_upgrade_pack.sh", str(target)],

@@ -17,6 +17,6 @@ Quick execution memory for `apps/mcp/`.
 ## Main checks
 
 ```bash
-~/.cache/fileorganize/venv/default/bin/python -m pytest -q -o addopts='' tests/unit/test_mcp_server.py
+~/.cache/fileman/venv/default/bin/python -m pytest -q -o addopts='' tests/unit/test_mcp_server.py
 bash tooling/runtime/run_mcp_stdio.sh --help
 ```

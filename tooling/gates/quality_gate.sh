@@ -29,7 +29,7 @@ RUN_SUMMARY_PATH="$REPO_ROOT/$RUN_SUMMARY_REL_PATH"
 RUN_STEP_SUMMARY_REL_PATH="$RUN_ARTIFACT_REL_DIR/.step-summary.jsonl"
 RUN_STEP_SUMMARY_PATH="$REPO_ROOT/$RUN_STEP_SUMMARY_REL_PATH"
 
-if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ] && [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" = "1" ]; then
+if [ "${FILEMAN_IN_CONTAINER:-0}" != "1" ] && [ "${FILEMAN_ALLOW_HOST_EXECUTION:-0}" = "1" ]; then
   GATE_EXECUTION_MODE="host-emergency"
   LATEST_SUMMARY_REL_PATH="$ARTIFACT_LOGS_REL/host-summary.json"
   LATEST_STEP_SUMMARY_REL_PATH="$ARTIFACT_LOGS_REL/.host-step-summary.jsonl"
@@ -101,7 +101,7 @@ run_mutation_canary_in_repo_snapshot() {
   # Keep the mutation snapshot outside repo-local runtime roots so hygiene
   # cleanup cannot prune the snapshot while the canary subprocess is still
   # walking it.
-  snapshot_root="$(mktemp -d "/tmp/fileorganize-mutation-snapshot.XXXXXX")"
+  snapshot_root="$(mktemp -d "/tmp/fileman-mutation-snapshot.XXXXXX")"
   (
     cd "$REPO_ROOT"
     tar \
@@ -343,7 +343,7 @@ run_canonical_container_wrapper() {
   return "$wrapper_rc"
 }
 
-if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ] && [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" != "1" ] && [ "${QUALITY_GATE_CONTAINER_BOOTSTRAPPED:-0}" != "1" ]; then
+if [ "${FILEMAN_IN_CONTAINER:-0}" != "1" ] && [ "${FILEMAN_ALLOW_HOST_EXECUTION:-0}" != "1" ] && [ "${QUALITY_GATE_CONTAINER_BOOTSTRAPPED:-0}" != "1" ]; then
   run_canonical_container_wrapper "$@"
   exit $?
 fi
@@ -1009,7 +1009,7 @@ pytest_full_targets=(
 run_step_with_heartbeat \
   pytest \
   run_pytest_with_isolated_tmp \
-  env -u PRE_COMMIT_FROM_REF -u PRE_COMMIT_TO_REF FILEORGANIZE_RUN_LIVE_TESTS=0 \
+  env -u PRE_COMMIT_FROM_REF -u PRE_COMMIT_TO_REF FILEMAN_RUN_LIVE_TESTS=0 \
   "$VENV/bin/python" -m pytest -q \
   -o addopts= \
   --strict-config \
@@ -1052,15 +1052,15 @@ run_step pip-audit run_pip_audit_gate || {
   exit 1
 }
 
-if [ "${FILEORGANIZE_RUN_LIVE_TESTS:-0}" = "1" ]; then
+if [ "${FILEMAN_RUN_LIVE_TESTS:-0}" = "1" ]; then
   resolve_var_prefer_dotenv GEMINI_API_KEY ""
   if [ -z "${GEMINI_API_KEY:-}" ]; then
-    echo "❌ quality_gate: FILEORGANIZE_RUN_LIVE_TESTS=1 but GEMINI_API_KEY is missing" >&2
+    echo "❌ quality_gate: FILEMAN_RUN_LIVE_TESTS=1 but GEMINI_API_KEY is missing" >&2
     exit 1
   fi
   resolve_var_prefer_env_then_runtime_env GEMINI_MODEL "gemini-3-flash-preview"
-  : "${FILEORGANIZE_LIVE_TEST_URL:=https://docs.github.com/en}"
-  resolve_var_prefer_env_then_runtime_env FILEORGANIZE_LIVE_TEST_URL "https://docs.github.com/en"
+  : "${FILEMAN_LIVE_TEST_URL:=https://docs.github.com/en}"
+  resolve_var_prefer_env_then_runtime_env FILEMAN_LIVE_TEST_URL "https://docs.github.com/en"
   if ! run_step live-tests bash "$ROOT/scripts/run_live_tests.sh"; then
     live_log="$RUN_ARTIFACT_DIR/live-tests.log"
     allow_network_timeout="${QUALITY_GATE_ALLOW_LIVE_NETWORK_TIMEOUT:-0}"

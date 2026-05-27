@@ -23,7 +23,7 @@ _TRUSTED_BIN_DIRS = (
 
 
 def _is_test_hooks_enabled() -> bool:
-    return os.environ.get("FILEORGANIZE_ENABLE_TEST_HOOKS", "") == "1" or bool(os.environ.get("PYTEST_CURRENT_TEST", ""))
+    return os.environ.get("FILEMAN_ENABLE_TEST_HOOKS", "") == "1" or bool(os.environ.get("PYTEST_CURRENT_TEST", ""))
 
 
 def _is_trusted_executable(path: Path) -> bool:

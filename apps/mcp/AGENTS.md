@@ -4,7 +4,7 @@ Local policy for `apps/mcp/`.
 
 ## Goal
 
-Expose Fileorganize to MCP clients through a thin, local-first facade that keeps the existing review-first safety model intact.
+Expose Fileman to MCP clients through a thin, local-first facade that keeps the existing review-first safety model intact.
 
 ## Rules
 

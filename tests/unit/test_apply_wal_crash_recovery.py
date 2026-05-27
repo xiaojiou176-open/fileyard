@@ -138,12 +138,12 @@ def test_apply_crash_after_rollback_before_finalize_is_recoverable(tmp_path: Pat
     _assert_recovered_state(manifest, output_root)
 
 
-def test_apply_wal_fileorganizeng_phase_does_not_promote_broken_partial(tmp_path: Path):
+def test_apply_wal_moving_phase_does_not_promote_broken_partial(tmp_path: Path):
     manifest, input_root, output_root = _prepare_manifest(tmp_path)
     partial_manifest = Path(str(manifest) + ".partial")
     partial_manifest.write_text("{broken jsonl", encoding="utf-8")
     wal = Path(str(manifest) + ".apply.wal.json")
-    wal.write_text('{"phase":"fileorganizeng"}', encoding="utf-8")
+    wal.write_text('{"phase":"moving"}', encoding="utf-8")
 
     apply_changes.cmd_apply(_apply_args(manifest, input_root, output_root, dry_run=True))
 

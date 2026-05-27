@@ -13,15 +13,15 @@ def _signed_row(path: Path, new_path: Path, run_id: str, hmac_key: str) -> dict[
         "media_type": "image",
         "run_id": run_id,
     }
-    old = os.environ.get("FILEORGANIZE_ROLLBACK_HMAC_KEY")
-    os.environ["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = hmac_key
+    old = os.environ.get("FILEMAN_ROLLBACK_HMAC_KEY")
+    os.environ["FILEMAN_ROLLBACK_HMAC_KEY"] = hmac_key
     try:
         row["rollback_sig"] = _sign_rollback_record(row, run_id)
     finally:
         if old is None:
-            os.environ.pop("FILEORGANIZE_ROLLBACK_HMAC_KEY", None)
+            os.environ.pop("FILEMAN_ROLLBACK_HMAC_KEY", None)
         else:
-            os.environ["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = old
+            os.environ["FILEMAN_ROLLBACK_HMAC_KEY"] = old
     return row
 
 
@@ -48,8 +48,8 @@ def test_run_rollback_script_moves_back(tmp_path: Path):
         "--overwrite",
     ]
     env = os.environ.copy()
-    env["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = hmac_key
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ROLLBACK_HMAC_KEY"] = hmac_key
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
     subprocess.run(
         cmd,
         check=True,
@@ -87,8 +87,8 @@ def test_run_rollback_script_overwrite_dry_run_keeps_files(tmp_path: Path):
         "--dry-run",
     ]
     env = os.environ.copy()
-    env["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = hmac_key
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ROLLBACK_HMAC_KEY"] = hmac_key
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
     subprocess.run(cmd, check=True, cwd=str(script_root), env=env)
 
     assert original.read_text(encoding="utf-8") == "old"
@@ -129,8 +129,8 @@ def test_run_rollback_script_outside_allowed_root_does_not_block_valid_row(tmp_p
         str(allowed_root),
     ]
     env = os.environ.copy()
-    env["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = hmac_key
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ROLLBACK_HMAC_KEY"] = hmac_key
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
     proc = subprocess.run(
         cmd,
         check=True,

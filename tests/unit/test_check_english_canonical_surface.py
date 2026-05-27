@@ -37,7 +37,7 @@ def test_deep_water_english_boundary_is_explicit() -> None:
     assert 'DEFAULT_LOCALIZED_SLUG_FALLBACK = "未命名"' in normalization
     assert "Product-localized fallback for generated filenames." in normalization
 
-    assert "Another Fileorganize task is already running; lock file exists:" in core_utils
+    assert "Another Fileman task is already running; lock file exists:" in core_utils
     assert "任务已在运行，锁文件存在" not in core_utils
 
     assert "Directory traversal failed and was skipped:" in media_scanner

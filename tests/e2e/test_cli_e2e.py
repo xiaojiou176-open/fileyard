@@ -9,7 +9,7 @@ from pathlib import Path
 
 def test_cli_apply_rollback(tmp_path: Path):
     repo_root = Path(__file__).resolve().parents[2]
-    fileorganize = repo_root / "apps" / "cli" / "fileorganize.py"
+    fileman = repo_root / "apps" / "cli" / "fileman.py"
 
     input_dir = tmp_path / "input"
     output_dir = tmp_path / "output"
@@ -43,7 +43,7 @@ def test_cli_apply_rollback(tmp_path: Path):
 
     apply_cmd = [
         sys.executable,
-        str(fileorganize),
+        str(fileman),
         "apply",
         "--manifest",
         str(manifest),
@@ -54,14 +54,14 @@ def test_cli_apply_rollback(tmp_path: Path):
         "--verify-sha1",
     ]
     env = os.environ.copy()
-    env["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = "e2e-test-rollback-key"
+    env["FILEMAN_ROLLBACK_HMAC_KEY"] = "e2e-test-rollback-key"
     subprocess.run(apply_cmd, check=True, cwd=str(repo_root), env=env)
 
     assert not src.exists()
 
     rollback_cmd = [
         sys.executable,
-        str(fileorganize),
+        str(fileman),
         "rollback",
         "--manifest",
         str(manifest),
@@ -76,7 +76,7 @@ def test_cli_apply_rollback(tmp_path: Path):
 
 def test_cli_analyze_fails_on_manifest_lock_contention(tmp_path: Path):
     repo_root = Path(__file__).resolve().parents[2]
-    fileorganize = repo_root / "apps" / "cli" / "fileorganize.py"
+    fileman = repo_root / "apps" / "cli" / "fileman.py"
 
     input_dir = tmp_path / "input"
     input_dir.mkdir()
@@ -91,7 +91,7 @@ def test_cli_analyze_fails_on_manifest_lock_contention(tmp_path: Path):
 
     cmd = [
         sys.executable,
-        str(fileorganize),
+        str(fileman),
         "analyze",
         "--input",
         str(input_dir),
@@ -107,7 +107,7 @@ def test_cli_analyze_fails_on_manifest_lock_contention(tmp_path: Path):
 
 def test_cli_apply_trust_manifest_input_root_rejects_row_outside_allowlist(tmp_path: Path):
     repo_root = Path(__file__).resolve().parents[2]
-    fileorganize = repo_root / "apps" / "cli" / "fileorganize.py"
+    fileman = repo_root / "apps" / "cli" / "fileman.py"
 
     outside_root = tmp_path / "outside"
     outside_root.mkdir()
@@ -142,7 +142,7 @@ def test_cli_apply_trust_manifest_input_root_rejects_row_outside_allowlist(tmp_p
 
     cmd = [
         sys.executable,
-        str(fileorganize),
+        str(fileman),
         "apply",
         "--manifest",
         str(manifest),

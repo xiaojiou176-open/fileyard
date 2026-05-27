@@ -18,7 +18,7 @@ ARTIFACT_LOGS="$(governance_runtime_logs_path "$REPO_ROOT")/lint-frontend"
 WEBUI_HASH_FILE="$(governance_webui_lock_hash_path "$REPO_ROOT")"
 NPM_CACHE_DIR="$(resolve_repo_path "$REPO_ROOT" "$GOVERNANCE_NPM_CACHE_DIR")"
 
-if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ]; then
+if [ "${FILEMAN_IN_CONTAINER:-0}" != "1" ]; then
   cleanup_host_webui_mountpoint() {
     if [ ! -d "$REPO_ROOT/apps/webui/node_modules" ]; then
       return 0
@@ -30,7 +30,7 @@ if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ]; then
   if [ "${LINT_FRONTEND_ALLOW_HOST_EXECUTION:-0}" = "1" ]; then
     echo "⚠️ lint_frontend: explicit host execution enabled; canonical frontend verification stays containerized by default" >&2
   else
-    env -u FILEORGANIZE_ALLOW_HOST_EXECUTION FILEORGANIZE_COMPOSE_SERVICE=fileorganize-web-api bash "$ROOT/scripts/container_exec.sh" --label lint-frontend -- bash tooling/gates/lint_frontend.sh "$@"
+    env -u FILEMAN_ALLOW_HOST_EXECUTION FILEMAN_COMPOSE_SERVICE=fileman-web-api bash "$ROOT/scripts/container_exec.sh" --label lint-frontend -- bash tooling/gates/lint_frontend.sh "$@"
     rc=$?
     cleanup_host_webui_mountpoint
     exit "$rc"

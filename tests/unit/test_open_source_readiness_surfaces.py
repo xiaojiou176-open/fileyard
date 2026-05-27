@@ -109,8 +109,8 @@ def test_usage_is_a_detailed_operator_guide_not_a_second_public_overview() -> No
 def test_issue_template_config_links_to_repo_specific_docs() -> None:
     config = (REPO_ROOT / ".github" / "ISSUE_TEMPLATE" / "config.yml").read_text(encoding="utf-8")
 
-    assert "fileorganize/blob/main/SECURITY.md" in config
-    assert "fileorganize/blob/main/SUPPORT.md" in config
+    assert "fileman/blob/main/SECURITY.md" in config
+    assert "fileman/blob/main/SUPPORT.md" in config
 
 
 def test_open_source_runbook_explains_upstream_is_dependency_governance_here() -> None:

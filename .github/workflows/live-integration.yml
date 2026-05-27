@@ -39,21 +39,21 @@ jobs:
           GHCR_PULL_USERNAME: ${{ vars.GHCR_PUSH_USERNAME || github.actor }}
         run: |
           set -euo pipefail
-          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileorganize-docker-config"
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileman-docker-config"
           mkdir -p "$DOCKER_CONFIG_DIR"
           auth_b64="$(python3 -c 'import base64, os; print(base64.b64encode((os.environ["GHCR_PULL_USERNAME"] + ":" + os.environ["GHCR_PULL_TOKEN"]).encode("utf-8")).decode("ascii"))')"
           printf '{"auths":{"ghcr.io":{"auth":"%s"}}}\n' "$auth_b64" > "$DOCKER_CONFIG_DIR/config.json"
           chmod 600 "$DOCKER_CONFIG_DIR/config.json"
           IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
           docker --config "$DOCKER_CONFIG_DIR" pull "$IMAGE_REF"
-          echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "FILEMAN_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
       - name: Live preflight checks
         env:
-          FILEORGANIZE_RUN_LIVE_TESTS: "1"
-          FILEORGANIZE_RUN_WEBUI_E2E: "1"
+          FILEMAN_RUN_LIVE_TESTS: "1"
+          FILEMAN_RUN_WEBUI_E2E: "1"
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
-          FILEORGANIZE_LIVE_TEST_URL: ${{ secrets.FILEORGANIZE_LIVE_TEST_URL }}
+          FILEMAN_LIVE_TEST_URL: ${{ secrets.FILEMAN_LIVE_TEST_URL }}
         run: |
           set -euo pipefail
           if [ -z "${GEMINI_API_KEY:-}" ]; then
@@ -68,17 +68,17 @@ jobs:
             echo "❌ live-integration: missing required secret GEMINI_MODEL"
             exit 1
           fi
-          if [ -z "${FILEORGANIZE_LIVE_TEST_URL:-}" ]; then
-            echo "❌ live-integration: missing required secret FILEORGANIZE_LIVE_TEST_URL"
+          if [ -z "${FILEMAN_LIVE_TEST_URL:-}" ]; then
+            echo "❌ live-integration: missing required secret FILEMAN_LIVE_TEST_URL"
             exit 1
           fi
       - name: Run live full tests with heartbeat
         env:
-          FILEORGANIZE_RUN_LIVE_TESTS: "1"
-          FILEORGANIZE_RUN_WEBUI_E2E: "1"
+          FILEMAN_RUN_LIVE_TESTS: "1"
+          FILEMAN_RUN_WEBUI_E2E: "1"
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
-          FILEORGANIZE_LIVE_TEST_URL: ${{ secrets.FILEORGANIZE_LIVE_TEST_URL }}
+          FILEMAN_LIVE_TEST_URL: ${{ secrets.FILEMAN_LIVE_TEST_URL }}
           LIVE_HEARTBEAT_INTERVAL_SECONDS: "20"
           LIVE_MAX_DURATION_SECONDS: "1800"
           LIVE_MAX_RETRIES: "2"

@@ -2,7 +2,7 @@
 
 This file answers a different question from `DISTRIBUTION.md`:
 
-What integration surfaces does Fileorganize actually fit today?
+What integration surfaces does Fileman actually fit today?
 
 Think of it like a map of doors into the same workshop. Some doors are first
 class, some are side entrances, and some are only comparison points.
@@ -14,7 +14,7 @@ class, some are side entrances, and some are only comparison points.
 | CLI | Primary operator surface | Best for full analyze, apply, rollback, and report workflows. |
 | Web API | Local integration substrate | A local HTTP contract exists for app and builder integration. |
 | Generated TypeScript client | Builder substrate | The repository exposes generated client/types for local integrations. |
-| Fileorganize MCP v1 | Primary agent integration surface | The canonical agent-facing surface is local-first stdio MCP. |
+| Fileman MCP v1 | Primary agent integration surface | The canonical agent-facing surface is local-first stdio MCP. |
 
 ## Primary Fit
 
@@ -42,7 +42,7 @@ class, some are side entrances, and some are only comparison points.
 | :-- | :-- | :-- |
 | ClawHub | listed_live; the current page still shows `Moderation verdict: suspicious` and `Detected: suspicious.vt_suspicious`. | Treat the live ClawHub page as a listing with a warning label, not as a clean approval receipt. |
 | OpenClaw bundle | repo-owned supporting surface | Keep OpenClaw in the host-facing bundle/supporting lane, not in the live-listing lane. |
-| OpenHands `extensions#161` | OPEN / REVIEW_REQUIRED / BLOCKED | This is a real external review lane, but it is not the same thing as a primary Fileorganize integration story or an accepted host surface. |
+| OpenHands `extensions#161` | OPEN / REVIEW_REQUIRED / BLOCKED | This is a real external review lane, but it is not the same thing as a primary Fileman integration story or an accepted host surface. |
 | Official MCP Registry | not_submitted | The current MCP story is local-first stdio MCP, not an official registry listing. |
 | Skills registry or plugin marketplaces | no verified public receipt today | The repository ships repo-owned agent/plugin bundles, but this file does not claim a live registry or browser marketplace listing. |
 
@@ -61,7 +61,7 @@ All current integrations share the same safety line:
 - review-first
 - overlay-only editing for review state
 - dry-run before execute
-- no hidden `apply.execute` shortcut in `Fileorganize MCP v1`
+- no hidden `apply.execute` shortcut in `Fileman MCP v1`
 
 If a description crosses that line, it is overstating the current integration
 surface.

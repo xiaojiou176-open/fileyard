@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security report
-    url: https://github.com/xiaojiou176-open/fileorganize/blob/main/SECURITY.md
+    url: https://github.com/xiaojiou176-open/fileman/blob/main/SECURITY.md
     about: Read SECURITY.md first; if GitHub private vulnerability reporting is enabled later, use that entrypoint.
   - name: Usage and support boundary
-    url: https://github.com/xiaojiou176-open/fileorganize/blob/main/SUPPORT.md
+    url: https://github.com/xiaojiou176-open/fileman/blob/main/SUPPORT.md
     about: Read the limited-maintenance support policy before opening a request.

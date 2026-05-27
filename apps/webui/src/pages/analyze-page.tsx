@@ -28,7 +28,7 @@ export function AnalyzePage() {
   const [searchParams] = useSearchParams()
   const [step, setStep] = useState(1)
   const [mode, setMode] = useState<InputMode>('directory')
-  const [directoryPath, setDirectoryPath] = useState('~/.fileorganize/workspaces/default/data/raw')
+  const [directoryPath, setDirectoryPath] = useState('~/.fileman/workspaces/default/data/raw')
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const [model, setModel] = useState('gemini-3-flash-preview')
   const [workers, setWorkers] = useState('1')
@@ -356,7 +356,7 @@ export function AnalyzePage() {
         <Card className="workspace-panel">
           <CardHeader>
             <CardTitle>Step 2 - Configure Parameters</CardTitle>
-            <CardDescription>Choose the AI and batch settings for this run. Most people only need to check the model, speed, and file limits before Fileorganize drafts a reviewable manifest.</CardDescription>
+            <CardDescription>Choose the AI and batch settings for this run. Most people only need to check the model, speed, and file limits before Fileman drafts a reviewable manifest.</CardDescription>
           </CardHeader>
           <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="space-y-2">
@@ -436,7 +436,7 @@ export function AnalyzePage() {
                   <Badge variant="outline">review threshold: {Math.round(selectedStrategyPack.review_confidence_threshold * 100)}%</Badge>
                 </div>
                 <p className="mt-3 text-xs text-muted-foreground">
-                  In plain language: the pack shapes how Fileorganize drafts the first pass. It does not become a second config system, and it never skips Review, dry-run, or manual approval.
+                  In plain language: the pack shapes how Fileman drafts the first pass. It does not become a second config system, and it never skips Review, dry-run, or manual approval.
                 </p>
               </div>
             ) : null}

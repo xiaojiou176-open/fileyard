@@ -7,14 +7,14 @@ from packages.infrastructure import audio_processing
 
 
 def test_is_test_hooks_enabled_reads_env(monkeypatch):
-    monkeypatch.delenv("FILEORGANIZE_ENABLE_TEST_HOOKS", raising=False)
+    monkeypatch.delenv("FILEMAN_ENABLE_TEST_HOOKS", raising=False)
     monkeypatch.delenv("PYTEST_CURRENT_TEST", raising=False)
     assert audio_processing._is_test_hooks_enabled() is False
 
-    monkeypatch.setenv("FILEORGANIZE_ENABLE_TEST_HOOKS", "1")
+    monkeypatch.setenv("FILEMAN_ENABLE_TEST_HOOKS", "1")
     assert audio_processing._is_test_hooks_enabled() is True
 
-    monkeypatch.setenv("FILEORGANIZE_ENABLE_TEST_HOOKS", "0")
+    monkeypatch.setenv("FILEMAN_ENABLE_TEST_HOOKS", "0")
     monkeypatch.setenv("PYTEST_CURRENT_TEST", "tests::case")
     assert audio_processing._is_test_hooks_enabled() is True
 
