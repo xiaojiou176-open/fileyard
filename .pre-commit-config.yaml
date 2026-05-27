@@ -1,0 +1,260 @@
+# Pre-commit configuration - LIGHTWEIGHT ONLY
+# Design principle: Pre-commit should complete in <15s
+# Heavy checks (full lint, tests, AI audit) are deferred to pre-push or CI
+#
+# Layer responsibilities:
+#   Pre-Commit (<15s): formatting, syntax, security (staged files only), commit hygiene
+#   Pre-Push standard (<30s): minimal local burn, changed-only secret scan, commit governance
+#   Pre-Push strict (<90s): local fast lane, incremental validation, mutation canary
+#   CI (full): all checks, multi-version matrix, full security scan
+#
+# Developers can bypass with --no-verify; CI provides full coverage as safety net.
+
+default_install_hook_types: [pre-commit, pre-push, commit-msg]
+minimum_pre_commit_version: "3.5.0"
+fail_fast: true
+default_language_version:
+  python: python3.12
+exclude: |
+  (?x)^(
+      .*venv/.*|
+      .*node_modules/.*|
+      .*dist/.*|
+      .*build/.*|
+      .*__pycache__/.*|
+      .*\.min\..*|
+      .*\.svg$|
+      \.git/.*
+  )$
+
+repos:
+  # ============================================================================
+  # STAGE: pre-commit (lightweight, <15s total)
+  # ============================================================================
+
+  # --- Basic file hygiene (very fast) ---
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
+    hooks:
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+      - id: check-ast
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-illegal-windows-names
+      - id: check-json
+      - id: pretty-format-json
+        args: [--autofix, --no-sort-keys]
+        exclude: ^tooling/config/biome\.json$
+      - id: check-merge-conflict
+      - id: check-shebang-scripts-are-executable
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-xml
+      - id: check-vcs-permalinks
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: debug-statements
+      - id: destroyed-symlinks
+      - id: detect-private-key
+      - id: detect-aws-credentials
+        args: [--allow-missing-credentials]
+      - id: forbid-submodules
+      - id: fix-byte-order-marker
+      - id: requirements-txt-fixer
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: no-commit-to-branch
+        args: [--branch, master]
+        stages: [pre-push]
+      - id: trailing-whitespace
+
+  # --- Security: staged files only (fast) ---
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: 2ca41cc1372d1e939a6a879f18cdc19fc1cac1ce  # frozen: v8.30.0
+    hooks:
+      - id: gitleaks
+        args: [--config=tooling/config/gitleaks.toml]
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: 68e8b45440415753fff70a312ece8da92ba85b4a  # frozen: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args:
+          [
+            "--disable-plugin",
+            "HexHighEntropyString",
+            "--exclude-files",
+            "^tests/.*",
+          ]
+
+  # --- Formatting only (fast, auto-fix) ---
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: a27a2e47c7751b639d2b5badf0ef6ff11fee893f  # frozen: v0.15.4
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # --- Commit message format ---
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: 4fbeae7861663ecf4b4989211eba41c1a3fb1227  # frozen: v4.13.9
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+
+  # --- Typo fix (fast) ---
+  - repo: https://github.com/crate-ci/typos
+    rev: 5745f2a8dd91cd7b684680e2e10a2b388ba6e5cf  # frozen: v1
+    hooks:
+      - id: typos
+        args: [--write-changes, --config, tooling/config/typos.toml]
+
+  # --- YAML lint (fast) ---
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: cba56bcde1fdd01c1deb3f945e69764c291a6530  # frozen: v1.38.0
+    hooks:
+      - id: yamllint
+        args: [--config-file, tooling/config/yamllint.yml]
+
+  # --- GitHub Actions lint (fast) ---
+  - repo: https://github.com/rhysd/actionlint
+    rev: 393031adb9afb225ee52ae2ccd7a5af5525e03e8  # frozen: v1.7.11
+    hooks:
+      - id: actionlint
+        files: ^\.github/workflows/.*\.(yml|yaml)$
+
+  # --- PNG optimization (fast) ---
+  - repo: https://github.com/shssoichiro/oxipng
+    rev: d54e7c04ea58170167d95d9b2b2ec07571602fe2  # frozen: v10.1.0
+    hooks:
+      - id: oxipng
+        name: oxipng
+        args: ["-o", "4", "--strip", "safe", "--alpha"]
+        files: \.png$
+        exclude: ^tests/fixtures/
+
+  # --- Local lightweight hooks ---
+  - repo: local
+    hooks:
+      # Prevent TODO/FIXME in production code
+      - id: no-todo-in-prod
+        name: no-todo-in-prod
+        entry: >-
+          bash -lc 'if git diff --cached --unified=0 -- packages/application packages/domain packages/infrastructure packages/observability apps/api apps/cli | grep -E "^\+.*(TODO|FIXME|XXX)" >/dev/null; then echo "ERROR no-todo-in-prod: remove TODO/FIXME/XXX from staged production changes"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+      # Prevent console.log in JS/TS
+      - id: no-console-log
+        name: no-console-log
+        entry: >-
+          bash -lc 'if git diff --cached --unified=0 -- ":*.js" ":*.jsx" ":*.ts" ":*.tsx" | grep -E "^\+.*console\.log\(" >/dev/null; then echo "ERROR no-console-log: remove staged console.log statements"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+      # Ensure AI context files exist
+      - id: check-ai-context-files
+        name: check-ai-context-files
+        entry: python3 tooling/scripts/check_ai_context_files.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+      # Prevent real .env files from being committed
+      - id: check-no-real-dotenv-committed
+        name: check-no-real-dotenv-committed
+        entry: >-
+          bash -lc 'if git diff --cached --name-only --diff-filter=ACMR | grep -E "(^|/)\.env($|\..+)" | grep -vE "(^|/)\.env\.example$" >/dev/null; then echo "ERROR check-no-real-dotenv-committed: real .env files are not allowed"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+      # Prevent .bak/.orig files from being committed
+      - id: check-no-backup-files
+        name: check-no-backup-files
+        entry: >-
+          bash -lc 'if git diff --cached --name-only --diff-filter=ACMR | grep -E "\.(bak|orig|rej)$" >/dev/null; then echo "ERROR check-no-backup-files: backup files (.bak/.orig/.rej) are not allowed"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+      # Check IaC exists
+      - id: check-iac-exists
+        name: check-iac-exists
+        entry: >-
+          bash -lc '[ -f docker-compose.yml ] || [ -f docker-compose.yaml ] || [ -f .devcontainer/devcontainer.json ] || [ -f flake.nix ] || (echo "ERROR check-iac-exists: missing docker-compose/devcontainer/flake.nix for environment parity" && exit 1)'
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+
+      # Commit message lint (local)
+      - id: commit-message-lint
+        name: commit-message-lint
+        entry: >-
+          bash -lc 'VENV_DIR="${GOVERNANCE_RUNTIME_VENV_DIR:-$HOME/.cache/fileyard/venv/default}"; "$VENV_DIR/bin/python" tooling/scripts/check_commit_message.py --commit-msg-file "$@"' --
+        language: system
+        stages: [commit-msg]
+
+      # Markdown lint via system Node to avoid pre-commit node_env linker drift on self-hosted runners
+      - id: markdownlint-cli2-system
+        name: markdownlint-cli2
+        entry: >-
+          bash -lc 'npx --yes markdownlint-cli2@0.21.0 --config tooling/config/.markdownlint-cli2.jsonc --fix "$@"' --
+        language: system
+        files: ^(README\.md|CHANGELOG\.md|docs/.*\.md)$
+        stages: [pre-commit]
+
+      # Stylelint via system Node to avoid pre-commit node_env linker drift on self-hosted runners
+      - id: stylelint-system
+        name: stylelint
+        entry: >-
+          bash tooling/scripts/run_stylelint_system.sh
+        language: system
+        files: \.(css|scss|sass|less)$
+        stages: [pre-commit]
+
+      # ========================================================================
+      # STAGE: pre-push (medium weight, <90s total)
+      # ========================================================================
+
+      # Pre-push gate: incremental checks + commit governance
+      - id: local-pre-push-gate
+        name: local-pre-push-gate
+        entry: bash tooling/gates/pre_push_gate.sh
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+
+# ============================================================================
+# REMOVED FROM PRE-COMMIT (moved to pre-push or CI):
+# ============================================================================
+# - mypy (duplicate with lint-backend, heavy) -> CI only
+# - lint-backend (heavy, runs ruff+mypy+bandit) -> pre-push incremental
+# - lint-frontend (heavy) -> pre-push incremental
+# - gemini-ui-ux-audit (calls AI API!) -> CI only
+# - placebo-assertion-gate (runs test_quality_gate.sh) -> pre-push
+# - secret-scan-pre-commit (scans entire repo) -> staged-only via gitleaks
+# - precommit-strictness -> CI only
+# - check-env-count -> pre-push
+# - env-contract-gate-pre-commit -> pre-push
+# - mutation-canary-gate-pre-commit -> pre-push
+# - check-frontend-a11y -> CI only
+# - check-design-tokens -> CI only
+# - check-no-direct-env-access -> CI only
+# - biome -> CI only (npx is slow)
+# - hadolint -> CI only
+# - shellcheck-local -> CI only
+# - gofumpt-local -> CI only
+# - golangci-lint-local -> CI only
+# - rustfmt-local -> CI only
+# - cargo-check-local -> CI only
+# - clippy-local -> CI only
+# - kube-linter -> CI only
+# - dotenv-linter -> CI only
+# - sqlfluff-lint -> CI only
+# - terraform_* -> CI only

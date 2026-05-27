@@ -1,0 +1,73 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Los_Angeles"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps)"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+    groups:
+      runtime:
+        patterns:
+          - "google-genai"
+          - "pillow"
+          - "pyyaml"
+          - "tomli"
+        update-types:
+          - "patch"
+          - "minor"
+      dev-tooling:
+        patterns:
+          - "pytest*"
+          - "ruff"
+          - "mypy"
+          - "bandit"
+        update-types:
+          - "patch"
+          - "minor"
+  - package-ecosystem: "npm"
+    directory: "/apps/webui"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:15"
+      timezone: "America/Los_Angeles"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps)"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+    groups:
+      webui-runtime:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "react-router-dom"
+          - "@reduxjs/toolkit"
+          - "@tanstack/*"
+          - "recharts"
+        update-types:
+          - "patch"
+          - "minor"
+      webui-tooling:
+        patterns:
+          - "vite"
+          - "vitest"
+          - "typescript"
+          - "eslint*"
+          - "@types/*"
+          - "@vitejs/*"
+          - "tailwindcss"
+        update-types:
+          - "patch"
+          - "minor"

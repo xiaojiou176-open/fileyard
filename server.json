@@ -1,0 +1,12 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.xiaojiou176-open/fileyard-mcp",
+  "title": "Movi MCP v1",
+  "description": "Review-first stdio MCP for Movi: analyze, review, overlay edit, and dry-run preview.",
+  "repository": {
+    "url": "https://github.com/xiaojiou176-open/fileyard",
+    "source": "github"
+  },
+  "websiteUrl": "https://github.com/xiaojiou176-open/fileyard/blob/main/docs/mcp.md",
+  "version": "4.0.5"
+}

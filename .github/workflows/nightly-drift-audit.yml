@@ -1,0 +1,53 @@
+name: nightly-drift-audit
+
+on:
+  workflow_dispatch:
+  merge_group:
+  schedule:
+    - cron: "45 6 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly-drift-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  drift-audit:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          mkdir -p "${GITHUB_WORKSPACE:-$PWD}"
+          if [ -n "${RUNNER_TEMP:-}" ]; then
+            mkdir -p "${RUNNER_TEMP}/fileyard-hygiene"
+          fi
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Hosted-first runner policy notice
+        run: |
+          set -euo pipefail
+          echo "Hosted-first policy active: nightly drift audit no longer enforces self-hosted shared-runner inventory."
+      - name: Drift audit
+        run: |
+          set -euo pipefail
+          python3 tooling/scripts/check_drift_audit.py --output .runtime-cache/logs/drift-audit.json
+      - name: Governance regression guard
+        run: |
+          set -euo pipefail
+          python3 tooling/scripts/check_ci_governance_regressions.py --root .
+      - name: Upload drift audit artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: nightly-drift-audit
+          path: .runtime-cache/logs/
+          if-no-files-found: warn

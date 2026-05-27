@@ -1,0 +1,62 @@
+name: upstream-governance-manual
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: upstream-governance-manual-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  upstream-audit:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          mkdir -p "${GITHUB_WORKSPACE:-$PWD}"
+          if [ -n "${RUNNER_TEMP:-}" ]; then
+            mkdir -p "${RUNNER_TEMP}/fileyard-hygiene"
+          fi
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Bootstrap env
+        run: |
+          set -euo pipefail
+          bash tooling/runtime/bootstrap_env.sh
+      - name: Root layout gate
+        run: |
+          set -euo pipefail
+          python3 tooling/scripts/check_root_layout.py --root .
+      - name: Upstream drift gate
+        run: |
+          set -euo pipefail
+          python3 tooling/scripts/check_upstream_drift.py --root .
+      - name: Dependency boundary gate
+        run: |
+          set -euo pipefail
+          python3 tooling/scripts/check_dependency_boundaries.py --root .
+      - name: Preview python upstream upgrade action
+        run: |
+          set -euo pipefail
+          python3 tooling/scripts/upgrade_one_upstream.py --root . --upstream-id python-runtime-lock --dry-run > .runtime-cache/logs/upstream-python-upgrade-plan.txt
+      - name: Preview node upstream upgrade action
+        run: |
+          set -euo pipefail
+          python3 tooling/scripts/upgrade_one_upstream.py --root . --upstream-id node-lock --dry-run > .runtime-cache/logs/upstream-node-upgrade-plan.txt
+      - name: Upload upstream governance artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: upstream-governance-manual
+          path: .runtime-cache/logs/
+          if-no-files-found: warn

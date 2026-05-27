@@ -1,0 +1,2554 @@
+name: ci
+# Cost-control policy: run local preflight before push whenever possible.
+# This workflow is the remote verification gate, not the first line of feedback.
+
+on:
+  push:
+  pull_request:
+  merge_group:
+    types: [checks_requested]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  # Isolate push/schedule/workflow_dispatch so manual full runs are not canceled by push runs.
+  group: ci-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
+
+jobs:
+  ci-bootstrap:
+    timeout-minutes: 8
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hosted-first CI bootstrap
+        run: |
+          set -euo pipefail
+          echo "Hosted-first CI bootstrap active."
+          echo "No self-hosted runner bootstrap or shared-runner capacity contract is required."
+
+  build-ci-image:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    timeout-minutes: 25
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    outputs:
+      py311-image: ${{ steps.build.outputs.py311-image }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Self-hosted workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Login to GHCR
+        env:
+          GHCR_PUSH_TOKEN: ${{ secrets.GHCR_PUSH_TOKEN }}
+          GHCR_PUSH_USERNAME: ${{ vars.GHCR_PUSH_USERNAME || github.repository_owner }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GHCR_PUSH_TOKEN:-}" ]; then
+            echo "❌ build-ci-image: missing required secret GHCR_PUSH_TOKEN" >&2
+            exit 1
+          fi
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileyard-docker-config"
+          mkdir -p "$DOCKER_CONFIG_DIR"
+          printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
+          export DOCKER_CONFIG="$DOCKER_CONFIG_DIR"
+          echo "DOCKER_CONFIG=$DOCKER_CONFIG_DIR" >> "$GITHUB_ENV"
+          printf '%s' "$GHCR_PUSH_TOKEN" | docker login ghcr.io -u "$GHCR_PUSH_USERNAME" --password-stdin # pragma: allowlist secret
+      - id: build
+        name: Build and publish CI runtime image family
+        env:
+          GHCR_PUSH_TOKEN: ${{ secrets.GHCR_PUSH_TOKEN }}
+        run: |
+          set -euo pipefail
+          DOCKER_BIN="docker"
+          if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+            DOCKER_BIN="sudo docker"
+          fi
+          push_image() {
+            local image_ref="$1"
+            $DOCKER_BIN push "$image_ref"
+          }
+          wait_for_registry_ref() {
+            local image_ref="$1"
+            local attempts=12
+            local attempt=1
+            while [ "$attempt" -le "$attempts" ]; do
+              if $DOCKER_BIN manifest inspect "$image_ref" >/dev/null 2>&1; then
+                return 0
+              fi
+              echo "waiting for registry visibility (${attempt}/${attempts}): $image_ref" >&2
+              sleep 5
+              attempt=$((attempt + 1))
+            done
+            echo "❌ runtime image did not become visible in GHCR: $image_ref" >&2
+            return 1
+          }
+          CONTRACT_DIR=".runtime-cache/ci-contract"
+          mkdir -p "$CONTRACT_DIR"
+          IMAGE_BASE="ghcr.io/${{ github.repository_owner }}/fileyard-ci"
+          for variant in py310 py311 py312; do
+            case "$variant" in
+              py310) base_image="mcr.microsoft.com/devcontainers/python:1-3.10-bullseye@sha256:f9687cf8ff930028b32eb2fa7a1cb0b65dbd5180b46e0173faded888bfa14743" ;;
+              py311) base_image="mcr.microsoft.com/devcontainers/python:1-3.11-bullseye@sha256:ae5708357f39cf7fd7d8b8ac856dffa3525fbabd008e30e7562749b2cef619d5" ;;
+              py312) base_image="mcr.microsoft.com/devcontainers/python:1-3.12-bullseye@sha256:cf244ba2b96e9515d1f9efb6641419e9cfec8a9de5fa15bf1e6c76a7928f5383" ;;
+            esac
+            image_tag="${IMAGE_BASE}:ci-${GITHUB_SHA}-${variant}"
+            $DOCKER_BIN build \
+              --file .devcontainer/Dockerfile \
+              --build-arg DEVCONTAINER_BASE_IMAGE="${base_image}" \
+              --build-arg NODE_RUNTIME_IMAGE="node:24.8.0-bullseye@sha256:1f01014be94e1bbd6687191b5e33e376b8bb1a48abf9c42560a26c812587fdfb" \
+              --tag "${image_tag}" .
+            push_image "${image_tag}"
+            image_ref="$($DOCKER_BIN image inspect "${image_tag}" --format '{{index .RepoDigests 0}}')"
+            wait_for_registry_ref "${image_ref}"
+            printf '%s\n' "${image_tag}" > "${CONTRACT_DIR}/${variant}.image.tag.txt"
+            printf '%s\n' "${image_ref}" > "${CONTRACT_DIR}/${variant}.image.txt"
+            if [ "$variant" = "py311" ]; then
+              echo "py311-image=${image_ref}" >> "$GITHUB_OUTPUT"
+            fi
+          done
+      - id: provenance-eligibility
+        name: Resolve provenance eligibility
+        run: |
+          set -euo pipefail
+          mkdir -p .runtime-cache/attestations
+          if [ "${{ github.event.repository.private }}" = "true" ] && [ "${{ vars.CI_ENABLE_PRIVATE_ATTESTATIONS || '0' }}" != "1" ]; then
+            printf '%s\n' '{"status":"skipped","reason":"private-repo-attestation-disabled","hint":"set CI_ENABLE_PRIVATE_ATTESTATIONS=1 after enabling GitHub artifact attestations for private repos"}' > .runtime-cache/attestations/provenance-summary.json
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
+      - id: py310-digest
+        name: Resolve py310 digest
+        run: echo "digest=$(sed 's#.*@##' .runtime-cache/ci-contract/py310.image.txt)" >> "$GITHUB_OUTPUT"
+      - id: py311-digest
+        name: Resolve py311 digest
+        run: echo "digest=$(sed 's#.*@##' .runtime-cache/ci-contract/py311.image.txt)" >> "$GITHUB_OUTPUT"
+      - id: py312-digest
+        name: Resolve py312 digest
+        run: echo "digest=$(sed 's#.*@##' .runtime-cache/ci-contract/py312.image.txt)" >> "$GITHUB_OUTPUT"
+      - name: Generate py310 build provenance
+        if: steps.provenance-eligibility.outputs.enabled == 'true'
+        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a
+        with:
+          subject-name: ghcr.io/${{ github.repository_owner }}/fileyard-ci
+          subject-digest: ${{ steps.py310-digest.outputs.digest }}
+      - name: Generate py311 build provenance
+        if: steps.provenance-eligibility.outputs.enabled == 'true'
+        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a
+        with:
+          subject-name: ghcr.io/${{ github.repository_owner }}/fileyard-ci
+          subject-digest: ${{ steps.py311-digest.outputs.digest }}
+      - name: Generate py312 build provenance
+        if: steps.provenance-eligibility.outputs.enabled == 'true'
+        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a
+        with:
+          subject-name: ghcr.io/${{ github.repository_owner }}/fileyard-ci
+          subject-digest: ${{ steps.py312-digest.outputs.digest }}
+      - name: Collect runtime provenance artifact pointers
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p .runtime-cache/attestations
+          summary_file=".runtime-cache/attestations/provenance-summary.json"
+          py310_digest="$(sed 's#.*@##' .runtime-cache/ci-contract/py310.image.txt)"
+          py311_digest="$(sed 's#.*@##' .runtime-cache/ci-contract/py311.image.txt)"
+          py312_digest="$(sed 's#.*@##' .runtime-cache/ci-contract/py312.image.txt)"
+          if [ ! -f "$summary_file" ]; then
+            cat >"$summary_file" <<EOF
+          {
+            "status": "generated",
+            "subjects": [
+              "ghcr.io/${{ github.repository_owner }}/fileyard-ci@${py310_digest}",
+              "ghcr.io/${{ github.repository_owner }}/fileyard-ci@${py311_digest}",
+              "ghcr.io/${{ github.repository_owner }}/fileyard-ci@${py312_digest}"
+            ],
+            "verify_hint": "gh attestation verify oci://ghcr.io/${{ github.repository_owner }}/fileyard-ci@${py311_digest} --repo ${{ github.repository }}"
+          }
+          EOF
+          fi
+          if [ -f "${RUNNER_TEMP}/created_attestation_paths.txt" ]; then
+            while IFS= read -r path; do
+              [ -z "$path" ] && continue
+              cp "$path" ".runtime-cache/attestations/$(basename "$path")"
+            done < "${RUNNER_TEMP}/created_attestation_paths.txt"
+          fi
+      - name: Upload CI runtime image contract
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract/
+          if-no-files-found: error
+          overwrite: true
+      - name: Upload CI runtime provenance artifact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-image-contract-provenance
+          path: .runtime-cache/attestations/
+          if-no-files-found: error
+          overwrite: true
+
+  change-detection-hosted-primary:
+    timeout-minutes: 8
+    runs-on: ubuntu-latest
+    outputs:
+      entered: ${{ steps.entry.outputs.entered }}
+      run-heavy: ${{ steps.diff.outputs.run-heavy }}
+      changed-count: ${{ steps.diff.outputs.changed-count }}
+    steps:
+      - id: entry
+        name: Entry sentinel
+        run: echo "entered=true" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 0
+          clean: true
+      - id: diff
+        name: Detect heavy-test impact scope
+        env:
+          CI_EVENT_NAME: ${{ github.event_name }}
+          CI_BASE_REF: ${{ github.base_ref }}
+          CI_BEFORE_SHA: ${{ github.event.before }}
+          CI_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          bash tooling/ci/detect_change_scope.sh .github/.ci_changed_files.txt
+
+  change-detection-hosted-retry:
+    needs: [change-detection-hosted-primary]
+    if: (always() && needs.change-detection-hosted-primary.result != 'success') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request')
+    timeout-minutes: 8
+    runs-on: ubuntu-latest
+    outputs:
+      run-heavy: ${{ steps.diff.outputs.run-heavy }}
+      changed-count: ${{ steps.diff.outputs.changed-count }}
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage pre-checkout --normalize-ownership
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 0
+          clean: false
+      - id: diff
+        name: Detect heavy-test impact scope
+        env:
+          CI_EVENT_NAME: ${{ github.event_name }}
+          CI_BASE_REF: ${{ github.base_ref }}
+          CI_BEFORE_SHA: ${{ github.event.before }}
+          CI_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          bash tooling/ci/detect_change_scope.sh .github/.ci_changed_files.txt
+
+  change-detection:
+    needs: [change-detection-hosted-primary, change-detection-hosted-retry]
+    if: always() && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request')
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    outputs:
+      run-heavy: ${{ steps.resolve.outputs.run-heavy }}
+      changed-count: ${{ steps.resolve.outputs.changed-count }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - id: resolve
+        name: Resolve hosted retry result
+        run: |
+          set -euo pipefail
+          bash tooling/ci/resolve_change_detection_gate.sh \
+            '${{ needs.change-detection-hosted-primary.result }}' \
+            '${{ needs.change-detection-hosted-primary.outputs.run-heavy }}' \
+            '${{ needs.change-detection-hosted-primary.outputs.changed-count }}' \
+            '${{ needs.change-detection-hosted-retry.result }}' \
+            '${{ needs.change-detection-hosted-retry.outputs.run-heavy }}' \
+            '${{ needs.change-detection-hosted-retry.outputs.changed-count }}'
+
+  fork-pr-safety-gate:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assert fork PR safety boundary
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]; then
+            echo "Fork PR detected. Running hosted-only public checks; sensitive and high-cost lanes stay gated."
+            exit 0
+          fi
+          echo "✅ fork-pr-safety-gate passed."
+
+  commit-message-lint-hosted-primary:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    outputs:
+      entered: ${{ steps.entry.outputs.entered }}
+    steps:
+      - id: entry
+        name: Entry sentinel
+        run: echo "entered=true" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 0
+          clean: true
+      - name: Commit message gate (Conventional Commits)
+        env:
+          CI_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: | # pragma: allowlist secret
+          set -euo pipefail
+          TAG_PUSH="${{ startsWith(github.ref, 'refs/tags/') && '1' || '0' }}"
+          TO_REF="HEAD"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_BRANCH="origin/${{ github.base_ref }}"
+            git fetch --no-tags --prune --depth=200 origin "${{ github.base_ref }}"
+            if [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
+              HEAD_REF="origin/${CI_HEAD_REF}"
+              git fetch --no-tags --prune --depth=200 origin "${CI_HEAD_REF}"
+              BASE_REF="$(git merge-base "$BASE_BRANCH" "$HEAD_REF" 2>/dev/null || true)"
+              if [ -z "$BASE_REF" ]; then
+                BASE_REF="$BASE_BRANCH"
+              fi
+              TO_REF="$HEAD_REF"
+            else
+              BASE_REF="$BASE_BRANCH"
+            fi
+          elif [ "$TAG_PUSH" = "1" ]; then
+            BASE_REF="$(git rev-parse HEAD)"
+          else
+            BEFORE_SHA="${{ github.event.before }}"
+            if [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
+              BASE_REF="$BEFORE_SHA"
+            else
+              DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+              git fetch --no-tags --prune --depth=200 origin "$DEFAULT_BRANCH"
+              BASE_REF="$(git merge-base HEAD "origin/$DEFAULT_BRANCH" 2>/dev/null || true)"
+              if [ -z "$BASE_REF" ]; then
+                BASE_REF="$(git rev-parse HEAD^ 2>/dev/null || git rev-parse HEAD)"
+              fi
+            fi
+          fi
+          RANGE_FLAGS=()
+          if [ "$TAG_PUSH" = "1" ]; then
+            echo "tag push: allow empty commit range for hosted primary gate"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "workflow_dispatch/schedule: allow empty commit range for hosted primary gate"
+          elif [ "${FILEYARD_REQUIRE_NON_EMPTY_RANGE:-1}" = "1" ]; then
+            RANGE_FLAGS+=(--require-non-empty-range)
+          fi
+          python3 tooling/scripts/check_commit_message.py --from-ref "$BASE_REF" --to-ref "$TO_REF" "${RANGE_FLAGS[@]}"
+
+  commit-message-lint-hosted-retry:
+    needs: [commit-message-lint-hosted-primary]
+    if: (always() && needs.commit-message-lint-hosted-primary.result != 'success') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request')
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage pre-checkout --normalize-ownership
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 0
+          clean: false
+      - name: Commit message gate (Conventional Commits)
+        env:
+          CI_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: | # pragma: allowlist secret
+          set -euo pipefail
+          TAG_PUSH="${{ startsWith(github.ref, 'refs/tags/') && '1' || '0' }}"
+          TO_REF="HEAD"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_BRANCH="origin/${{ github.base_ref }}"
+            git fetch --no-tags --prune --depth=200 origin "${{ github.base_ref }}"
+            if [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
+              HEAD_REF="origin/${CI_HEAD_REF}"
+              git fetch --no-tags --prune --depth=200 origin "${CI_HEAD_REF}"
+              BASE_REF="$(git merge-base "$BASE_BRANCH" "$HEAD_REF" 2>/dev/null || true)"
+              if [ -z "$BASE_REF" ]; then
+                BASE_REF="$BASE_BRANCH"
+              fi
+              TO_REF="$HEAD_REF"
+            else
+              BASE_REF="$BASE_BRANCH"
+            fi
+          elif [ "$TAG_PUSH" = "1" ]; then
+            BASE_REF="$(git rev-parse HEAD)"
+          else
+            BEFORE_SHA="${{ github.event.before }}"
+            if [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
+              BASE_REF="$BEFORE_SHA"
+            else
+              DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+              git fetch --no-tags --prune --depth=200 origin "$DEFAULT_BRANCH"
+              BASE_REF="$(git merge-base HEAD "origin/$DEFAULT_BRANCH" 2>/dev/null || true)"
+              if [ -z "$BASE_REF" ]; then
+                BASE_REF="$(git rev-parse HEAD^ 2>/dev/null || git rev-parse HEAD)"
+              fi
+            fi
+          fi
+          RANGE_FLAGS=()
+          if [ "$TAG_PUSH" = "1" ]; then
+            echo "tag push: allow empty commit range for fallback gate"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "workflow_dispatch/schedule: allow empty commit range for fallback gate"
+          elif [ "${FILEYARD_REQUIRE_NON_EMPTY_RANGE:-1}" = "1" ]; then
+            RANGE_FLAGS+=(--require-non-empty-range)
+          fi
+          python3 tooling/scripts/check_commit_message.py --from-ref "$BASE_REF" --to-ref "$TO_REF" "${RANGE_FLAGS[@]}"
+
+  commit-message-lint:
+    needs: [commit-message-lint-hosted-primary, commit-message-lint-hosted-retry]
+    if: always() && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request')
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Resolve hosted retry result
+        run: |
+          set -euo pipefail
+          bash tooling/ci/resolve_dual_lane_gate.sh commit-message-lint '${{ needs.commit-message-lint-hosted-primary.result }}' '${{ needs.commit-message-lint-hosted-retry.result }}'
+
+  atomic-commit-gate-hosted-primary:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    outputs:
+      entered: ${{ steps.entry.outputs.entered }}
+    steps:
+      - id: entry
+        name: Entry sentinel
+        run: echo "entered=true" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 0
+          clean: true
+      - name: Atomic commit gate (files/lines threshold)
+        env:
+          CI_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          TAG_PUSH="${{ startsWith(github.ref, 'refs/tags/') && '1' || '0' }}"
+          TO_REF="HEAD"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_BRANCH="origin/${{ github.base_ref }}"
+            git fetch --no-tags --prune --depth=200 origin "${{ github.base_ref }}"
+            if [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
+              HEAD_REF="origin/${CI_HEAD_REF}"
+              git fetch --no-tags --prune --depth=200 origin "${CI_HEAD_REF}"
+              BASE_REF="$(git merge-base "$BASE_BRANCH" "$HEAD_REF" 2>/dev/null || true)"
+              if [ -z "$BASE_REF" ]; then
+                BASE_REF="$BASE_BRANCH"
+              fi
+              TO_REF="$HEAD_REF"
+            else
+              BASE_REF="$BASE_BRANCH"
+            fi
+          elif [ "$TAG_PUSH" = "1" ]; then
+            BASE_REF="$(git rev-parse HEAD)"
+          else
+            BEFORE_SHA="${{ github.event.before }}"
+            if [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
+              BASE_REF="$BEFORE_SHA"
+            else
+              DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+              git fetch --no-tags --prune --depth=200 origin "$DEFAULT_BRANCH"
+              BASE_REF="$(git merge-base HEAD "origin/$DEFAULT_BRANCH" 2>/dev/null || true)"
+              if [ -z "$BASE_REF" ]; then
+                BASE_REF="$(git rev-parse HEAD^ 2>/dev/null || git rev-parse HEAD)"
+              fi
+            fi
+          fi
+          RANGE_FLAGS=()
+          if [ "$TAG_PUSH" = "1" ]; then
+            echo "tag push: allow empty commit range for hosted primary gate"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "workflow_dispatch/schedule: allow empty commit range for hosted primary gate"
+          elif [ "${FILEYARD_REQUIRE_NON_EMPTY_RANGE:-1}" = "1" ]; then
+            RANGE_FLAGS+=(--require-non-empty-range)
+          fi
+          python3 tooling/scripts/check_atomic_commits.py --from-ref "$BASE_REF" --to-ref "$TO_REF" "${RANGE_FLAGS[@]}"
+
+  atomic-commit-gate-hosted-retry:
+    needs: [atomic-commit-gate-hosted-primary]
+    if: (always() && needs.atomic-commit-gate-hosted-primary.result != 'success') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request')
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage pre-checkout --normalize-ownership
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 0
+          clean: false
+      - name: Atomic commit gate (files/lines threshold)
+        env:
+          CI_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          TAG_PUSH="${{ startsWith(github.ref, 'refs/tags/') && '1' || '0' }}"
+          TO_REF="HEAD"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_BRANCH="origin/${{ github.base_ref }}"
+            git fetch --no-tags --prune --depth=200 origin "${{ github.base_ref }}"
+            if [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
+              HEAD_REF="origin/${CI_HEAD_REF}"
+              git fetch --no-tags --prune --depth=200 origin "${CI_HEAD_REF}"
+              BASE_REF="$(git merge-base "$BASE_BRANCH" "$HEAD_REF" 2>/dev/null || true)"
+              if [ -z "$BASE_REF" ]; then
+                BASE_REF="$BASE_BRANCH"
+              fi
+              TO_REF="$HEAD_REF"
+            else
+              BASE_REF="$BASE_BRANCH"
+            fi
+          elif [ "$TAG_PUSH" = "1" ]; then
+            BASE_REF="$(git rev-parse HEAD)"
+          else
+            BEFORE_SHA="${{ github.event.before }}"
+            if [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
+              BASE_REF="$BEFORE_SHA"
+            else
+              DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+              git fetch --no-tags --prune --depth=200 origin "$DEFAULT_BRANCH"
+              BASE_REF="$(git merge-base HEAD "origin/$DEFAULT_BRANCH" 2>/dev/null || true)"
+              if [ -z "$BASE_REF" ]; then
+                BASE_REF="$(git rev-parse HEAD^ 2>/dev/null || git rev-parse HEAD)"
+              fi
+            fi
+          fi
+          RANGE_FLAGS=()
+          if [ "$TAG_PUSH" = "1" ]; then
+            echo "tag push: allow empty commit range for fallback gate"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "workflow_dispatch/schedule: allow empty commit range for fallback gate"
+          elif [ "${FILEYARD_REQUIRE_NON_EMPTY_RANGE:-1}" = "1" ]; then
+            RANGE_FLAGS+=(--require-non-empty-range)
+          fi
+          python3 tooling/scripts/check_atomic_commits.py --from-ref "$BASE_REF" --to-ref "$TO_REF" "${RANGE_FLAGS[@]}"
+
+  atomic-commit-gate:
+    needs: [atomic-commit-gate-hosted-primary, atomic-commit-gate-hosted-retry]
+    if: always() && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request')
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Resolve hosted retry result
+        run: |
+          set -euo pipefail
+          bash tooling/ci/resolve_dual_lane_gate.sh atomic-commit-gate '${{ needs.atomic-commit-gate-hosted-primary.result }}' '${{ needs.atomic-commit-gate-hosted-retry.result }}'
+
+  secrets-supply-chain-gate-hosted-primary:
+    needs: [ci-bootstrap]
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    outputs:
+      entered: ${{ steps.entry.outputs.entered }}
+    env:
+      EVENT_NAME: ${{ github.event_name }}
+      BASE_REF_NAME: ${{ github.base_ref }}
+      BEFORE_SHA: ${{ github.event.before }}
+    steps:
+      - id: entry
+        name: Entry sentinel
+        run: echo "entered=true" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 0
+          clean: true
+      - name: Prepare artifacts dir
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Build changed-file set for secret scanning
+        run: |
+          set -euo pipefail
+          BASELINE_TOUCHED=false
+          # Schedule event: FULL SCAN for comprehensive security coverage
+          # This ensures --no-verify bypasses are caught in nightly scans
+          if [ "$EVENT_NAME" = "schedule" ]; then
+            echo "schedule event: running FULL repository secret scan"
+            echo "FULL_SCAN=true" >> "$GITHUB_ENV"
+            git ls-files > .runtime-cache/logs/secret-scan-files.raw.txt
+          elif [ "$EVENT_NAME" = "pull_request" ]; then
+            echo "FULL_SCAN=false" >> "$GITHUB_ENV"
+            BASE_REF="origin/$BASE_REF_NAME"
+            git fetch --no-tags --prune --depth=1 origin "$BASE_REF_NAME"
+            if ! git diff --name-only --diff-filter=ACDMRT "$BASE_REF"...HEAD > .runtime-cache/logs/secret-scan-files.raw.txt; then
+              echo "⚠️ no merge-base for $BASE_REF...HEAD; fallback to HEAD diff-tree"
+              git diff-tree --no-commit-id --name-only -r HEAD > .runtime-cache/logs/secret-scan-files.raw.txt
+            fi
+          elif [ "$EVENT_NAME" = "push" ]; then
+            echo "FULL_SCAN=false" >> "$GITHUB_ENV"
+            if [ -z "$BEFORE_SHA" ] || [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
+              DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+              git fetch --no-tags --prune --depth=200 origin "$DEFAULT_BRANCH"
+              BASE_REF="$(git merge-base HEAD "origin/$DEFAULT_BRANCH" 2>/dev/null || true)"
+              if [ -z "$BASE_REF" ]; then
+                BASE_REF="$(git rev-parse HEAD^ 2>/dev/null || git rev-parse HEAD)"
+              fi
+              git diff --name-only --diff-filter=ACDMRT "$BASE_REF" HEAD > .runtime-cache/logs/secret-scan-files.raw.txt
+            else
+              git diff --name-only --diff-filter=ACDMRT "$BEFORE_SHA" HEAD > .runtime-cache/logs/secret-scan-files.raw.txt
+            fi
+          else
+            echo "FULL_SCAN=false" >> "$GITHUB_ENV"
+            git diff-tree --no-commit-id --name-only -r HEAD > .runtime-cache/logs/secret-scan-files.raw.txt
+          fi
+          if grep -Fxq '.secrets.baseline' .runtime-cache/logs/secret-scan-files.raw.txt; then
+            BASELINE_TOUCHED=true
+          fi
+          echo "BASELINE_TOUCHED=$BASELINE_TOUCHED" >> "$GITHUB_ENV"
+          echo "BASELINE_TOUCHED=$BASELINE_TOUCHED"
+          : > .runtime-cache/logs/secret-scan-files.txt
+          while IFS= read -r f || [ -n "$f" ]; do
+            if [ -z "$f" ]; then
+              continue
+            fi
+            if [ "$f" = ".secrets.baseline" ]; then
+              continue
+            fi
+            if [ "$f" = "docs/_generated/render_state.json" ]; then
+              continue
+            fi
+            case "$f" in
+              *.png|*.jpg|*.jpeg|*.gif|*.ico|*.woff|*.woff2|*.ttf|*.eot|*.pyc|*.pyo)
+                continue
+                ;;
+            esac
+            if [ -f "$f" ]; then
+              printf '%s\n' "$f" >> .runtime-cache/logs/secret-scan-files.txt
+            fi
+          done < .runtime-cache/logs/secret-scan-files.raw.txt
+          file_count="$(wc -l < .runtime-cache/logs/secret-scan-files.txt | tr -d ' ')"
+          echo "Files to scan: $file_count (full_scan=${FULL_SCAN:-false})"
+          if [ "$file_count" -lt 50 ]; then
+            cat .runtime-cache/logs/secret-scan-files.txt || true
+          else
+            echo "(file list truncated, see artifact for full list)"
+          fi
+      - name: Baseline guard (.secrets.baseline)
+        run: |
+          set -euo pipefail
+          if [ "${BASELINE_TOUCHED:-false}" != "true" ]; then
+            echo "baseline guard: skip (BASELINE_TOUCHED=${BASELINE_TOUCHED:-false})"
+            exit 0
+          fi
+          if [ ! -f ".secrets.baseline" ]; then
+            echo "❌ BASELINE_TOUCHED=true but .secrets.baseline is missing"
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path(".secrets.baseline")
+          data = json.loads(path.read_text(encoding="utf-8"))
+          if not isinstance(data, dict):
+              raise SystemExit("baseline guard: top-level JSON must be an object")
+          results = data.get("results")
+          if results is not None and not isinstance(results, dict):
+              raise SystemExit("baseline guard: 'results' must be an object when present")
+          print("baseline guard: JSON structure valid")
+          PY
+          if rg -n --pcre2 '(sk-[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{35}|xox[baprs]-[A-Za-z0-9-]{10,})' .secrets.baseline; then
+            echo "❌ baseline guard: high-confidence token prefix pattern detected in .secrets.baseline"
+            exit 1
+          fi
+          echo "baseline guard: token prefix scan passed"
+      - name: gitleaks gate (blocking)
+        run: |
+          set -euo pipefail
+          if [ ! -s .runtime-cache/logs/secret-scan-files.txt ]; then
+            echo "No changed files to scan; skip gitleaks."
+            exit 0
+          fi
+          GITLEAKS_EXPECTED_SHA256="fa0500f6b7e41d28791ebc680f5dd9899cd42b58629218a5f041efa899151a8e"
+          TMP_SCAN_DIR="$(mktemp -d)"
+          while IFS= read -r file; do
+            mkdir -p "${TMP_SCAN_DIR}/$(dirname "$file")"
+            cp "$file" "${TMP_SCAN_DIR}/$file"
+          done < .runtime-cache/logs/secret-scan-files.txt
+          FETCH_PAYLOAD="$(python3 tooling/scripts/fetch_upstream_artifact.py \
+            --root . \
+            --upstream-id gitleaks-release-binary \
+            --expected-sha256 "$GITLEAKS_EXPECTED_SHA256")"
+          GITLEAKS_ARCHIVE_PATH="$(python3 - <<'PY' "$FETCH_PAYLOAD"
+          import json
+          import sys
+          payload = json.loads(sys.argv[1])
+          print(payload["output"])
+          PY
+          )"
+          GITLEAKS_ARCHIVE_PATH="${PWD}/${GITLEAKS_ARCHIVE_PATH}"
+          echo "${GITLEAKS_EXPECTED_SHA256}  ${GITLEAKS_ARCHIVE_PATH}" | sha256sum -c -
+          tar -xzf "$GITLEAKS_ARCHIVE_PATH" -C /tmp gitleaks
+          /tmp/gitleaks detect \
+            --source "$TMP_SCAN_DIR" \
+            --no-git \
+            --redact \
+            --exit-code 1 \
+            --report-format json \
+            --report-path .runtime-cache/logs/gitleaks-report.json
+      - name: detect-secrets gate (blocking) # pragma: allowlist secret
+        run: | # pragma: allowlist secret
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check --require-hashes -r tooling/requirements-dev.lock.txt
+          if [ ! -s .runtime-cache/logs/secret-scan-files.txt ]; then
+            echo "No changed files to scan; skip detect-secrets."
+            exit 0
+          fi
+          TMP_SCAN_DIR="$(mktemp -d)"
+          while IFS= read -r file; do
+            mkdir -p "${TMP_SCAN_DIR}/$(dirname "$file")"
+            cp "$file" "${TMP_SCAN_DIR}/$file"
+          done < .runtime-cache/logs/secret-scan-files.txt
+          python3 -m detect_secrets scan "$TMP_SCAN_DIR" --all-files --force-use-all-plugins \
+            --exclude-files "(^|/)(\.git|\.venv|artifacts|data|\.runtime-cache)($|/)" \
+            > .runtime-cache/logs/detect-secrets-report.json
+          python3 -c "import json; from pathlib import Path; data=json.loads(Path('.runtime-cache/logs/detect-secrets-report.json').read_text(encoding='utf-8')); findings=sum(len(items) for items in data.get('results', {}).values()); (_ for _ in ()).throw(SystemExit(f'detect-secrets found {findings} candidate secrets')) if findings else print('detect-secrets: no candidate secrets found')"
+      - name: Upload secret scan diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-secrets-supply-chain
+          path: .runtime-cache/logs/
+          if-no-files-found: warn
+          overwrite: true
+
+  secrets-supply-chain-gate-hosted-retry:
+    needs: [secrets-supply-chain-gate-hosted-primary]
+    if: (always() && needs.secrets-supply-chain-gate-hosted-primary.result != 'success') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request')
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    env:
+      EVENT_NAME: ${{ github.event_name }}
+      BASE_REF_NAME: ${{ github.base_ref }}
+      BEFORE_SHA: ${{ github.event.before }}
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage pre-checkout --normalize-ownership
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 0
+          clean: false
+      - name: Prepare artifacts dir
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Build changed-file set for secret scanning
+        run: |
+          set -euo pipefail
+          BASELINE_TOUCHED=false
+          # Schedule event: FULL SCAN for comprehensive security coverage
+          if [ "$EVENT_NAME" = "schedule" ]; then
+            echo "schedule event: running FULL repository secret scan"
+            echo "FULL_SCAN=true" >> "$GITHUB_ENV"
+            git ls-files > .runtime-cache/logs/secret-scan-files.raw.txt
+          elif [ "$EVENT_NAME" = "pull_request" ]; then
+            echo "FULL_SCAN=false" >> "$GITHUB_ENV"
+            BASE_REF="origin/$BASE_REF_NAME"
+            git fetch --no-tags --prune --depth=1 origin "$BASE_REF_NAME"
+            if ! git diff --name-only --diff-filter=ACDMRT "$BASE_REF"...HEAD > .runtime-cache/logs/secret-scan-files.raw.txt; then
+              echo "⚠️ no merge-base for $BASE_REF...HEAD; fallback to HEAD diff-tree"
+              git diff-tree --no-commit-id --name-only -r HEAD > .runtime-cache/logs/secret-scan-files.raw.txt
+            fi
+          elif [ "$EVENT_NAME" = "push" ]; then
+            echo "FULL_SCAN=false" >> "$GITHUB_ENV"
+            if [ -z "$BEFORE_SHA" ] || [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
+              DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+              git fetch --no-tags --prune --depth=200 origin "$DEFAULT_BRANCH"
+              BASE_REF="$(git merge-base HEAD "origin/$DEFAULT_BRANCH" 2>/dev/null || true)"
+              if [ -z "$BASE_REF" ]; then
+                BASE_REF="$(git rev-parse HEAD^ 2>/dev/null || git rev-parse HEAD)"
+              fi
+              git diff --name-only --diff-filter=ACDMRT "$BASE_REF" HEAD > .runtime-cache/logs/secret-scan-files.raw.txt
+            else
+              git diff --name-only --diff-filter=ACDMRT "$BEFORE_SHA" HEAD > .runtime-cache/logs/secret-scan-files.raw.txt
+            fi
+          else
+            echo "FULL_SCAN=false" >> "$GITHUB_ENV"
+            git diff-tree --no-commit-id --name-only -r HEAD > .runtime-cache/logs/secret-scan-files.raw.txt
+          fi
+          if grep -Fxq '.secrets.baseline' .runtime-cache/logs/secret-scan-files.raw.txt; then
+            BASELINE_TOUCHED=true
+          fi
+          echo "BASELINE_TOUCHED=$BASELINE_TOUCHED" >> "$GITHUB_ENV"
+          echo "BASELINE_TOUCHED=$BASELINE_TOUCHED"
+          : > .runtime-cache/logs/secret-scan-files.txt
+          while IFS= read -r f || [ -n "$f" ]; do
+            if [ -z "$f" ]; then
+              continue
+            fi
+            if [ "$f" = ".secrets.baseline" ]; then
+              continue
+            fi
+            if [ "$f" = "docs/_generated/render_state.json" ]; then
+              continue
+            fi
+            case "$f" in
+              *.png|*.jpg|*.jpeg|*.gif|*.ico|*.woff|*.woff2|*.ttf|*.eot|*.pyc|*.pyo)
+                continue
+                ;;
+            esac
+            if [ -f "$f" ]; then
+              printf '%s\n' "$f" >> .runtime-cache/logs/secret-scan-files.txt
+            fi
+          done < .runtime-cache/logs/secret-scan-files.raw.txt
+          file_count="$(wc -l < .runtime-cache/logs/secret-scan-files.txt | tr -d ' ')"
+          echo "Files to scan: $file_count (full_scan=${FULL_SCAN:-false})"
+          if [ "$file_count" -lt 50 ]; then
+            cat .runtime-cache/logs/secret-scan-files.txt || true
+          else
+            echo "(file list truncated, see artifact for full list)"
+          fi
+      - name: Baseline guard (.secrets.baseline)
+        run: |
+          set -euo pipefail
+          if [ "${BASELINE_TOUCHED:-false}" != "true" ]; then
+            echo "baseline guard: skip (BASELINE_TOUCHED=${BASELINE_TOUCHED:-false})"
+            exit 0
+          fi
+          if [ ! -f ".secrets.baseline" ]; then
+            echo "❌ BASELINE_TOUCHED=true but .secrets.baseline is missing"
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path(".secrets.baseline")
+          data = json.loads(path.read_text(encoding="utf-8"))
+          if not isinstance(data, dict):
+              raise SystemExit("baseline guard: top-level JSON must be an object")
+          results = data.get("results")
+          if results is not None and not isinstance(results, dict):
+              raise SystemExit("baseline guard: 'results' must be an object when present")
+          print("baseline guard: JSON structure valid")
+          PY
+          if rg -n --pcre2 '(sk-[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{35}|xox[baprs]-[A-Za-z0-9-]{10,})' .secrets.baseline; then
+            echo "❌ baseline guard: high-confidence token prefix pattern detected in .secrets.baseline"
+            exit 1
+          fi
+          echo "baseline guard: token prefix scan passed"
+      - name: gitleaks gate (blocking)
+        run: |
+          set -euo pipefail
+          if [ ! -s .runtime-cache/logs/secret-scan-files.txt ]; then
+            echo "No changed files to scan; skip gitleaks."
+            exit 0
+          fi
+          GITLEAKS_EXPECTED_SHA256="fa0500f6b7e41d28791ebc680f5dd9899cd42b58629218a5f041efa899151a8e"
+          TMP_SCAN_DIR="$(mktemp -d)"
+          while IFS= read -r file; do
+            mkdir -p "${TMP_SCAN_DIR}/$(dirname "$file")"
+            cp "$file" "${TMP_SCAN_DIR}/$file"
+          done < .runtime-cache/logs/secret-scan-files.txt
+          FETCH_PAYLOAD="$(python3 tooling/scripts/fetch_upstream_artifact.py \
+            --root . \
+            --upstream-id gitleaks-release-binary \
+            --expected-sha256 "$GITLEAKS_EXPECTED_SHA256")"
+          GITLEAKS_ARCHIVE_PATH="$(python3 - <<'PY' "$FETCH_PAYLOAD"
+          import json
+          import sys
+          payload = json.loads(sys.argv[1])
+          print(payload["output"])
+          PY
+          )"
+          GITLEAKS_ARCHIVE_PATH="${PWD}/${GITLEAKS_ARCHIVE_PATH}"
+          echo "${GITLEAKS_EXPECTED_SHA256}  ${GITLEAKS_ARCHIVE_PATH}" | sha256sum -c -
+          tar -xzf "$GITLEAKS_ARCHIVE_PATH" -C /tmp gitleaks
+          /tmp/gitleaks detect \
+            --source "$TMP_SCAN_DIR" \
+            --no-git \
+            --redact \
+            --exit-code 1 \
+            --report-format json \
+            --report-path .runtime-cache/logs/gitleaks-report.json
+      - name: detect-secrets gate (blocking) # pragma: allowlist secret
+        run: | # pragma: allowlist secret
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check --require-hashes -r tooling/requirements-dev.lock.txt
+          if [ ! -s .runtime-cache/logs/secret-scan-files.txt ]; then
+            echo "No changed files to scan; skip detect-secrets."
+            exit 0
+          fi
+          TMP_SCAN_DIR="$(mktemp -d)"
+          while IFS= read -r file; do
+            mkdir -p "${TMP_SCAN_DIR}/$(dirname "$file")"
+            cp "$file" "${TMP_SCAN_DIR}/$file"
+          done < .runtime-cache/logs/secret-scan-files.txt
+          python3 -m detect_secrets scan "$TMP_SCAN_DIR" --all-files --force-use-all-plugins \
+            --exclude-files "(^|/)(\.git|\.venv|artifacts|data|\.runtime-cache)($|/)" \
+            > .runtime-cache/logs/detect-secrets-report.json
+          python3 -c "import json; from pathlib import Path; data=json.loads(Path('.runtime-cache/logs/detect-secrets-report.json').read_text(encoding='utf-8')); findings=sum(len(items) for items in data.get('results', {}).values()); (_ for _ in ()).throw(SystemExit(f'detect-secrets found {findings} candidate secrets')) if findings else print('detect-secrets: no candidate secrets found')"
+      - name: Upload secret scan diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-secrets-supply-chain
+          path: .runtime-cache/logs/
+          if-no-files-found: warn
+          overwrite: true
+
+  secrets-supply-chain-gate:
+    needs: [secrets-supply-chain-gate-hosted-primary, secrets-supply-chain-gate-hosted-retry]
+    if: always() && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request')
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Resolve hosted retry result
+        run: |
+          set -euo pipefail
+          bash tooling/ci/resolve_dual_lane_gate.sh secrets-supply-chain-gate '${{ needs.secrets-supply-chain-gate-hosted-primary.result }}' '${{ needs.secrets-supply-chain-gate-hosted-retry.result }}'
+
+  lint-backend-hosted-primary:
+    needs: [change-detection, build-ci-image]
+    if: always() && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 0
+          clean: true
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          DOCKER_BIN="docker"
+          if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+            DOCKER_BIN="sudo docker"
+          fi
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          $DOCKER_BIN pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Fast-path skip (no heavy-impact code changes)
+        if: needs.change-detection.outputs.run-heavy != 'true'
+        run: |
+          set -euo pipefail
+          echo "lint-backend: skip heavy gate for non-heavy changes"
+          echo "changed-count=${{ needs.change-detection.outputs.changed-count }}"
+      - name: Prepare artifacts dir
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Resolve diff base for backend governance gates
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        env:
+          CI_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_REF="origin/${{ github.base_ref }}"
+            git fetch --no-tags --prune --depth=200 origin "${{ github.base_ref }}"
+            if [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
+              HEAD_REF="origin/${CI_HEAD_REF}"
+              git fetch --no-tags --prune --depth=200 origin "${CI_HEAD_REF}"
+              MERGE_BASE="$(git merge-base "$BASE_REF" "$HEAD_REF" 2>/dev/null || true)"
+              if [ -n "$MERGE_BASE" ]; then
+                BASE_REF="$MERGE_BASE"
+              fi
+            fi
+          else
+            BEFORE_SHA="${{ github.event.before }}"
+            if [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
+              BASE_REF="$BEFORE_SHA"
+            else
+              DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+              git fetch --no-tags --prune --depth=200 origin "$DEFAULT_BRANCH"
+              BASE_REF="$(git merge-base HEAD "origin/$DEFAULT_BRANCH" 2>/dev/null || true)"
+              if [ -z "$BASE_REF" ]; then
+                BASE_REF="$(git rev-parse HEAD^ 2>/dev/null || git rev-parse HEAD)"
+              fi
+            fi
+          fi
+          echo "LINT_DIFF_BASE=$BASE_REF" >> "$GITHUB_ENV"
+      - name: Doc drift gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-doc-drift -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_doc_drift.py \
+            --mode diff-range \
+            --diff-base "'"$LINT_DIFF_BASE"'" \
+            --diff-head HEAD \
+            --verbose
+          '
+      - name: Docs scope gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-docs-scope -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_scope.py --root .
+          '
+      - name: Docs manual facts gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-docs-manual-facts -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_manual_facts.py --root .
+          '
+      - name: Docs SSOT hash gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-docs-ssot-hash -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_ssot_hash.py --root .
+          '
+      - name: No Logs No Merge gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-no-logs-no-merge -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_no_logs_no_merge.py \
+            --root . \
+            --mode diff-range \
+            --diff-base "'"$LINT_DIFF_BASE"'" \
+            --diff-head HEAD
+          '
+      - name: Write-before-search gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-write-before-search -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_write_before_search.py \
+            --root . \
+            --mode diff-range \
+            --diff-base "'"$LINT_DIFF_BASE"'" \
+            --diff-head HEAD
+          '
+      - name: Env contract gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-env-contract -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_env_contract.py \
+            --root . \
+            --mode diff-range \
+            --max-contract-size 59 \
+            --diff-base "'"$LINT_DIFF_BASE"'" \
+            --diff-head HEAD
+          '
+      - name: Required checks matrix gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-required-checks -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_required_checks_matrix.py
+          '
+      - name: Docs render state gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-docs-render-state -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_render_state.py --root .
+          '
+      - name: Env contract report
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-env-contract-report -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/generate_env_contract_report.py \
+            --root . \
+            --output .runtime-cache/logs/env-contract-report.json
+          '
+      - name: Backend lint gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/gates/lint_backend.sh
+      - name: Upload lint diagnostics
+        if: always() && needs.change-detection.outputs.run-heavy == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-lint-backend-hosted-primary
+          path: .runtime-cache/logs/
+          if-no-files-found: warn
+
+  lint-backend-hosted-retry:
+    needs: [change-detection, build-ci-image, lint-backend-hosted-primary]
+    if: (always() && needs.lint-backend-hosted-primary.result != 'success') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage pre-checkout --normalize-ownership
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 0
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          DOCKER_BIN="docker"
+          if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+            DOCKER_BIN="sudo docker"
+          fi
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          $DOCKER_BIN pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Fast-path skip (no heavy-impact code changes)
+        if: needs.change-detection.outputs.run-heavy != 'true'
+        run: |
+          set -euo pipefail
+          echo "lint-backend: skip heavy gate for non-heavy changes"
+          echo "changed-count=${{ needs.change-detection.outputs.changed-count }}"
+      - name: Prepare artifacts dir
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Resolve diff base for backend governance gates
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        env:
+          CI_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_REF="origin/${{ github.base_ref }}"
+            git fetch --no-tags --prune --depth=200 origin "${{ github.base_ref }}"
+            if [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
+              HEAD_REF="origin/${CI_HEAD_REF}"
+              git fetch --no-tags --prune --depth=200 origin "${CI_HEAD_REF}"
+              MERGE_BASE="$(git merge-base "$BASE_REF" "$HEAD_REF" 2>/dev/null || true)"
+              if [ -n "$MERGE_BASE" ]; then
+                BASE_REF="$MERGE_BASE"
+              fi
+            fi
+          else
+            BEFORE_SHA="${{ github.event.before }}"
+            if [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
+              BASE_REF="$BEFORE_SHA"
+            else
+              DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+              git fetch --no-tags --prune --depth=200 origin "$DEFAULT_BRANCH"
+              BASE_REF="$(git merge-base HEAD "origin/$DEFAULT_BRANCH" 2>/dev/null || true)"
+              if [ -z "$BASE_REF" ]; then
+                BASE_REF="$(git rev-parse HEAD^ 2>/dev/null || git rev-parse HEAD)"
+              fi
+            fi
+          fi
+          echo "LINT_DIFF_BASE=$BASE_REF" >> "$GITHUB_ENV"
+      - name: Doc drift gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-doc-drift -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_doc_drift.py \
+            --mode diff-range \
+            --diff-base "'"$LINT_DIFF_BASE"'" \
+            --diff-head HEAD \
+            --verbose
+          '
+      - name: Docs scope gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-docs-scope -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_scope.py --root .
+          '
+      - name: Docs manual facts gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-docs-manual-facts -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_manual_facts.py --root .
+          '
+      - name: Docs SSOT hash gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-docs-ssot-hash -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_ssot_hash.py --root .
+          '
+      - name: No Logs No Merge gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-no-logs-no-merge -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_no_logs_no_merge.py \
+            --root . \
+            --mode diff-range \
+            --diff-base "'"$LINT_DIFF_BASE"'" \
+            --diff-head HEAD
+          '
+      - name: Write-before-search gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-write-before-search -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_write_before_search.py \
+            --root . \
+            --mode diff-range \
+            --diff-base "'"$LINT_DIFF_BASE"'" \
+            --diff-head HEAD
+          '
+      - name: Env contract gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-env-contract -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_env_contract.py \
+            --root . \
+            --mode diff-range \
+            --max-contract-size 59 \
+            --diff-base "'"$LINT_DIFF_BASE"'" \
+            --diff-head HEAD
+          '
+      - name: Required checks matrix gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-required-checks -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_required_checks_matrix.py
+          '
+      - name: Docs render state gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-docs-render-state -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_render_state.py --root .
+          '
+      - name: Env contract report
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-env-contract-report -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/generate_env_contract_report.py \
+            --root . \
+            --output .runtime-cache/logs/env-contract-report.json
+          '
+      - name: Backend lint gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/gates/lint_backend.sh
+      - name: Upload lint diagnostics
+        if: always() && needs.change-detection.outputs.run-heavy == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-lint-backend-hosted-retry
+          path: .runtime-cache/logs/
+          if-no-files-found: warn
+
+  lint-backend:
+    needs: [change-detection, lint-backend-hosted-primary, lint-backend-hosted-retry]
+    if: always() && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          mkdir -p "${GITHUB_WORKSPACE:-$PWD}"
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Resolve hosted retry result
+        run: |
+          set -euo pipefail
+          bash tooling/ci/resolve_dual_lane_gate.sh lint-backend '${{ needs.lint-backend-hosted-primary.result }}' '${{ needs.lint-backend-hosted-retry.result }}'
+
+  lint-frontend-hosted-primary:
+    needs: [change-detection, build-ci-image]
+    if: always() && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: true
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          DOCKER_BIN="docker"
+          if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+            DOCKER_BIN="sudo docker"
+          fi
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          $DOCKER_BIN pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Fast-path skip (no heavy-impact code changes)
+        if: needs.change-detection.outputs.run-heavy != 'true'
+        run: |
+          set -euo pipefail
+          echo "lint-frontend: skip heavy gate for non-heavy changes"
+          echo "changed-count=${{ needs.change-detection.outputs.changed-count }}"
+      - name: Prepare artifacts dir
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Frontend lint gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_UI_AUDIT_MODEL: ${{ vars.GEMINI_UI_AUDIT_MODEL || 'gemini-3-flash-preview' }}
+          LINT_FRONTEND_SKIP_GEMINI_AUDIT: "1"
+        run: |
+          set -euo pipefail
+          bash tooling/gates/lint_frontend.sh
+      - name: Semantic UI/UX audit gate (Gemini)
+        if: needs.change-detection.outputs.run-heavy == 'true' && github.event_name == 'workflow_dispatch'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_UI_AUDIT_MODEL: ${{ vars.GEMINI_UI_AUDIT_MODEL || 'gemini-3-flash-preview' }}
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-semantic-uiux -- bash -lc '
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            git fetch --no-tags --prune --depth=200 origin "${{ github.event.repository.default_branch }}"
+            base_ref="$(git merge-base HEAD "origin/${{ github.event.repository.default_branch }}" 2>/dev/null || true)"
+            mapfile -t ui_files < <(
+              if [ -n "$base_ref" ]; then
+                git diff --name-only --diff-filter=ACDMRT "$base_ref"...HEAD \
+                  | grep -E "\.(js|jsx|ts|tsx|css|scss|sass|less|html|vue|svelte|astro)$" \
+                  | grep -Ev "^(node_modules|dist|build|artifacts)/" || true
+              fi
+            )
+          else
+            mapfile -t ui_files < <(rg --files . -g "**/*.js" -g "**/*.jsx" -g "**/*.ts" -g "**/*.tsx" -g "**/*.css" -g "**/*.scss" -g "**/*.sass" -g "**/*.less" -g "**/*.html" -g "**/*.vue" -g "**/*.svelte" -g "**/*.astro" -g "!**/node_modules/**" -g "!**/dist/**" -g "!**/build/**" -g "!**/artifacts/**" -g "!**/.runtime-cache/**")
+          fi
+          if [ "${#ui_files[@]}" -eq 0 ]; then
+            echo "ci semantic UI/UX audit: no frontend files in scope, skip"
+            exit 0
+          fi
+          if [ -z "${GEMINI_API_KEY:-}" ]; then
+            echo "❌ ci semantic UI/UX audit: GEMINI_API_KEY is required when frontend files exist"
+            exit 1
+          fi
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/gemini_ui_ux_audit.py --model "${GEMINI_UI_AUDIT_MODEL}" "${ui_files[@]}"
+            '
+      - name: Upload lint diagnostics
+        if: always() && needs.change-detection.outputs.run-heavy == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-lint-frontend-hosted-primary
+          path: .runtime-cache/logs/
+          if-no-files-found: warn
+
+  lint-frontend-hosted-retry:
+    needs: [change-detection, build-ci-image, lint-frontend-hosted-primary]
+    if: (always() && needs.lint-frontend-hosted-primary.result != 'success') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage pre-checkout --normalize-ownership
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: |
+          set -euo pipefail
+          DOCKER_BIN="docker"
+          if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+            DOCKER_BIN="sudo docker"
+          fi
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          $DOCKER_BIN pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Fast-path skip (no heavy-impact code changes)
+        if: needs.change-detection.outputs.run-heavy != 'true'
+        run: |
+          set -euo pipefail
+          echo "lint-frontend: skip heavy gate for non-heavy changes"
+          echo "changed-count=${{ needs.change-detection.outputs.changed-count }}"
+      - name: Prepare artifacts dir
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Frontend lint gate
+        if: needs.change-detection.outputs.run-heavy == 'true'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_UI_AUDIT_MODEL: ${{ vars.GEMINI_UI_AUDIT_MODEL || 'gemini-3-flash-preview' }}
+          LINT_FRONTEND_SKIP_GEMINI_AUDIT: "1"
+        run: |
+          set -euo pipefail
+          bash tooling/gates/lint_frontend.sh
+      - name: Semantic UI/UX audit gate (Gemini)
+        if: needs.change-detection.outputs.run-heavy == 'true' && github.event_name == 'workflow_dispatch'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_UI_AUDIT_MODEL: ${{ vars.GEMINI_UI_AUDIT_MODEL || 'gemini-3-flash-preview' }}
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label ci-semantic-uiux -- bash -lc '
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            git fetch --no-tags --prune --depth=200 origin "${{ github.event.repository.default_branch }}"
+            base_ref="$(git merge-base HEAD "origin/${{ github.event.repository.default_branch }}" 2>/dev/null || true)"
+            mapfile -t ui_files < <(
+              if [ -n "$base_ref" ]; then
+                git diff --name-only --diff-filter=ACDMRT "$base_ref"...HEAD \
+                  | grep -E "\.(js|jsx|ts|tsx|css|scss|sass|less|html|vue|svelte|astro)$" \
+                  | grep -Ev "^(node_modules|dist|build|artifacts)/" || true
+              fi
+            )
+          else
+            mapfile -t ui_files < <(rg --files . -g "**/*.js" -g "**/*.jsx" -g "**/*.ts" -g "**/*.tsx" -g "**/*.css" -g "**/*.scss" -g "**/*.sass" -g "**/*.less" -g "**/*.html" -g "**/*.vue" -g "**/*.svelte" -g "**/*.astro" -g "!**/node_modules/**" -g "!**/dist/**" -g "!**/build/**" -g "!**/artifacts/**" -g "!**/.runtime-cache/**")
+          fi
+          if [ "${#ui_files[@]}" -eq 0 ]; then
+            echo "ci semantic UI/UX audit: no frontend files in scope, skip"
+            exit 0
+          fi
+          if [ -z "${GEMINI_API_KEY:-}" ]; then
+            echo "❌ ci semantic UI/UX audit: GEMINI_API_KEY is required when frontend files exist"
+            exit 1
+          fi
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/gemini_ui_ux_audit.py --model "${GEMINI_UI_AUDIT_MODEL}" "${ui_files[@]}"
+            '
+      - name: Upload lint diagnostics
+        if: always() && needs.change-detection.outputs.run-heavy == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-lint-frontend-hosted-retry
+          path: .runtime-cache/logs/
+          if-no-files-found: warn
+
+  lint-frontend:
+    needs: [change-detection, lint-frontend-hosted-primary, lint-frontend-hosted-retry]
+    if: always() && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          mkdir -p "${GITHUB_WORKSPACE:-$PWD}"
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Resolve hosted retry result
+        run: |
+          set -euo pipefail
+          bash tooling/ci/resolve_dual_lane_gate.sh lint-frontend '${{ needs.lint-frontend-hosted-primary.result }}' '${{ needs.lint-frontend-hosted-retry.result }}'
+
+  webui-build-test-hosted-primary:
+    if: always() && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, commit-message-lint, atomic-commit-gate, secrets-supply-chain-gate, lint-frontend, ci-hardening-gate]
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: true
+      - name: Prepare WebUI diagnostics dirs
+        run: mkdir -p .runtime-cache/logs .runtime-cache/build/apps/webui
+      - name: WebUI build + test gate
+        run: |
+          set -euo pipefail
+          npm --prefix apps/webui ci 2>&1 | tee .runtime-cache/logs/webui-npm-ci.log
+          npm --prefix apps/webui run test 2>&1 | tee .runtime-cache/logs/webui-test.log
+          npm --prefix apps/webui run build 2>&1 | tee .runtime-cache/logs/webui-build.log
+      - name: Upload WebUI diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-webui-build-test
+          path: |
+            .runtime-cache/logs/webui-*.log
+            .runtime-cache/build/apps/webui/
+          if-no-files-found: warn
+
+  webui-build-test-hosted-retry:
+    if: (always() && needs.webui-build-test-hosted-primary.result != 'success') && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, commit-message-lint, atomic-commit-gate, secrets-supply-chain-gate, lint-frontend, ci-hardening-gate, build-ci-image, webui-build-test-hosted-primary]
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage pre-checkout --normalize-ownership
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        run: |
+          set -euo pipefail
+          DOCKER_BIN="docker"
+          if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+            DOCKER_BIN="sudo docker"
+          fi
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileyard-docker-config"
+          mkdir -p "$DOCKER_CONFIG_DIR"
+          printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
+          export DOCKER_CONFIG="$DOCKER_CONFIG_DIR"
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          $DOCKER_BIN pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Prepare artifacts dir
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: WebUI build + test gate
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label webui-build-test -- bash -lc '
+          set -euo pipefail
+          npm --prefix apps/webui ci 2>&1 | tee .runtime-cache/logs/webui-npm-ci.log
+          npm --prefix apps/webui run test 2>&1 | tee .runtime-cache/logs/webui-test.log
+          npm --prefix apps/webui run build 2>&1 | tee .runtime-cache/logs/webui-build.log
+          '
+      - name: Upload WebUI diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-webui-build-test
+          path: |
+            .runtime-cache/logs/webui-*.log
+            .runtime-cache/build/apps/webui/
+          if-no-files-found: warn
+
+  webui-build-test:
+    if: always() && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, webui-build-test-hosted-primary, webui-build-test-hosted-retry]
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          mkdir -p "${GITHUB_WORKSPACE:-$PWD}"
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Resolve hosted retry result
+        run: |
+          set -euo pipefail
+          bash tooling/ci/resolve_dual_lane_gate.sh webui-build-test '${{ needs.webui-build-test-hosted-primary.result }}' '${{ needs.webui-build-test-hosted-retry.result }}'
+
+  ci-hardening-gate-hosted-primary:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    outputs:
+      entered: ${{ steps.entry.outputs.entered }}
+    steps:
+      - id: entry
+        name: Entry sentinel
+        run: echo "entered=true" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: true
+      - name: CI workflow hardening gate
+        run: |
+          set -euo pipefail
+          python3 tooling/scripts/check_ci_workflow_hardening.py --workflow .github/workflows/ci.yml
+      - name: CI governance regression guard
+        run: |
+          set -euo pipefail
+          python3 tooling/scripts/check_ci_governance_regressions.py --root .
+
+  ci-hardening-gate-hosted-retry:
+    needs: [ci-hardening-gate-hosted-primary]
+    if: (always() && needs.ci-hardening-gate-hosted-primary.result != 'success') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request')
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage pre-checkout --normalize-ownership
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: CI workflow hardening gate
+        run: |
+          set -euo pipefail
+          python3 tooling/scripts/check_ci_workflow_hardening.py --workflow .github/workflows/ci.yml
+      - name: CI governance regression guard
+        run: |
+          set -euo pipefail
+          python3 tooling/scripts/check_ci_governance_regressions.py --root .
+
+  ci-hardening-gate:
+    needs: [ci-hardening-gate-hosted-primary, ci-hardening-gate-hosted-retry]
+    if: always() && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request')
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Resolve hosted retry result
+        run: |
+          set -euo pipefail
+          bash tooling/ci/resolve_dual_lane_gate.sh ci-hardening-gate '${{ needs.ci-hardening-gate-hosted-primary.result }}' '${{ needs.ci-hardening-gate-hosted-retry.result }}'
+
+  quality-gate-full-hosted-primary:
+    # Canonical remote full-verification gate. Downstream jobs may add targeted
+    # signal (frontend correctness, critical smoke, version parity) but must not
+    # redefine the source of truth for short checks or full backend validation.
+    if: always() && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, commit-message-lint, atomic-commit-gate, secrets-supply-chain-gate, ci-hardening-gate, build-ci-image]
+    timeout-minutes: 35
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: true
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        run: |
+          set -euo pipefail
+          DOCKER_BIN="docker"
+          if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+            DOCKER_BIN="sudo docker"
+          fi
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileyard-docker-config"
+          mkdir -p "$DOCKER_CONFIG_DIR"
+          printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
+          export DOCKER_CONFIG="$DOCKER_CONFIG_DIR"
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          $DOCKER_BIN pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          rm -rf .runtime-cache/ci-contract
+      - name: Prepare artifacts dir
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Full quality gate
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label quality-gate-full --skip-webui-node-modules-mount -- bash tooling/gates/quality_gate.sh
+      - name: Upload quality diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-quality-gate-full-hosted-primary
+          path: .runtime-cache/logs/
+          if-no-files-found: warn
+
+  quality-gate-full-hosted-retry:
+    if: (always() && needs.quality-gate-full-hosted-primary.result != 'success') && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, commit-message-lint, atomic-commit-gate, secrets-supply-chain-gate, ci-hardening-gate, build-ci-image, quality-gate-full-hosted-primary]
+    timeout-minutes: 35
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage pre-checkout --normalize-ownership
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        run: |
+          set -euo pipefail
+          DOCKER_BIN="docker"
+          if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+            DOCKER_BIN="sudo docker"
+          fi
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileyard-docker-config"
+          mkdir -p "$DOCKER_CONFIG_DIR"
+          printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
+          export DOCKER_CONFIG="$DOCKER_CONFIG_DIR"
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          $DOCKER_BIN pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+          rm -rf .runtime-cache/ci-contract
+      - name: Prepare artifacts dir
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Full quality gate
+        run: |
+          set -euo pipefail
+          bash tooling/gates/quality_gate.sh
+      - name: Upload quality diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-quality-gate-full-hosted-retry
+          path: .runtime-cache/logs/
+          if-no-files-found: warn
+
+  quality-gate-full:
+    if: always() && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, quality-gate-full-hosted-primary, quality-gate-full-hosted-retry]
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          mkdir -p "${GITHUB_WORKSPACE:-$PWD}"
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Resolve hosted retry result
+        run: |
+          set -euo pipefail
+          bash tooling/ci/resolve_dual_lane_gate.sh quality-gate-full '${{ needs.quality-gate-full-hosted-primary.result }}' '${{ needs.quality-gate-full-hosted-retry.result }}'
+
+  packaging-gate-hosted-primary:
+    if: always() && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, commit-message-lint, atomic-commit-gate, secrets-supply-chain-gate, quality-gate-full]
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: true
+      - name: Install Python dependencies for packaging smoke
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check --require-hashes -r tooling/requirements-dev.lock.txt
+      - name: Packaging usability gate
+        run: |
+          set -euo pipefail
+          bash tooling/docs/docs_smoke.sh --install-smoke
+      - name: Upload packaging diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-packaging-gate
+          path: |
+            .runtime-cache/logs/
+          if-no-files-found: warn
+
+  packaging-gate-hosted-retry:
+    if: (always() && needs.packaging-gate-hosted-primary.result != 'success') && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, commit-message-lint, atomic-commit-gate, secrets-supply-chain-gate, quality-gate-full, build-ci-image, packaging-gate-hosted-primary]
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage pre-checkout --normalize-ownership
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        run: |
+          set -euo pipefail
+          DOCKER_BIN="docker"
+          if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+            DOCKER_BIN="sudo docker"
+          fi
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          $DOCKER_BIN pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Packaging usability gate
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label packaging-gate -- bash tooling/docs/docs_smoke.sh --install-smoke
+      - name: Upload packaging diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-packaging-gate
+          path: |
+            .runtime-cache/logs/
+          if-no-files-found: warn
+
+  packaging-gate:
+    if: always() && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, packaging-gate-hosted-primary, packaging-gate-hosted-retry]
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Resolve hosted retry result
+        run: |
+          set -euo pipefail
+          bash tooling/ci/resolve_dual_lane_gate.sh packaging-gate '${{ needs.packaging-gate-hosted-primary.result }}' '${{ needs.packaging-gate-hosted-retry.result }}'
+
+  mutation-canary-gate-hosted-primary:
+    if: always() && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, commit-message-lint, atomic-commit-gate, secrets-supply-chain-gate, lint-backend, lint-frontend, ci-hardening-gate, quality-gate-full, build-ci-image]
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: true
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        run: |
+          set -euo pipefail
+          DOCKER_BIN="docker"
+          if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+            DOCKER_BIN="sudo docker"
+          fi
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          $DOCKER_BIN pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Prepare artifacts dir
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Mutation canary gate
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label mutation-canary -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_mutation_canary.py \
+            --repo-root . \
+            --json-output .runtime-cache/logs/mutation-canary-summary.json
+          '
+      - name: Upload mutation canary diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-mutation-canary-gate-hosted-primary
+          path: .runtime-cache/logs/
+          if-no-files-found: warn
+
+  mutation-canary-gate-hosted-retry:
+    if: (always() && needs.mutation-canary-gate-hosted-primary.result != 'success') && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, commit-message-lint, atomic-commit-gate, secrets-supply-chain-gate, lint-backend, lint-frontend, ci-hardening-gate, quality-gate-full, build-ci-image, mutation-canary-gate-hosted-primary]
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage pre-checkout --normalize-ownership
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        run: |
+          set -euo pipefail
+          DOCKER_BIN="docker"
+          if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+            DOCKER_BIN="sudo docker"
+          fi
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          $DOCKER_BIN pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Prepare artifacts dir
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Mutation canary gate
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label mutation-canary -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_mutation_canary.py \
+            --repo-root . \
+            --json-output .runtime-cache/logs/mutation-canary-summary.json
+          '
+      - name: Upload mutation canary diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-mutation-canary-gate-hosted-retry
+          path: .runtime-cache/logs/
+          if-no-files-found: warn
+
+  mutation-canary-gate:
+    if: always() && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, mutation-canary-gate-hosted-primary, mutation-canary-gate-hosted-retry]
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          mkdir -p "${GITHUB_WORKSPACE:-$PWD}"
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Resolve hosted retry result
+        run: |
+          set -euo pipefail
+          bash tooling/ci/resolve_dual_lane_gate.sh mutation-canary-gate '${{ needs.mutation-canary-gate-hosted-primary.result }}' '${{ needs.mutation-canary-gate-hosted-retry.result }}'
+
+  live-smoke-preflight-hosted-primary:
+    if: github.event_name == 'workflow_dispatch'
+    needs: [fork-pr-safety-gate, build-ci-image]
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    environment: owner-approved-sensitive
+    env:
+      FILEYARD_RUN_LIVE_TESTS: "1"
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GEMINI_MODEL: "gemini-3-flash-preview"
+      FILEYARD_LIVE_TEST_URL: "https://docs.github.com/en"
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: true
+      - id: preflight-scope
+        name: Decide live preflight scope
+        run: |
+          set -euo pipefail
+          if [ "${{ needs.build-ci-image.result }}" != "success" ]; then
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "reason=build_ci_image_unavailable" >> "$GITHUB_OUTPUT"
+            echo "live-smoke-preflight: skip because build-ci-image did not produce a runtime image contract"
+            exit 0
+          fi
+          if [ -z "${GEMINI_API_KEY:-}" ]; then
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "reason=gemini_api_key_missing" >> "$GITHUB_OUTPUT"
+            echo "live-smoke-preflight: skip because GEMINI_API_KEY is not configured for default CI"
+            exit 0
+          fi
+          echo "should_run=true" >> "$GITHUB_OUTPUT"
+          echo "reason=ready" >> "$GITHUB_OUTPUT"
+      - name: Download CI runtime image contract
+        if: steps.preflight-scope.outputs.should_run == 'true'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        if: steps.preflight-scope.outputs.should_run == 'true'
+        run: |
+          set -euo pipefail
+          DOCKER_BIN="docker"
+          if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+            DOCKER_BIN="sudo docker"
+          fi
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileyard-docker-config"
+          mkdir -p "$DOCKER_CONFIG_DIR"
+          printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN --config "$DOCKER_CONFIG_DIR" login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          $DOCKER_BIN --config "$DOCKER_CONFIG_DIR" pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Prepare artifacts dir
+        if: steps.preflight-scope.outputs.should_run == 'true'
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Live smoke preflight (env-only)
+        if: steps.preflight-scope.outputs.should_run == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label live-smoke-preflight -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
+            tests/e2e/test_live_llm_integration.py::test_live_llm_env_preflight \
+            tests/e2e/test_live_external_site_playwright.py::test_live_browser_env_preflight
+          '
+      - name: Live smoke preflight skipped
+        if: steps.preflight-scope.outputs.should_run != 'true'
+        run: |
+          set -euo pipefail
+          echo "live-smoke-preflight: skipped (${{
+            steps.preflight-scope.outputs.reason
+          }})"
+      - name: Upload live preflight diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-live-smoke-preflight-hosted-primary
+          path: .runtime-cache/logs/
+          if-no-files-found: warn
+
+  live-smoke-preflight-hosted-retry:
+    if: (always() && needs.live-smoke-preflight-hosted-primary.result != 'success') && github.event_name == 'workflow_dispatch'
+    needs: [fork-pr-safety-gate, build-ci-image, live-smoke-preflight-hosted-primary]
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    environment: owner-approved-sensitive
+    env:
+      FILEYARD_RUN_LIVE_TESTS: "1"
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GEMINI_MODEL: "gemini-3-flash-preview"
+      FILEYARD_LIVE_TEST_URL: "https://docs.github.com/en"
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage pre-checkout --normalize-ownership
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - id: preflight-scope
+        name: Decide live preflight scope
+        run: |
+          set -euo pipefail
+          if [ "${{ needs.build-ci-image.result }}" != "success" ]; then
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "reason=build_ci_image_unavailable" >> "$GITHUB_OUTPUT"
+            echo "live-smoke-preflight fallback: skip because build-ci-image did not produce a runtime image contract"
+            exit 0
+          fi
+          if [ -z "${GEMINI_API_KEY:-}" ]; then
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "reason=gemini_api_key_missing" >> "$GITHUB_OUTPUT"
+            echo "live-smoke-preflight fallback: skip because GEMINI_API_KEY is not configured for default CI"
+            exit 0
+          fi
+          echo "should_run=true" >> "$GITHUB_OUTPUT"
+          echo "reason=ready" >> "$GITHUB_OUTPUT"
+      - name: Download CI runtime image contract
+        if: steps.preflight-scope.outputs.should_run == 'true'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        if: steps.preflight-scope.outputs.should_run == 'true'
+        run: |
+          set -euo pipefail
+          DOCKER_BIN="docker"
+          if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+            DOCKER_BIN="sudo docker"
+          fi
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileyard-docker-config"
+          mkdir -p "$DOCKER_CONFIG_DIR"
+          printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | $DOCKER_BIN --config "$DOCKER_CONFIG_DIR" login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          $DOCKER_BIN --config "$DOCKER_CONFIG_DIR" pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Prepare artifacts dir
+        if: steps.preflight-scope.outputs.should_run == 'true'
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Live smoke preflight (env-only)
+        if: steps.preflight-scope.outputs.should_run == 'true'
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label live-smoke-preflight -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
+            tests/e2e/test_live_llm_integration.py::test_live_llm_env_preflight \
+            tests/e2e/test_live_external_site_playwright.py::test_live_browser_env_preflight
+          '
+      - name: Live smoke preflight skipped
+        if: steps.preflight-scope.outputs.should_run != 'true'
+        run: |
+          set -euo pipefail
+          echo "live-smoke-preflight fallback: skipped (${{
+            steps.preflight-scope.outputs.reason
+          }})"
+      - name: Upload live preflight diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-live-smoke-preflight-hosted-retry
+          path: .runtime-cache/logs/
+          if-no-files-found: warn
+
+  live-smoke-preflight:
+    if: github.event_name == 'workflow_dispatch'
+    needs: [live-smoke-preflight-hosted-primary, live-smoke-preflight-hosted-retry]
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          mkdir -p "${GITHUB_WORKSPACE:-$PWD}"
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Resolve hosted retry result
+        run: |
+          set -euo pipefail
+          bash tooling/ci/resolve_dual_lane_gate.sh live-smoke-preflight '${{ needs.live-smoke-preflight-hosted-primary.result }}' '${{ needs.live-smoke-preflight-hosted-retry.result }}'
+
+  functional-gate-hosted-primary:
+    # Supplemental targeted smoke gate. quality-gate-full remains the canonical
+    # full-verification gate; this job exists to surface critical functional
+    # regressions with smaller logs/artifacts, not to redefine remote truth.
+    if: always() && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, commit-message-lint, atomic-commit-gate, secrets-supply-chain-gate, quality-gate-full, mutation-canary-gate, build-ci-image]
+    timeout-minutes: 25
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: true
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        run: |
+          set -euo pipefail
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          docker pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Prepare artifacts dir
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Functional gate
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label functional-gate -- bash tooling/gates/functional_gate.sh
+      - name: Upload functional diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-functional-gate-hosted-primary
+          path: |
+            .runtime-cache/ci/pytest-functional-critical-junit.xml
+            .runtime-cache/logs/
+          if-no-files-found: warn
+
+  functional-gate-hosted-retry:
+    if: (always() && needs.functional-gate-hosted-primary.result != 'success') && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, commit-message-lint, atomic-commit-gate, secrets-supply-chain-gate, quality-gate-full, mutation-canary-gate, build-ci-image, functional-gate-hosted-primary]
+    timeout-minutes: 25
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage pre-checkout --normalize-ownership
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        run: |
+          set -euo pipefail
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          docker pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Prepare artifacts dir
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Functional gate
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label functional-gate -- bash tooling/gates/functional_gate.sh
+      - name: Upload functional diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-functional-gate-hosted-retry
+          path: |
+            .runtime-cache/ci/pytest-functional-critical-junit.xml
+            .runtime-cache/logs/
+          if-no-files-found: warn
+
+  functional-gate:
+    if: always() && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, functional-gate-hosted-primary, functional-gate-hosted-retry]
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          mkdir -p "${GITHUB_WORKSPACE:-$PWD}"
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Resolve hosted retry result
+        run: |
+          set -euo pipefail
+          bash tooling/ci/resolve_dual_lane_gate.sh functional-gate '${{ needs.functional-gate-hosted-primary.result }}' '${{ needs.functional-gate-hosted-retry.result }}'
+
+  test-hosted-primary:
+    # Python version-parity gate. quality-gate-full is the canonical source of
+    # truth for short checks/full backend verification; this matrix verifies
+    # interpreter compatibility and supplemental regression signal.
+    if: always() && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, commit-message-lint, atomic-commit-gate, secrets-supply-chain-gate, lint-backend, lint-frontend, webui-build-test, ci-hardening-gate, quality-gate-full, mutation-canary-gate, functional-gate, build-ci-image]
+    timeout-minutes: 25
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: true
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        env:
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+        run: |
+          set -euo pipefail
+          DOCKER_BIN="docker"
+          if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+            DOCKER_BIN="sudo docker"
+          fi
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          case "$MATRIX_PYTHON_VERSION" in
+            3.10) image_file="py310.image.txt" ;;
+            3.11) image_file="py311.image.txt" ;;
+            3.12) image_file="py312.image.txt" ;;
+            *) echo "❌ unsupported matrix python-version: $MATRIX_PYTHON_VERSION"; exit 1 ;;
+          esac
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh ".runtime-cache/ci-contract/${image_file}")"
+          $DOCKER_BIN pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Prepare artifacts dir
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Unit suite (all matrix versions)
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label test-gates -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
+            --strict-config --strict-markers \
+            --junitxml=.runtime-cache/ci/pytest-junit-unit.xml \
+            tests/unit
+          '
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-test-hosted-primary-py${{ matrix.python-version }}
+          path: |
+            .runtime-cache/ci/pytest-junit-unit.xml
+            .runtime-cache/logs/
+          if-no-files-found: warn
+
+  test-hosted-retry:
+    if: (always() && needs.test-hosted-primary.result != 'success') && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, commit-message-lint, atomic-commit-gate, secrets-supply-chain-gate, lint-backend, lint-frontend, webui-build-test, ci-hardening-gate, quality-gate-full, mutation-canary-gate, functional-gate, build-ci-image, test-hosted-primary]
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage pre-checkout --normalize-ownership
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        env:
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+        run: |
+          set -euo pipefail
+          DOCKER_BIN="docker"
+          if ! docker info >/dev/null 2>&1 && command -v sudo >/dev/null 2>&1; then
+            DOCKER_BIN="sudo docker"
+          fi
+          printf '%s' "${{ secrets.GHCR_PUSH_TOKEN || github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin # pragma: allowlist secret
+          case "$MATRIX_PYTHON_VERSION" in
+            3.10) image_file="py310.image.txt" ;;
+            3.11) image_file="py311.image.txt" ;;
+            3.12) image_file="py312.image.txt" ;;
+            *) echo "❌ unsupported matrix python-version: $MATRIX_PYTHON_VERSION"; exit 1 ;;
+          esac
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh ".runtime-cache/ci-contract/${image_file}")"
+          $DOCKER_BIN pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Prepare artifacts dir
+        run: mkdir -p .runtime-cache/logs .runtime-cache/ci
+      - name: Unit suite (all matrix versions)
+        run: |
+          set -euo pipefail
+          bash tooling/scripts/container_exec.sh --label test-gates -- bash -lc '
+          set -euo pipefail
+          $HOME/.cache/fileyard/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
+            --strict-config --strict-markers \
+            --junitxml=.runtime-cache/ci/pytest-junit-unit.xml \
+            tests/unit
+          '
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-test-hosted-retry-py${{ matrix.python-version }}
+          path: |
+            .runtime-cache/ci/pytest-junit-unit.xml
+            .runtime-cache/logs/
+          if-no-files-found: warn
+
+  test:
+    if: always() && (needs.change-detection.outputs.run-heavy == 'true') && (github.event_name == 'push' || github.event_name == 'merge_group' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository))
+    needs: [change-detection, test-hosted-primary, test-hosted-retry]
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          mkdir -p "${GITHUB_WORKSPACE:-$PWD}"
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Resolve hosted retry result
+        run: |
+          set -euo pipefail
+          bash tooling/ci/resolve_dual_lane_gate.sh test '${{ needs.test-hosted-primary.result }}' '${{ needs.test-hosted-retry.result }}'
+
+  evidence-bundle:
+    if: always()
+    needs: [ci-bootstrap, change-detection, fork-pr-safety-gate, commit-message-lint, atomic-commit-gate, secrets-supply-chain-gate, lint-backend, lint-frontend, webui-build-test, ci-hardening-gate, quality-gate-full, packaging-gate, mutation-canary-gate, live-smoke-preflight, functional-gate, test]
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    env:
+      CI_NEEDS_JSON: ${{ toJson(needs) }}
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          echo "Hosted cleanup jobs do not run repo-local hygiene before checkout."
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Prepare artifact workspace
+        run: mkdir -p .runtime-cache/ci/collected .runtime-cache/ci
+      - name: Download all CI artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: ci-*
+          path: .runtime-cache/ci/collected
+          merge-multiple: true
+      - name: Generate CI evidence bundle
+        run: |
+          set -euo pipefail
+          python3 tooling/scripts/collect_ci_run_metrics.py --output .runtime-cache/ci/collected/ci-run-metrics.json
+          python3 tooling/scripts/generate_ci_evidence_bundle.py \
+            --artifacts-root .runtime-cache/ci/collected \
+            --output .runtime-cache/ci/evidence-bundle.json
+      - name: Upload CI evidence bundle
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-evidence-bundle
+          path: .runtime-cache/ci/evidence-bundle.json
+          if-no-files-found: error
+      - name: Upload upstream receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-upstream-receipts
+          path: .runtime-cache/ci/upstream-receipts/
+          if-no-files-found: error
+
+  cleanup-resources:
+    if: always()
+    needs: [evidence-bundle]
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          echo "Hosted cleanup jobs do not run repo-local hygiene before checkout."
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Post-checkout workspace hygiene
+        run: |
+          set -euo pipefail
+          bash tooling/ci/gha_self_hosted_hygiene.sh --stage post-checkout --normalize-ownership
+      - name: Four-Rail Runtime Cleanup
+        run: |
+          set -euo pipefail
+          echo "==> Four-rail resource cleanup after CI"
+          echo "Before cleanup:"
+          du -sh artifacts .runtime-cache .pytest_cache .mypy_cache .ruff_cache 2>/dev/null || true
+          echo "==> Repo-local residue"
+          env FILEYARD_ALLOW_HOST_EXECUTION=1 bash tooling/cleanup/prune_repo_runtime.sh
+
+          echo "==> Machine cache (safe)"
+          bash tooling/cleanup/prune_machine_cache.sh --safe
+
+          echo "==> Docker runtime (audit only on shared CI infrastructure)"
+          bash tooling/cleanup/prune_docker_runtime.sh --dry-run || true
+
+          echo "==> Workspace evidence (audit only)"
+          bash tooling/cleanup/prune_workspace_runtime.sh --dry-run || true
+
+          echo "After cleanup:"
+          du -sh artifacts .runtime-cache .pytest_cache .mypy_cache .ruff_cache 2>/dev/null || true
+          echo "✅ Four-rail resource cleanup completed"
+
+# full-heavy-trigger: temp verification commit

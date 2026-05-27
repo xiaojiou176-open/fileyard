@@ -1,0 +1,41 @@
+name: Documentation improvement
+description: Report documentation drift, missing context, or unclear guidance
+title: "[Docs]: "
+labels:
+  - documentation
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for documentation drift, missing guidance, or unclear instructions.
+  - type: textarea
+    id: location
+    attributes:
+      label: Location
+      description: Which file, page, section, or command is affected?
+      placeholder: docs/usage.md, "Apply workflow" section
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is currently wrong, missing, stale, or confusing?
+      placeholder: The example command still uses an option that no longer exists.
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested fix
+      description: What update would make the documentation clearer or more correct?
+      placeholder: Replace the old command and add one sentence about the new required flag.
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations
+      options:
+        - label: I checked whether the same point is already covered in README.md or docs/.
+          required: true

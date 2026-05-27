@@ -1,0 +1,33 @@
+{
+  "name": "organizer-dev",
+  "build": {
+    "context": "..",
+    "dockerfile": ".devcontainer/Dockerfile"
+  },
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "forwardPorts": [
+    18080,
+    5173
+  ],
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "PIP_DISABLE_PIP_VERSION_CHECK": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONUNBUFFERED": "1",
+    "TZ": "America/Los_Angeles"
+  },
+  "remoteEnv": {
+    "FILEYARD_IN_CONTAINER": "1",
+    "FILEYARD_ALLOW_HOST_EXECUTION": "0"
+  },
+  "postCreateCommand": "bash tooling/runtime/bootstrap_env.sh && ~/.cache/fileyard/venv/default/bin/python -m playwright install --with-deps chromium",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff"
+      ]
+    }
+  }
+}

@@ -1,0 +1,106 @@
+name: live-integration
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: live-integration-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
+
+jobs:
+  build-ci-image:
+    uses: ./.github/workflows/reusable-build-runtime-image.yml
+    secrets: inherit # pragma: allowlist secret
+    with:
+      artifact-name: live-image-contract
+      image-tag-prefix: live
+
+  live-tests:
+    needs: [build-ci-image]
+    timeout-minutes: 35
+    runs-on: ubuntu-latest
+    environment: owner-approved-sensitive
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          clean: false
+      - name: Download CI runtime image contract
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: live-image-contract
+          path: .runtime-cache/ci-contract
+      - name: Load CI runtime image from contract
+        env:
+          GHCR_PULL_TOKEN: ${{ secrets.GHCR_PUSH_TOKEN || github.token }}
+          GHCR_PULL_USERNAME: ${{ vars.GHCR_PUSH_USERNAME || github.actor }}
+        run: |
+          set -euo pipefail
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileyard-docker-config"
+          mkdir -p "$DOCKER_CONFIG_DIR"
+          auth_b64="$(python3 -c 'import base64, os; print(base64.b64encode((os.environ["GHCR_PULL_USERNAME"] + ":" + os.environ["GHCR_PULL_TOKEN"]).encode("utf-8")).decode("ascii"))')"
+          printf '{"auths":{"ghcr.io":{"auth":"%s"}}}\n' "$auth_b64" > "$DOCKER_CONFIG_DIR/config.json"
+          chmod 600 "$DOCKER_CONFIG_DIR/config.json"
+          IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"
+          docker --config "$DOCKER_CONFIG_DIR" pull "$IMAGE_REF"
+          echo "FILEYARD_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"
+      - name: Live preflight checks
+        env:
+          FILEYARD_RUN_LIVE_TESTS: "1"
+          FILEYARD_RUN_WEBUI_E2E: "1"
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
+          FILEYARD_LIVE_TEST_URL: ${{ secrets.FILEYARD_LIVE_TEST_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GEMINI_API_KEY:-}" ]; then
+            echo "❌ live-integration: missing required secret GEMINI_API_KEY"
+            exit 1
+          fi
+          if [ "${#GEMINI_API_KEY}" -lt 20 ] || printf '%s' "${GEMINI_API_KEY}" | grep -Eqi '(^|[^[:alnum:]])(dummy|test|mock|fake|placeholder|sample|changeme|replaceme)([^[:alnum:]]|$)'; then
+            echo "❌ live-integration: GEMINI_API_KEY looks like placeholder/dummy key (or too short)"
+            exit 1
+          fi
+          if [ -z "${GEMINI_MODEL:-}" ]; then
+            echo "❌ live-integration: missing required secret GEMINI_MODEL"
+            exit 1
+          fi
+          if [ -z "${FILEYARD_LIVE_TEST_URL:-}" ]; then
+            echo "❌ live-integration: missing required secret FILEYARD_LIVE_TEST_URL"
+            exit 1
+          fi
+      - name: Run live full tests with heartbeat
+        env:
+          FILEYARD_RUN_LIVE_TESTS: "1"
+          FILEYARD_RUN_WEBUI_E2E: "1"
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
+          FILEYARD_LIVE_TEST_URL: ${{ secrets.FILEYARD_LIVE_TEST_URL }}
+          LIVE_HEARTBEAT_INTERVAL_SECONDS: "20"
+          LIVE_MAX_DURATION_SECONDS: "1800"
+          LIVE_MAX_RETRIES: "2"
+        run: |
+          set -euo pipefail
+          bash tooling/runtime/run_live_tests.sh
+      - name: Run AI minimum evidence pack
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
+        run: |
+          set -euo pipefail
+          bash tooling/gates/ai_eval_gate.sh --mode auto
+      - name: Upload live integration diagnostics
+        if: always()
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808
+        with:
+          name: live-integration-diagnostics
+          path: |
+            .runtime-cache/ci/live-tests.log
+            .runtime-cache/ci/live-tests-attempt-*.log
+            .runtime-cache/ci/live-tests-junit.xml
+            .runtime-cache/ci/live-tests-attempt-*.xml
+            .runtime-cache/logs/ai-eval/summary.json
+          if-no-files-found: warn
