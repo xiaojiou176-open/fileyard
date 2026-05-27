@@ -48,7 +48,7 @@ class EventSink:
 class CommandExecutionFacade:
     """Unified command execution facade for Web API jobs.
 
-    The default implementation executes fileorganize CLI subcommands via subprocess.
+    The default implementation executes fileman CLI subcommands via subprocess.
     """
 
     def __init__(self, command_executor: CommandExecutor | None = None) -> None:

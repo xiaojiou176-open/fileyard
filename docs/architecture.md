@@ -4,7 +4,7 @@
 graph TD
     A["<workspace-root>/data/raw (input directory)"] --> B["Media scanner"]
     B --> C["Analyze"]
-    C --> D["<workspace-root>/.fileorganize/manifests/manifest.jsonl"]
+    C --> D["<workspace-root>/.fileman/manifests/manifest.jsonl"]
     D --> E["Apply (move / rename)"]
     E --> F["<workspace-root>/data/organized/organized-images-* (output directory)"]
     D --> G["Rollback"]
@@ -44,9 +44,9 @@ graph LR
     A["developer / terminal"] --> B["scripts/container_exec.sh"]
     B --> C[docker-compose runtime]
     C --> D[pipeline cli_app]
-    D --> E[<workspace-root>/data/raw -> <workspace-root>/.fileorganize/manifests -> <workspace-root>/data/organized]
+    D --> E[<workspace-root>/data/raw -> <workspace-root>/.fileman/manifests -> <workspace-root>/data/organized]
     C --> F["tests + quality gates"]
-    F --> G[<workspace-root>/.fileorganize/artifacts/evidence-bundle.json]
+    F --> G[<workspace-root>/.fileman/artifacts/evidence-bundle.json]
     H[GitHub Actions] --> I[.github/workflows/ci.yml]
     I --> C
     I --> G
@@ -57,12 +57,12 @@ graph LR
 - The manifest is the single source of truth.
 - The review workbench uses `overlay -> resolved snapshot` as the only legal path from human edits or rules to `apply`.
 - Wave 2 review intelligence stays review-only: Copilot surfaces may summarize, explain learned suggestions, batch triage the overlay, and generate editable rule drafts from examples, but they must not auto-run `apply` or bypass preview.
-- Wave 3 workflow leverage keeps the same contract surface: `Fileorganize Inbox` stays intake-only, Strategy Packs stay template-only analyze defaults, Collection Intelligence v2 narrows review into batch slices, and Report routes people back into focused Review rather than creating a second decision surface.
-- Wave 4 MCP keeps the same contract surface too: `Fileorganize MCP v1` is a stdio/local-first thin facade over the existing review-safe workflow, not a second execution engine or a bypass around `apply`.
+- Wave 3 workflow leverage keeps the same contract surface: `Fileman Inbox` stays intake-only, Strategy Packs stay template-only analyze defaults, Collection Intelligence v2 narrows review into batch slices, and Report routes people back into focused Review rather than creating a second decision surface.
+- Wave 4 MCP keeps the same contract surface too: `Fileman MCP v1` is a stdio/local-first thin facade over the existing review-safe workflow, not a second execution engine or a bypass around `apply`.
 - The current implementation sanitizes `title / tags / notes` for Chinese-only naming outputs so that illegal characters do not reach filesystem naming.
 - Durability mode controls fsync strategy.
 - Status drives idempotency and resume behavior.
-- Rollback defaults to strict integrity. When `strict_integrity=true`, `FILEORGANIZE_ROLLBACK_HMAC_KEY` is required; turning strict mode off is an explicit security downgrade.
+- Rollback defaults to strict integrity. When `strict_integrity=true`, `FILEMAN_ROLLBACK_HMAC_KEY` is required; turning strict mode off is an explicit security downgrade.
 
 ## Current Web API Fact Summary
 
@@ -100,14 +100,14 @@ graph LR
 
 ## Current External Surfaces
 
-Fileorganize now exposes four outward-facing surfaces, but they are still one system:
+Fileman now exposes four outward-facing surfaces, but they are still one system:
 
 - **CLI**: full operator workflow for explicit shell runs
 - **Web API**: local app and developer integration surface
 - **WebUI**: human-first control surface for setup, analyze, review, apply, report, and rollback
-- **Fileorganize MCP v1**: stdio/local-first agent surface that reuses the same review-safe semantics
+- **Fileman MCP v1**: stdio/local-first agent surface that reuses the same review-safe semantics
 
-Think of it like one workshop with different doors for different visitors. The CLI is for operators, the WebUI is for humans, the Web API is for integration work, and Fileorganize MCP is the guarded service window for agents. None of them gets to bypass manifest review.
+Think of it like one workshop with different doors for different visitors. The CLI is for operators, the WebUI is for humans, the Web API is for integration work, and Fileman MCP is the guarded service window for agents. None of them gets to bypass manifest review.
 
 ## Governance Truth Surfaces (Dynamic Projection)
 
@@ -149,13 +149,13 @@ repo_root/
 - Public docs use `<workspace-root>` as the placeholder for the user-chosen persistent workspace directory.
 - The default input directory is documented as `<workspace-root>/data/raw`.
 - The default output directory is documented as `<workspace-root>/data/organized/organized-images-*`.
-- The default manifest path is documented as `<workspace-root>/.fileorganize/manifests/manifest.jsonl`.
+- The default manifest path is documented as `<workspace-root>/.fileman/manifests/manifest.jsonl`.
 - Environment, services, and runtime facts are injected by the renderer:
 
 <!-- BEGIN GENERATED: architecture-runtime-topology -->
 > Auto-generated: runtime services, default ports, runtime paths, and entrypoint facts live in [generated runtime topology](reference/runtime_topology.generated.md).
 
-- **Compose services**: `fileorganize-ci`, `fileorganize-web-api`, `fileorganize-webui`
+- **Compose services**: `fileman-ci`, `fileman-web-api`, `fileman-webui`
 - **Web API bind**: `loopback:18080`
 - **WebUI bind**: `loopback:5173`
 - **Persistent workspace docs alias**: `<workspace-root>`
@@ -163,7 +163,7 @@ repo_root/
 <!-- END GENERATED: architecture-runtime-topology -->
 
 - Environment variable policy lives in `docs/env_contract.md`, while the machine facts come from `contracts/runtime/env_contract_registry.yaml` and `docs/reference/env_contract.generated.md`.
-- Workspace-local durable workbench state lives under `<workspace-root>/.fileorganize/preferences/`; review rules, saved views, naming templates, learned rules, and watch sources must not fall back to repo-root or repo-runtime-cache surfaces.
+- Workspace-local durable workbench state lives under `<workspace-root>/.fileman/preferences/`; review rules, saved views, naming templates, learned rules, and watch sources must not fall back to repo-root or repo-runtime-cache surfaces.
 - Environment details should be routed through `env_contract.md`; `check_write_before_search.py` keeps docs and implementation aligned.
 
 ## Architecture Evolution Roadmap

@@ -1,6 +1,6 @@
 ---
-title: Review-First AI File Organizer | Fileorganize
-description: Why Fileorganize is a review-first AI file organizer for people who want AI-assisted planning without zero-review file mutation.
+title: Review-First AI File Organizer | Fileman
+description: Why Fileman is a review-first AI file organizer for people who want AI-assisted planning without zero-review file mutation.
 ---
 
 ## Review-First AI File Organizer
@@ -8,13 +8,13 @@ description: Why Fileorganize is a review-first AI file organizer for people who
 If you are searching for a review-first AI file organizer, you are probably trying to avoid one of two bad outcomes:
 
 - the tool is so manual that you still spend all your time dragging files around
-- the AI is so autonomous that it starts renaming and fileorganizeng files before you can inspect the plan
+- the AI is so autonomous that it starts renaming and moving files before you can inspect the plan
 
-Fileorganize is built for the middle ground between those two extremes.
+Fileman is built for the middle ground between those two extremes.
 
-## What Makes Fileorganize Different
+## What Makes Fileman Different
 
-Fileorganize lets AI help with the planning step first:
+Fileman lets AI help with the planning step first:
 
 - it drafts a manifest
 - it groups work into reviewable slices
@@ -32,7 +32,7 @@ Think of it like packing for a trip. AI can help build the packing list and grou
 
 ## Good Fit
 
-Fileorganize is a good fit when you want help organizing:
+Fileman is a good fit when you want help organizing:
 
 - photos
 - screenshots
@@ -49,7 +49,7 @@ It is especially useful if you want:
 
 ## Not A Fit
 
-Fileorganize is not the right product if you want:
+Fileman is not the right product if you want:
 
 - one-click automatic file mutation with no review
 - a hosted SaaS with team dashboards
@@ -60,5 +60,5 @@ Fileorganize is not the right product if you want:
 
 - Want the fastest safe first look: [Quickstart](./quickstart.md)
 - Want the full operator route: [Operator Guide](./usage.md)
-- Want the agent/developer surface: [Fileorganize MCP v1](./mcp.md)
+- Want the agent/developer surface: [Fileman MCP v1](./mcp.md)
 - Want the product overview: [README.md](../README.md)

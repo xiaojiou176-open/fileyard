@@ -63,7 +63,7 @@ def test_apply_dedupe_moves_duplicate(tmp_path: Path):
         "none",
     ]
     env = os.environ.copy()
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
     subprocess.run(cmd, check=True, cwd=str(script_root), env=env)
 
     data = [json.loads(line) for line in manifest.read_text(encoding="utf-8").splitlines() if line.strip()]

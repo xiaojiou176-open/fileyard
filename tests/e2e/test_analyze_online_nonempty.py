@@ -39,7 +39,7 @@ def test_analyze_online_nonempty_records_ai_fields_and_status(monkeypatch, tmp_p
         sys,
         "argv",
         [
-            "fileorganize",
+            "fileman",
             "analyze",
             "--input",
             str(input_dir),

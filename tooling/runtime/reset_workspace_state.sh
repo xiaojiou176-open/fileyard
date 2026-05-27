@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-WORKSPACE_ROOT="${FILEORGANIZE_WORKSPACE_ROOT:-$HOME/.fileorganize/workspaces/default}"
-rm -rf "$WORKSPACE_ROOT/.fileorganize"
-mkdir -p "$WORKSPACE_ROOT/.fileorganize"
+WORKSPACE_ROOT="${FILEMAN_WORKSPACE_ROOT:-$HOME/.fileman/workspaces/default}"
+rm -rf "$WORKSPACE_ROOT/.fileman"
+mkdir -p "$WORKSPACE_ROOT/.fileman"
 printf 'reset workspace state\n'

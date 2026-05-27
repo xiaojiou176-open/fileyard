@@ -9,17 +9,17 @@ import uvicorn
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run the Fileorganize Web API server.")
+    parser = argparse.ArgumentParser(description="Run the Fileman Web API server.")
     parser.add_argument(
         "--host",
-        default=os.environ.get("FILEORGANIZE_WEB_API_HOST", "127.0.0.1"),
-        help="Host interface to bind (default: FILEORGANIZE_WEB_API_HOST or 127.0.0.1).",
+        default=os.environ.get("FILEMAN_WEB_API_HOST", "127.0.0.1"),
+        help="Host interface to bind (default: FILEMAN_WEB_API_HOST or 127.0.0.1).",
     )
     parser.add_argument(
         "--port",
         type=int,
-        default=int(os.environ.get("FILEORGANIZE_WEB_API_PORT", "18080")),
-        help="TCP port to bind (default: FILEORGANIZE_WEB_API_PORT or 18080).",
+        default=int(os.environ.get("FILEMAN_WEB_API_PORT", "18080")),
+        help="TCP port to bind (default: FILEMAN_WEB_API_PORT or 18080).",
     )
     parser.add_argument(
         "--log-level",

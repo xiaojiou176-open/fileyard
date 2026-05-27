@@ -1,4 +1,4 @@
-# Fileorganize SEO Landing Map
+# Fileman SEO Landing Map
 
 This file maps high-intent search language to the current docs surface and future landing opportunities.
 
@@ -8,7 +8,7 @@ The goal is simple: attract people who already want a safer file-organization wo
 
 Current public surfaces should consistently reinforce this sentence:
 
-> **Fileorganize is a review-first local file organizer and workbench with AI-assisted planning, dry-run execution, and rollback-ready recovery.**
+> **Fileman is a review-first local file organizer and workbench with AI-assisted planning, dry-run execution, and rollback-ready recovery.**
 
 ## High-Intent Keywords
 
@@ -20,7 +20,7 @@ These are the search intents the current README/docs can honestly serve today:
 | `local file organizer with dry run` | user wants safety before execution | `README.md`, `docs/usage.md` |
 | `rollback ready file organizer` | user cares about undo and audit trail | `README.md`, `docs/usage.md` |
 | `AI assisted file organizer` | user wants help drafting labels without full autonomy | `README.md`, `docs/index.md` |
-| `review first AI organizer` | user wants AI help without giving up approval control | `README.md`, `docs/review_first_ai_file_organizer.md` |
+| `review first AI organizer` | user wants AI help without giving up approval control | `README.md`, `docs/review_first_ai_file_manr.md` |
 | `local photo organizer with review queue` | user wants photo cleanup without hidden mutation | `docs/photo_organizer.md`, `README.md` |
 | `screenshot organizer with dry run` | user wants screenshot cleanup with review-first safety | `docs/screenshot_organizer.md`, `docs/usage.md` |
 | `receipt organizer with rollback` | user wants receipt cleanup with auditability and undo | `docs/receipt_organizer.md`, `docs/usage.md` |
@@ -51,7 +51,7 @@ These terms either over-promise or attract the wrong audience for the current pr
 | `README.md` | front-door overview, product promise, fast trust check |
 | `docs/index.md` | docs landing page for review-first value and navigation |
 | `docs/usage.md` | operator-intent landing page for commands and workflow truth |
-| `docs/review_first_ai_file_organizer.md` | high-intent landing page for people comparing Fileorganize against zero-review AI organizers |
+| `docs/review_first_ai_file_manr.md` | high-intent landing page for people comparing Fileman against zero-review AI organizers |
 | `docs/photo_organizer.md` | use-case landing page for photo-heavy search intent |
 | `docs/screenshot_organizer.md` | use-case landing page for screenshot-heavy search intent |
 | `docs/receipt_organizer.md` | use-case landing page for receipt-heavy search intent |
@@ -68,17 +68,17 @@ These are valid future landing topics, but they should not be marketed as fully 
 
 | Future landing | Purpose | Status |
 | :-- | :-- | :-- |
-| `Fileorganize Review` | explain review queue, triage, and human approval flow | current surface name, future dedicated landing |
-| `Fileorganize Rules` | explain reusable rules and rule drafting | current surface name, future dedicated landing |
-| `Fileorganize Inbox` | explain intake/watch-source workflow | current surface name, future dedicated landing |
-| `Fileorganize Copilot` | explain review-only AI guidance, batch triage, and draft generation | current review-only surface |
-| `Fileorganize MCP` | explain deeper agent workflows or future broader integration layers beyond v1 | current v1 exists; broader surface can expand later |
+| `Fileman Review` | explain review queue, triage, and human approval flow | current surface name, future dedicated landing |
+| `Fileman Rules` | explain reusable rules and rule drafting | current surface name, future dedicated landing |
+| `Fileman Inbox` | explain intake/watch-source workflow | current surface name, future dedicated landing |
+| `Fileman Copilot` | explain review-only AI guidance, batch triage, and draft generation | current review-only surface |
+| `Fileman MCP` | explain deeper agent workflows or future broader integration layers beyond v1 | current v1 exists; broader surface can expand later |
 
 ## Practical Copy Rules
 
 - Put `review-first`, `local-first`, `dry-run`, and `rollback-ready` near the top of every front-door surface.
 - Use `AI-assisted` when the user benefit is real, but pair it with the review boundary in the same paragraph.
-- Treat `Fileorganize MCP v1` as a current extension surface, but not as the main headline that replaces the core review-first story.
+- Treat `Fileman MCP v1` as a current extension surface, but not as the main headline that replaces the core review-first story.
 - Treat `Codex` and `Claude Code` as current integration hooks only where the MCP surface already proves the claim.
 - Keep `OpenHands`, `OpenCode`, and `OpenClaw` out of the main hero unless the repo ships a stronger first-party integration surface.
 - Prefer concrete workflow nouns like `review queue`, `manifest`, `dry-run apply`, and `rollback` over generic AI slogans.

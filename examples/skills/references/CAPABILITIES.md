@@ -1,6 +1,6 @@
-# Fileorganize MCP Capabilities
+# Fileman MCP Capabilities
 
-These are the current repo-owned Fileorganize MCP tools exposed by `npm run mcp:tools`.
+These are the current repo-owned Fileman MCP tools exposed by `npm run mcp:tools`.
 
 ## Best first tools
 

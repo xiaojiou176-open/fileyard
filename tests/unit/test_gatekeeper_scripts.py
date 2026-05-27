@@ -344,13 +344,13 @@ def _prepare_ssot_hash_repo(repo: Path) -> Path:
         "\n".join(
             [
                 "version: 1",
-                "business_env_prefixes: [FILEORGANIZE_]",
+                "business_env_prefixes: [FILEMAN_]",
                 "ignored_suffixes: []",
-                "category_budgets: {FILEORGANIZE_: 1}",
+                "category_budgets: {FILEMAN_: 1}",
                 "forbidden_env_example_keys: []",
                 "deprecated_removal_deadlines: {}",
                 "sections:",
-                "  required: [FILEORGANIZE_ONE]",
+                "  required: [FILEMAN_ONE]",
             ]
         )
         + "\n",
@@ -436,7 +436,7 @@ def test_docs_smoke_install_smoke_uses_entrypoint_wrapper() -> None:
 
 def test_docs_smoke_install_smoke_uses_machine_temp_root() -> None:
     script = (_script_root() / "docs" / "docs_smoke.sh").read_text(encoding="utf-8")
-    assert 'install_root="${DOCS_SMOKE_INSTALL_ROOT:-${XDG_CACHE_HOME:-$HOME/.cache}/fileorganize/docs-smoke-install}"' in script
+    assert 'install_root="${DOCS_SMOKE_INSTALL_ROOT:-${XDG_CACHE_HOME:-$HOME/.cache}/fileman/docs-smoke-install}"' in script
     assert '".runtime-cache/tmp/docs-smoke.' not in script
     assert 'TMPDIR="$install_runtime_tmp" TMP="$install_runtime_tmp" TEMP="$install_runtime_tmp"' in script
 
@@ -758,7 +758,7 @@ def test_ci_commit_message_gate_uses_pull_request_head_range_for_same_repo_branc
     assert workflow.count('if [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then') >= 4
 
 
-def test_runtime_bootstrap_recreates_venv_without_refileorganizeng_mount_root() -> None:
+def test_runtime_bootstrap_recreates_venv_without_remounting_mount_root() -> None:
     root = Path(__file__).resolve().parents[2]
     bootstrap = (root / "tooling" / "runtime" / "bootstrap_env.sh").read_text(encoding="utf-8")
     container_exec = (root / "tooling" / "scripts" / "container_exec.sh").read_text(encoding="utf-8")
@@ -777,13 +777,13 @@ def test_ci_workflow_bootstraps_dev_deps_for_fastapi_jobs() -> None:
     assert workflow.count("Download CI runtime image contract") >= 5
     assert workflow.count("Load CI runtime image from contract") >= 5
     assert "docker login ghcr.io" in workflow
-    assert 'IMAGE_BASE="ghcr.io/${{ github.repository_owner }}/fileorganize-ci"' in workflow
+    assert 'IMAGE_BASE="ghcr.io/${{ github.repository_owner }}/fileman-ci"' in workflow
     assert 'echo "DOCKER_CONFIG=$DOCKER_CONFIG_DIR" >> "$GITHUB_ENV"' in workflow
     assert 'IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh .runtime-cache/ci-contract/py311.image.txt)"' in workflow
     assert "MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}" in workflow
     assert 'IMAGE_REF="$(bash tooling/ci/read_ci_contract_image_ref.sh ".runtime-cache/ci-contract/${image_file}")"' in workflow
     assert 'docker pull "$IMAGE_REF"' in workflow
-    assert 'echo "FILEORGANIZE_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"' in workflow
+    assert 'echo "FILEMAN_CI_IMAGE=$IMAGE_REF" >> "$GITHUB_ENV"' in workflow
     assert "bash tooling/scripts/container_exec.sh --label functional-gate --" in workflow
     assert "bash tooling/scripts/container_exec.sh --label test-gates --" in workflow
     assert "bash tooling/scripts/container_exec.sh --label mutation-canary --" in workflow
@@ -937,7 +937,7 @@ def test_env_contract_gate_blocks_unregistered_business_env(tmp_path: Path) -> N
     code_dir.mkdir(parents=True)
     _init_git_repo(repo)
     (code_dir / "sample.py").write_text(
-        "import os\n\ndef run() -> str:\n    return os.getenv('FILEORGANIZE_NEW_PHASE_E_FLAG', '')\n",
+        "import os\n\ndef run() -> str:\n    return os.getenv('FILEMAN_NEW_PHASE_E_FLAG', '')\n",
         encoding="utf-8",
     )
 
@@ -959,7 +959,7 @@ def test_env_contract_gate_blocks_unregistered_business_env(tmp_path: Path) -> N
     out = proc.stdout + proc.stderr
     assert proc.returncode == 1
     assert "not registered in env_contract" in out
-    assert "FILEORGANIZE_NEW_PHASE_E_FLAG" in out
+    assert "FILEMAN_NEW_PHASE_E_FLAG" in out
 
 
 def test_env_contract_gate_passes_for_registered_business_env(tmp_path: Path) -> None:
@@ -968,7 +968,7 @@ def test_env_contract_gate_passes_for_registered_business_env(tmp_path: Path) ->
     code_dir.mkdir(parents=True)
     _init_git_repo(repo)
     (code_dir / "sample.py").write_text(
-        "import os\n\ndef run() -> str:\n    return os.getenv('FILEORGANIZE_TRACE_ID', '')\n",
+        "import os\n\ndef run() -> str:\n    return os.getenv('FILEMAN_TRACE_ID', '')\n",
         encoding="utf-8",
     )
 
@@ -1157,7 +1157,7 @@ def test_env_contract_gate_blocks_category_budget_overflow(tmp_path: Path) -> No
             "--today",
             "2026-01-01",
             "--category-budget",
-            "FILEORGANIZE_=1",
+            "FILEMAN_=1",
         ],
         cwd=repo,
     )
@@ -1165,7 +1165,7 @@ def test_env_contract_gate_blocks_category_budget_overflow(tmp_path: Path) -> No
     out = proc.stdout + proc.stderr
     assert proc.returncode == 1
     assert "category budget exceeded" in out
-    assert "FILEORGANIZE_" in out
+    assert "FILEMAN_" in out
 
 
 def test_doc_drift_auto_mode_merges_staged_and_unstaged(tmp_path: Path) -> None:
@@ -1629,7 +1629,7 @@ def test_docs_manual_facts_gate_uses_registry_exemptions(tmp_path: Path) -> None
     repo = tmp_path / "repo"
     repo.mkdir(parents=True)
     checker = _prepare_manual_facts_repo(repo)
-    (repo / "docs" / "usage.md").write_text("Compose 服务名：`fileorganize-ci`\n", encoding="utf-8")
+    (repo / "docs" / "usage.md").write_text("Compose 服务名：`fileman-ci`\n", encoding="utf-8")
 
     proc = _run([sys.executable, str(checker), "--root", str(repo)], cwd=repo)
     out = proc.stdout + proc.stderr
@@ -2700,7 +2700,7 @@ jobs:
     env:
       PRE_COMMIT_HOME: ${{ runner.temp }}/pre-commit-cache
       XDG_CACHE_HOME: ${{ runner.temp }}/xdg-cache
-      FILEORGANIZE_VENV_DIR: ${{ runner.temp }}/venv
+      FILEMAN_VENV_DIR: ${{ runner.temp }}/venv
     steps:
       - name: Clear stale git metadata before checkout
         run: |
@@ -2717,12 +2717,12 @@ jobs:
           path: ${{ runner.temp }}/venv
           key: ok
       - run: bash tooling/runtime/bootstrap_env.sh
-      - run: ~/.cache/fileorganize/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
+      - run: ~/.cache/fileman/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
   pre-commit-hosted-retry:
     runs-on: ubuntu-latest
     steps:
       - run: bash tooling/runtime/bootstrap_env.sh
-      - run: ~/.cache/fileorganize/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
+      - run: ~/.cache/fileman/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
   pre-commit:
     runs-on: ubuntu-latest
 """.strip()
@@ -2748,7 +2748,7 @@ jobs:
     env:
       PRE_COMMIT_HOME: ${{ runner.temp }}/pre-commit-cache
       XDG_CACHE_HOME: ${{ runner.temp }}/xdg-cache
-      FILEORGANIZE_VENV_DIR: ${{ runner.temp }}/venv
+      FILEMAN_VENV_DIR: ${{ runner.temp }}/venv
     steps:
       - name: Clear stale git metadata before checkout
         run: |
@@ -2785,7 +2785,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       XDG_CACHE_HOME: ${{ runner.temp }}/xdg-cache
-      FILEORGANIZE_VENV_DIR: ${{ runner.temp }}/venv
+      FILEMAN_VENV_DIR: ${{ runner.temp }}/venv
     steps:
       - name: Clear stale git metadata before checkout
         run: |
@@ -3357,7 +3357,7 @@ jobs:
           clean: false
       - run: bash tooling/ci/gha_self_hosted_hygiene.sh
       - run: bash tooling/runtime/bootstrap_env.sh
-      - run: ~/.cache/fileorganize/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
+      - run: ~/.cache/fileman/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
   pre-commit-hosted-retry:
     runs-on: ubuntu-latest
     steps:
@@ -3367,7 +3367,7 @@ jobs:
           clean: false
       - run: bash tooling/ci/gha_self_hosted_hygiene.sh
       - run: bash tooling/runtime/bootstrap_env.sh
-      - run: ~/.cache/fileorganize/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
+      - run: ~/.cache/fileman/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
   pre-commit:
     runs-on: ubuntu-latest
 """.strip()
@@ -3397,7 +3397,7 @@ jobs:
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: |
-            ${{ runner.temp }}/fileorganize-live-venv
+            ${{ runner.temp }}/fileman-live-venv
             $RUNNER_TEMP/live-cache
           key: live-demo
 """.strip()

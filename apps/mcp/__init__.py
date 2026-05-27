@@ -1,1 +1,1 @@
-"""Fileorganize MCP surfaces."""
+"""Fileman MCP surfaces."""

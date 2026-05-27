@@ -8,12 +8,12 @@ const mocks = vi.hoisted(() => ({
   listJobs: vi.fn(async () => []),
   getRuntimeSettings: vi.fn(async () => ({
     workspace_root: '/tmp/workspace',
-    runtime_env_path: '/tmp/workspace/.fileorganize/env/runtime.env',
+    runtime_env_path: '/tmp/workspace/.fileman/env/runtime.env',
     input_root: '/tmp/workspace/data/raw',
     output_root: '/tmp/workspace/data/organized',
     allowed_root: '/tmp/workspace/data/raw,/tmp/workspace/data/organized',
-    manifest_root: '/tmp/workspace/.fileorganize/manifests',
-    artifact_root: '/tmp/workspace/.fileorganize/artifacts',
+    manifest_root: '/tmp/workspace/.fileman/manifests',
+    artifact_root: '/tmp/workspace/.fileman/artifacts',
     has_api_key: true,
     api_key_masked: '***',
     api_key_source: 'env', // pragma: allowlist secret
@@ -71,9 +71,9 @@ describe('App routes', () => {
         { timeout: 5000 },
       ),
     ).toBeInTheDocument()
-    expect(document.title).toBe('Fileorganize | Review-first local organizer')
+    expect(document.title).toBe('Fileman | Review-first local organizer')
     expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toContain('review-first local file organizer')
-    expect(document.querySelector('meta[property="og:title"]')?.getAttribute('content')).toBe('Fileorganize | Review-first local organizer')
+    expect(document.querySelector('meta[property="og:title"]')?.getAttribute('content')).toBe('Fileman | Review-first local organizer')
     expect(screen.getByRole('heading', { name: 'Agent & Builder Surfaces' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Main path' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Codex route' })).toHaveAttribute(

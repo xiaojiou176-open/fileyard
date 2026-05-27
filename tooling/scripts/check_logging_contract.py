@@ -30,8 +30,8 @@ def _load_yaml(path: Path) -> dict:
 
 
 def _validate_runtime_behavior(root: Path, schema: dict, gate_run_id: str, gate_name: str) -> list[str]:
-    temp_root = Path(tempfile.mkdtemp(prefix="fileorganize-logging-contract-"))
-    os.environ["FILEORGANIZE_RUN_BUNDLE_ROOT"] = str(temp_root / "runs")
+    temp_root = Path(tempfile.mkdtemp(prefix="fileman-logging-contract-"))
+    os.environ["FILEMAN_RUN_BUNDLE_ROOT"] = str(temp_root / "runs")
     from packages.observability.logging_utils import log_event, setup_logger
     from packages.observability.run_bundle import finalize_run_bundle, initialize_run_bundle
 

@@ -262,7 +262,7 @@ def test_helpers_build_destination_truncates_filename(tmp_path: Path):
 
 def test_helpers_recover_apply_wal_value_error_and_preserve_rollback_partial(tmp_path: Path):
     wal = tmp_path / "a.wal.json"
-    wal.write_text('{"phase":"fileorganizeng"}', encoding="utf-8")
+    wal.write_text('{"phase":"moving"}', encoding="utf-8")
     partial = tmp_path / "manifest.partial"
     out_manifest = tmp_path / "manifest.jsonl"
     rollback_partial = tmp_path / "rollback.partial"
@@ -288,7 +288,7 @@ def test_helpers_recover_apply_wal_value_error_and_preserve_rollback_partial(tmp
             rollback_sig_key="rollback_sig",
         )
 
-    wal.write_text('{"phase":"fileorganizeng"}', encoding="utf-8")
+    wal.write_text('{"phase":"moving"}', encoding="utf-8")
     preserved_calls: list[Path] = []
     events: list[str] = []
 

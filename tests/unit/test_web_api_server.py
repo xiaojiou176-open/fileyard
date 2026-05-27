@@ -22,8 +22,8 @@ def test_web_api_server_main_uses_env(monkeypatch):
             }
         )
 
-    monkeypatch.setenv("FILEORGANIZE_WEB_API_HOST", "0.0.0.0")
-    monkeypatch.setenv("FILEORGANIZE_WEB_API_PORT", "19090")
+    monkeypatch.setenv("FILEMAN_WEB_API_HOST", "0.0.0.0")
+    monkeypatch.setenv("FILEMAN_WEB_API_PORT", "19090")
     monkeypatch.setattr(web_api_server.uvicorn, "run", fake_run)
 
     web_api_server.main([])
@@ -51,8 +51,8 @@ def test_web_api_server_main_prefers_cli_args(monkeypatch):
             }
         )
 
-    monkeypatch.setenv("FILEORGANIZE_WEB_API_HOST", "127.0.0.5")
-    monkeypatch.setenv("FILEORGANIZE_WEB_API_PORT", "19555")
+    monkeypatch.setenv("FILEMAN_WEB_API_HOST", "127.0.0.5")
+    monkeypatch.setenv("FILEMAN_WEB_API_PORT", "19555")
     monkeypatch.setattr(web_api_server.uvicorn, "run", fake_run)
 
     web_api_server.main(["--host", "0.0.0.0", "--port", "19091", "--log-level", "warning", "--reload"])
@@ -95,9 +95,9 @@ def test_web_api_server_module_main_branch(monkeypatch):
         called["log_level"] = log_level
 
     monkeypatch.setattr(web_api_server.uvicorn, "run", fake_run)
-    monkeypatch.setenv("FILEORGANIZE_WEB_API_HOST", "127.0.0.9")
-    monkeypatch.setenv("FILEORGANIZE_WEB_API_PORT", "19191")
-    monkeypatch.setattr(sys, "argv", ["fileorganize-web-api"])
+    monkeypatch.setenv("FILEMAN_WEB_API_HOST", "127.0.0.9")
+    monkeypatch.setenv("FILEMAN_WEB_API_PORT", "19191")
+    monkeypatch.setattr(sys, "argv", ["fileman-web-api"])
     sys.modules.pop("apps.api.web_api_server", None)
 
     runpy.run_module("apps.api.web_api_server", run_name="__main__")

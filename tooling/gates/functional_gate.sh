@@ -18,7 +18,7 @@ RUNTIME_CI_DIR="$(governance_runtime_ci_path "$REPO_ROOT")"
 # Functional gate is a targeted critical-smoke sibling to quality_gate/pre-push.
 # Full non-live e2e/integration truth lives in quality_gate; this script keeps a
 # smaller, high-signal regression set with heartbeat-friendly logs.
-if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ] && [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
+if [ "${FILEMAN_IN_CONTAINER:-0}" != "1" ] && [ "${FILEMAN_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
   exec bash "$ROOT/scripts/container_exec.sh" --label functional-gate -- bash tooling/gates/functional_gate.sh "$@"
 fi
 

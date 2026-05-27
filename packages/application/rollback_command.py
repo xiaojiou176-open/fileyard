@@ -72,11 +72,11 @@ def cmd_rollback(args: argparse.Namespace) -> None:
             logger,
             logging.ERROR,
             "rollback_integrity_key_required",
-            "strict_integrity=true requires FILEORGANIZE_ROLLBACK_HMAC_KEY",
+            "strict_integrity=true requires FILEMAN_ROLLBACK_HMAC_KEY",
             run_id=run_id,
             error_code=ErrorCode.INPUT_ROOT_INVALID.value,
         )
-        raise SystemExit("strict_integrity=true requires FILEORGANIZE_ROLLBACK_HMAC_KEY")
+        raise SystemExit("strict_integrity=true requires FILEMAN_ROLLBACK_HMAC_KEY")
     stats = process_rollback_rows(
         rows,
         args=args,

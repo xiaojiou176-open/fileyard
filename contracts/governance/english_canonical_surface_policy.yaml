@@ -6,7 +6,7 @@ notes:
 targets:
   - path: README.md
     required_substrings:
-      - "# Fileorganize"
+      - "# Fileman"
       - "## Minimal Truth Routes"
     forbidden_regex:
       - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
@@ -26,7 +26,7 @@ targets:
       - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
   - path: docs/usage.md
     required_substrings:
-      - "# Fileorganize Detailed Operator Guide"
+      - "# Fileman Detailed Operator Guide"
       - "This file is the detailed operator guide."
     forbidden_regex:
       - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"

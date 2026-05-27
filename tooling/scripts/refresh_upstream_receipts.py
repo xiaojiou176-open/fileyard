@@ -51,7 +51,7 @@ def _default_bundle_candidates(repo_root: Path) -> list[Path]:
 
 
 def _apply_runtime_hygiene() -> None:
-    pycache_prefix = str(Path(os.environ.get("PYTHONPYCACHEPREFIX", "~/.cache/fileorganize/pycache")).expanduser())
+    pycache_prefix = str(Path(os.environ.get("PYTHONPYCACHEPREFIX", "~/.cache/fileman/pycache")).expanduser())
     Path(pycache_prefix).mkdir(parents=True, exist_ok=True)
     os.environ.setdefault("PYTHONDONTWRITEBYTECODE", "1")
     os.environ.setdefault("PYTHONPYCACHEPREFIX", pycache_prefix)

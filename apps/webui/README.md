@@ -1,6 +1,6 @@
-# Fileorganize WebUI
+# Fileman WebUI
 
-Web front-end for Fileorganize, built with React + TypeScript + Vite.
+Web front-end for Fileman, built with React + TypeScript + Vite.
 
 ## Product Flow
 

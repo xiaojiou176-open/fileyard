@@ -8,7 +8,7 @@ import pytest
 
 from packages.infrastructure.gemini_client import build_client, call_gemini_text_with_retry
 
-LIVE_FLAG = "FILEORGANIZE_RUN_LIVE_TESTS"
+LIVE_FLAG = "FILEMAN_RUN_LIVE_TESTS"
 LIVE_MAX_RETRIES = 2
 _MODEL_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{1,127}$")
 _PLACEHOLDER_TOKEN_RE = re.compile(
@@ -22,8 +22,8 @@ def _repo_root() -> Path:
 
 
 def _read_runtime_env_value(name: str) -> str:
-    workspace_root = Path(os.getenv("FILEORGANIZE_WORKSPACE_ROOT", "~/.fileorganize/workspaces/default")).expanduser()
-    env_path = workspace_root / ".fileorganize" / "env" / "runtime.env"
+    workspace_root = Path(os.getenv("FILEMAN_WORKSPACE_ROOT", "~/.fileman/workspaces/default")).expanduser()
+    env_path = workspace_root / ".fileman" / "env" / "runtime.env"
     if not env_path.exists():
         return ""
     for raw_line in env_path.read_text(encoding="utf-8").splitlines():

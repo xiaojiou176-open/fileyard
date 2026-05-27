@@ -17,12 +17,12 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from apps.mcp.service import FileorganizeMcpApiFacade  # noqa: E402
+from apps.mcp.service import FilemanMcpApiFacade  # noqa: E402
 
-MCP_NAME = "Fileorganize MCP"
+MCP_NAME = "Fileman MCP"
 MCP_VERSION = "1.0.0"
 MCP_INSTRUCTIONS = (
-    "Fileorganize MCP is a local-first, review-first facade over the Fileorganize workbench. "
+    "Fileman MCP is a local-first, review-first facade over the Fileman workbench. "
     "Use it to inspect jobs, review queues, manifests, reports, strategy packs, "
     "watch sources, and to apply safe overlay-only edits or dry-run apply previews. "
     "Do not expect direct file-mutation shortcuts or bypasses around review."
@@ -37,18 +37,18 @@ def _safe_write_annotations(title: str) -> ToolAnnotations:
     return ToolAnnotations(title=title, readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=False)
 
 
-def create_mcp_server(api: FileorganizeMcpApiFacade | None = None) -> FastMCP:
-    facade = api or FileorganizeMcpApiFacade()
+def create_mcp_server(api: FilemanMcpApiFacade | None = None) -> FastMCP:
+    facade = api or FilemanMcpApiFacade()
     mcp = FastMCP(
         MCP_NAME,
         instructions=MCP_INSTRUCTIONS,
         json_response=True,
-        log_level=os.environ.get("FILEORGANIZE_MCP_LOG_LEVEL", "INFO"),
+        log_level=os.environ.get("FILEMAN_MCP_LOG_LEVEL", "INFO"),
     )
 
     @mcp.tool(
         name="jobs.list",
-        description="List current Fileorganize jobs from the local workspace job store.",
+        description="List current Fileman jobs from the local workspace job store.",
         annotations=_read_only_annotations("List jobs"),
     )
     def list_jobs() -> dict[str, Any]:
@@ -58,7 +58,7 @@ def create_mcp_server(api: FileorganizeMcpApiFacade | None = None) -> FastMCP:
 
     @mcp.tool(
         name="jobs.get",
-        description="Get one Fileorganize job by id.",
+        description="Get one Fileman job by id.",
         annotations=_read_only_annotations("Get job"),
     )
     def get_job(job_id: str) -> dict[str, Any]:
@@ -262,9 +262,9 @@ def create_mcp_server(api: FileorganizeMcpApiFacade | None = None) -> FastMCP:
         )
 
     @mcp.resource(
-        "fileorganize://workflow/safety-boundary",
+        "fileman://workflow/safety-boundary",
         name="workflow-safety-boundary",
-        title="Fileorganize safety boundary",
+        title="Fileman safety boundary",
         description="Human-readable summary of the review-first and dry-run guardrails.",
         mime_type="text/markdown",
     )
@@ -272,9 +272,9 @@ def create_mcp_server(api: FileorganizeMcpApiFacade | None = None) -> FastMCP:
         return facade.get_safety_boundary_text()
 
     @mcp.resource(
-        "fileorganize://workflow/tool-matrix",
+        "fileman://workflow/tool-matrix",
         name="workflow-tool-matrix",
-        title="Fileorganize MCP tool matrix",
+        title="Fileman MCP tool matrix",
         description="Machine-readable list of MCP v1 tools and their underlying safety class.",
         mime_type="application/json",
     )
@@ -282,7 +282,7 @@ def create_mcp_server(api: FileorganizeMcpApiFacade | None = None) -> FastMCP:
         return json.dumps(facade.get_tool_matrix(), ensure_ascii=False, indent=2)
 
     @mcp.resource(
-        "fileorganize://jobs/{job_id}/review-queue",
+        "fileman://jobs/{job_id}/review-queue",
         name="job-review-queue",
         title="Review queue resource",
         description="Read-only review queue snapshot for one job.",
@@ -292,7 +292,7 @@ def create_mcp_server(api: FileorganizeMcpApiFacade | None = None) -> FastMCP:
         return facade.get_review_queue_resource(job_id)
 
     @mcp.resource(
-        "fileorganize://jobs/{job_id}/manifest-view",
+        "fileman://jobs/{job_id}/manifest-view",
         name="job-manifest-view",
         title="Manifest view resource",
         description="Read-only manifest view snapshot for one job.",
@@ -302,7 +302,7 @@ def create_mcp_server(api: FileorganizeMcpApiFacade | None = None) -> FastMCP:
         return facade.get_manifest_resource(job_id)
 
     @mcp.resource(
-        "fileorganize://jobs/{job_id}/report",
+        "fileman://jobs/{job_id}/report",
         name="job-report",
         title="Report resource",
         description="Read-only report snapshot for one job.",
@@ -312,10 +312,10 @@ def create_mcp_server(api: FileorganizeMcpApiFacade | None = None) -> FastMCP:
         return facade.get_report_resource(job_id)
 
     @mcp.resource(
-        "fileorganize://docs/{doc_id}",
-        name="fileorganize-docs",
-        title="Fileorganize docs resource",
-        description="Read an allowlisted public Fileorganize document for agent/developer context.",
+        "fileman://docs/{doc_id}",
+        name="fileman-docs",
+        title="Fileman docs resource",
+        description="Read an allowlisted public Fileman document for agent/developer context.",
         mime_type="text/markdown",
     )
     def docs_resource(doc_id: str) -> str:
@@ -336,11 +336,11 @@ def create_mcp_server(api: FileorganizeMcpApiFacade | None = None) -> FastMCP:
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run the Fileorganize MCP stdio server.")
+    parser = argparse.ArgumentParser(description="Run the Fileman MCP stdio server.")
     parser.add_argument(
         "--transport",
         choices=("stdio",),
-        default=os.environ.get("FILEORGANIZE_MCP_TRANSPORT", "stdio"),
+        default=os.environ.get("FILEMAN_MCP_TRANSPORT", "stdio"),
         help="Transport to use. v1 stays stdio-only for local-first clients.",
     )
     parser.add_argument(
@@ -355,7 +355,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--log-level",
-        default=os.environ.get("FILEORGANIZE_MCP_LOG_LEVEL", "INFO"),
+        default=os.environ.get("FILEMAN_MCP_LOG_LEVEL", "INFO"),
         help="Logging level. Logs stay on stderr so stdout remains reserved for the MCP protocol.",
     )
     return parser.parse_args(list(argv) if argv is not None else None)
@@ -364,7 +364,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 def main(argv: Sequence[str] | None = None) -> None:
     args = parse_args(argv)
     logging.basicConfig(level=getattr(logging, args.log_level.upper(), logging.INFO), stream=sys.stderr)
-    facade = FileorganizeMcpApiFacade().start()
+    facade = FilemanMcpApiFacade().start()
 
     try:
         if args.print_tools:
@@ -374,12 +374,12 @@ def main(argv: Sequence[str] | None = None) -> None:
 
         if args.print_resources:
             for uri in (
-                "fileorganize://workflow/safety-boundary",
-                "fileorganize://workflow/tool-matrix",
-                "fileorganize://jobs/{job_id}/review-queue",
-                "fileorganize://jobs/{job_id}/manifest-view",
-                "fileorganize://jobs/{job_id}/report",
-                "fileorganize://docs/{doc_id}",
+                "fileman://workflow/safety-boundary",
+                "fileman://workflow/tool-matrix",
+                "fileman://jobs/{job_id}/review-queue",
+                "fileman://jobs/{job_id}/manifest-view",
+                "fileman://jobs/{job_id}/report",
+                "fileman://docs/{doc_id}",
             ):
                 print(uri)
             return

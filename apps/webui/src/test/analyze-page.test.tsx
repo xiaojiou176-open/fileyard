@@ -12,8 +12,8 @@ const mocks = vi.hoisted(() => ({
     input_root: '/tmp/default-inbox',
     output_root: '/tmp/output',
     allowed_root: '/tmp',
-    manifest_root: '/tmp/workspace/.fileorganize/manifests',
-    artifact_root: '/tmp/workspace/.fileorganize/artifacts',
+    manifest_root: '/tmp/workspace/.fileman/manifests',
+    artifact_root: '/tmp/workspace/.fileman/artifacts',
     has_api_key: true,
     api_key_masked: '***',
     api_key_source: 'env', // pragma: allowlist secret
@@ -79,13 +79,13 @@ describe('AnalyzePage', () => {
       </MemoryRouter>,
     )
 
-    expect(await screen.findByText('Handoff from Fileorganize Inbox')).toBeInTheDocument()
+    expect(await screen.findByText('Handoff from Fileman Inbox')).toBeInTheDocument()
     expect(screen.getByDisplayValue('/tmp/inbox')).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByText('Optimized for trip photos and short travel documents.')).toBeInTheDocument()
-    expect(screen.getByText(/the pack shapes how Fileorganize drafts the first pass/i)).toBeInTheDocument()
+    expect(screen.getByText(/the pack shapes how Fileman drafts the first pass/i)).toBeInTheDocument()
   })
 
   it('resumes an inbox-launched analyze job when jobId is present in the URL', async () => {

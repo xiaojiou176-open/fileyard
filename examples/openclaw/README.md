@@ -1,14 +1,14 @@
-# Fileorganize For OpenClaw / ClawHub
+# Fileman For OpenClaw / ClawHub
 
 Status: `ClawHub listed_live (current page still shows suspicious.vt_suspicious); no official OpenClaw catalog approval claimed`
 
-This page is the OpenClaw-facing integration note for Fileorganize.
+This page is the OpenClaw-facing integration note for Fileman.
 
-The canonical public root for Fileorganize still lives at `../../README.md` plus
+The canonical public root for Fileman still lives at `../../README.md` plus
 `../../manifest.yaml`. This page is a host-specific supporting bundle, not the
 repo storefront.
 
-The canonical public root for Fileorganize still lives at `../../README.md` plus
+The canonical public root for Fileman still lives at `../../README.md` plus
 `../../manifest.yaml`. This page is a host-specific supporting bundle, not the
 repo storefront.
 

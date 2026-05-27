@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 
 import pytest
 
-LIVE_FLAG = "FILEORGANIZE_RUN_LIVE_TESTS"
+LIVE_FLAG = "FILEMAN_RUN_LIVE_TESTS"
 LIVE_MAX_RETRIES = 2
 LIVE_BROWSER_GOTO_TIMEOUT_MS = int(os.getenv("LIVE_BROWSER_GOTO_TIMEOUT_MS", "60000"))
 DEFAULT_LIVE_TEST_URL = "https://docs.github.com/en"
@@ -26,8 +26,8 @@ def _repo_root() -> Path:
 
 
 def _read_runtime_env_value(name: str) -> str:
-    workspace_root = Path(os.getenv("FILEORGANIZE_WORKSPACE_ROOT", "~/.fileorganize/workspaces/default")).expanduser()
-    env_path = workspace_root / ".fileorganize" / "env" / "runtime.env"
+    workspace_root = Path(os.getenv("FILEMAN_WORKSPACE_ROOT", "~/.fileman/workspaces/default")).expanduser()
+    env_path = workspace_root / ".fileman" / "env" / "runtime.env"
     if not env_path.exists():
         return ""
     for raw_line in env_path.read_text(encoding="utf-8").splitlines():
@@ -62,7 +62,7 @@ def _is_live_enabled() -> bool:
 
 @pytest.fixture(autouse=True)
 def _restore_live_env_vars():
-    keys = (LIVE_FLAG, "FILEORGANIZE_LIVE_TEST_URL")
+    keys = (LIVE_FLAG, "FILEMAN_LIVE_TEST_URL")
     snapshot = {key: os.environ.get(key) for key in keys}
     yield
     for key, value in snapshot.items():
@@ -88,15 +88,15 @@ def _host_is_real_external(host: str) -> bool:
 
 
 def _live_browser_url() -> str:
-    url = resolve_live_var("FILEORGANIZE_LIVE_TEST_URL", DEFAULT_LIVE_TEST_URL).strip()
+    url = resolve_live_var("FILEMAN_LIVE_TEST_URL", DEFAULT_LIVE_TEST_URL).strip()
     if not url:
-        pytest.fail("live_browser preflight failed: FILEORGANIZE_LIVE_TEST_URL is required and must point to a real external site")
+        pytest.fail("live_browser preflight failed: FILEMAN_LIVE_TEST_URL is required and must point to a real external site")
     parsed = urlparse(url)
     host = parsed.hostname or ""
     if parsed.scheme != "https" or not parsed.netloc:
-        pytest.fail(f"live_browser preflight failed: FILEORGANIZE_LIVE_TEST_URL must be an absolute https URL, got {url!r}")
+        pytest.fail(f"live_browser preflight failed: FILEMAN_LIVE_TEST_URL must be an absolute https URL, got {url!r}")
     if not _host_is_real_external(host):
-        pytest.fail(f"live_browser preflight failed: FILEORGANIZE_LIVE_TEST_URL must target a real external host, got host={host!r}")
+        pytest.fail(f"live_browser preflight failed: FILEMAN_LIVE_TEST_URL must target a real external host, got host={host!r}")
     return url
 
 

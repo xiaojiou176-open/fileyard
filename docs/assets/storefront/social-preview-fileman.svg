@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="Fileyard social preview showing a local-first manifest-driven file organizer with review before apply">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="Fileman social preview showing a local-first manifest-driven file organizer with review before apply">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#132030" />
@@ -25,7 +25,7 @@
     <circle cx="60" cy="65" r="9" fill="#8fd3b6" />
   </g>
 
-  <text x="190" y="122" font-family="Arial, Helvetica, sans-serif" font-size="60" font-weight="700" fill="#f2f5f7">Fileyard</text>
+  <text x="190" y="122" font-family="Arial, Helvetica, sans-serif" font-size="60" font-weight="700" fill="#f2f5f7">Fileman</text>
   <text x="190" y="176" font-family="Arial, Helvetica, sans-serif" font-size="27" fill="#d8e7ef">Manifest-driven file organization with local review before apply.</text>
   <text x="190" y="214" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#9fc2d4">Messy folders in. Safe plans, organized output, and rollback-ready moves out.</text>
 

@@ -14,7 +14,7 @@ def test_run_analyze_script_empty_dir(tmp_path: Path):
     env = os.environ.copy()
     env["GEMINI_API_KEY"] = "dummy"
     env["GEMINI_MODEL"] = "gemini-3-flash-preview"
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
 
     cmd = [str(run_analyze), "--input", str(input_dir), "--manifest", str(manifest)]
     subprocess.run(cmd, check=True, cwd=str(script_root), env=env)

@@ -77,7 +77,7 @@ describe('ConflictPage', () => {
   })
 
   it('renders localized conflict controls when locale switches to zh-CN', async () => {
-    window.localStorage.setItem('fileorganize.locale', 'zh-CN')
+    window.localStorage.setItem('fileman.locale', 'zh-CN')
 
     renderConflictPage()
 

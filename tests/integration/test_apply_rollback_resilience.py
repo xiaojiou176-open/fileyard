@@ -28,7 +28,7 @@ def _prepare_offline_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -
     _run_cli(
         monkeypatch,
         [
-            "fileorganize",
+            "fileman",
             "analyze",
             "--input",
             str(input_dir),
@@ -52,7 +52,7 @@ def test_apply_trusted_manifest_root_allowlist_boundary(monkeypatch: pytest.Monk
     _run_cli(
         monkeypatch,
         [
-            "fileorganize",
+            "fileman",
             "apply",
             "--manifest",
             str(manifest_path),
@@ -83,7 +83,7 @@ def test_rollback_strict_integrity_requires_hmac_key(monkeypatch: pytest.MonkeyP
     _run_cli(
         monkeypatch,
         [
-            "fileorganize",
+            "fileman",
             "apply",
             "--manifest",
             str(manifest_path),
@@ -103,13 +103,13 @@ def test_rollback_strict_integrity_requires_hmac_key(monkeypatch: pytest.MonkeyP
     moved_path = Path(rows[0]["new_path"])
     assert moved_path.exists()
     assert rollback_manifest.exists()
-    monkeypatch.delenv("FILEORGANIZE_ROLLBACK_HMAC_KEY", raising=False)
+    monkeypatch.delenv("FILEMAN_ROLLBACK_HMAC_KEY", raising=False)
 
-    with pytest.raises(SystemExit, match="strict_integrity=true requires FILEORGANIZE_ROLLBACK_HMAC_KEY"):
+    with pytest.raises(SystemExit, match="strict_integrity=true requires FILEMAN_ROLLBACK_HMAC_KEY"):
         _run_cli(
             monkeypatch,
             [
-                "fileorganize",
+                "fileman",
                 "rollback",
                 "--manifest",
                 str(rollback_manifest),
@@ -128,13 +128,13 @@ def test_apply_crash_then_resume_recovers_rollback_manifest(monkeypatch: pytest.
     wal_path = Path(str(manifest_path) + ".apply.wal.json")
     rollback_manifest = Path(str(manifest_path) + ".rollback.jsonl")
 
-    monkeypatch.setenv("FILEORGANIZE_ENABLE_TEST_HOOKS", "1")
-    monkeypatch.setenv("FILEORGANIZE_APPLY_CRASH_AT", "after_manifest_before_rollback_commit")
+    monkeypatch.setenv("FILEMAN_ENABLE_TEST_HOOKS", "1")
+    monkeypatch.setenv("FILEMAN_APPLY_CRASH_AT", "after_manifest_before_rollback_commit")
     with pytest.raises(RuntimeError, match="Crash injected at after_manifest_before_rollback_commit"):
         _run_cli(
             monkeypatch,
             [
-                "fileorganize",
+                "fileman",
                 "apply",
                 "--manifest",
                 str(manifest_path),
@@ -148,12 +148,12 @@ def test_apply_crash_then_resume_recovers_rollback_manifest(monkeypatch: pytest.
         )
 
     assert wal_path.exists()
-    monkeypatch.delenv("FILEORGANIZE_APPLY_CRASH_AT", raising=False)
+    monkeypatch.delenv("FILEMAN_APPLY_CRASH_AT", raising=False)
 
     _run_cli(
         monkeypatch,
         [
-            "fileorganize",
+            "fileman",
             "apply",
             "--manifest",
             str(manifest_path),

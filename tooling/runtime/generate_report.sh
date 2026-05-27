@@ -20,7 +20,7 @@ apply_runtime_env_defaults "$REPO_ROOT"
 VENV="$(governance_runtime_venv_path "$REPO_ROOT")"
 IFS='|' read -r ALLOW_EXTERNAL ALLOW_EXTERNAL_SOURCE \
   <<< "$(resolve_allow_external_with_source "0")"
-export FILEORGANIZE_ALLOW_EXTERNAL="$ALLOW_EXTERNAL"
+export FILEMAN_ALLOW_EXTERNAL="$ALLOW_EXTERNAL"
 
 if [ -z "$MANIFEST" ]; then
   MANIFEST="$(governance_manifest_root_path "$REPO_ROOT")/manifest.jsonl"
@@ -65,8 +65,8 @@ assert_in_repo_preflight() {
   case "$path" in
     "$REPO_ROOT"|\
     "$REPO_ROOT"/*|\
-    "$FILEORGANIZE_WORKSPACE_ROOT"|\
-    "$FILEORGANIZE_WORKSPACE_ROOT"/*) ;;
+    "$FILEMAN_WORKSPACE_ROOT"|\
+    "$FILEMAN_WORKSPACE_ROOT"/*) ;;
     *)
       if [ "$ALLOW_EXTERNAL" != "1" ]; then
         echo "path must be inside repository: $path" >&2
@@ -81,10 +81,10 @@ OUT="$(normalize_host_path "$OUT")"
 assert_in_repo_preflight "$MANIFEST"
 assert_in_repo_preflight "$OUT"
 
-if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ] && [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
+if [ "${FILEMAN_IN_CONTAINER:-0}" != "1" ] && [ "${FILEMAN_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
   if [ "$ALLOW_EXTERNAL" = "1" ]; then
     echo "==> generate_report external-path mode: forcing host execution"
-    exec env FILEORGANIZE_ALLOW_HOST_EXECUTION=1 bash "$ROOT/runtime/generate_report.sh" "${ORIGINAL_ARGS[@]}"
+    exec env FILEMAN_ALLOW_HOST_EXECUTION=1 bash "$ROOT/runtime/generate_report.sh" "${ORIGINAL_ARGS[@]}"
   fi
   exec bash "$ROOT/scripts/container_exec.sh" --label generate-report -- bash tooling/runtime/generate_report.sh "${ORIGINAL_ARGS[@]}"
 fi
@@ -113,8 +113,8 @@ assert_in_repo() {
   case "$path" in
     "$REPO_ROOT"|\
     "$REPO_ROOT"/*|\
-    "$FILEORGANIZE_WORKSPACE_ROOT"|\
-    "$FILEORGANIZE_WORKSPACE_ROOT"/*) ;;
+    "$FILEMAN_WORKSPACE_ROOT"|\
+    "$FILEMAN_WORKSPACE_ROOT"/*) ;;
     *)
       if [ "$ALLOW_EXTERNAL" != "1" ]; then
         echo "path must be inside repository: $path" >&2

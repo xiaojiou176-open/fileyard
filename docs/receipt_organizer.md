@@ -1,13 +1,13 @@
 ---
-title: Receipt Organizer With Manifest Review And Rollback-Ready Recovery | Fileorganize
+title: Receipt Organizer With Manifest Review And Rollback-Ready Recovery | Fileman
 description: Organize receipts locally with manifest review, dry-run apply, and rollback-ready recovery instead of zero-review automation.
 ---
 
 ## Receipt Organizer With Manifest Review And Rollback-Ready Recovery
 
-Receipts are repetitive enough that AI help is valuable, but important enough that mistakes are expensive. That is exactly the kind of workflow Fileorganize is built for.
+Receipts are repetitive enough that AI help is valuable, but important enough that mistakes are expensive. That is exactly the kind of workflow Fileman is built for.
 
-## Why Fileorganize Fits Receipt Batches
+## Why Fileman Fits Receipt Batches
 
 - AI can draft categories and target paths before anything moves
 - Strategy Packs can preload receipt-friendly analyze defaults
@@ -29,5 +29,5 @@ Receipts are repetitive enough that AI help is valuable, but important enough th
 ## Best Next Steps
 
 - [README.md](../README.md)
-- [Fileorganize Inbox](../README.md#browser-surface)
-- [Fileorganize MCP v1](./mcp.md)
+- [Fileman Inbox](../README.md#browser-surface)
+- [Fileman MCP v1](./mcp.md)

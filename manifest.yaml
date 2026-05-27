@@ -1,9 +1,9 @@
 version: 1
-id: fileorganize
-technical_name: Fileorganize
+id: fileman
+technical_name: Fileman
 status: listed_live
-canonical_repo: xiaojiou176-open/fileorganize
-homepage: https://xiaojiou176-open.github.io/fileorganize/
+canonical_repo: xiaojiou176-open/fileman
+homepage: https://xiaojiou176-open.github.io/fileman/
 current_release: v4.0.5
 published_surfaces:
   - github-repo

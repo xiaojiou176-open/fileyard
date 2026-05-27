@@ -25,18 +25,18 @@ def test_clean_cache_script(tmp_path: Path):
     assert (tmp_path / ".runtime-cache" / "logs").exists()
 
 
-def test_reset_workspace_state_recreates_fileorganize_dir(tmp_path: Path):
+def test_reset_workspace_state_recreates_fileman_dir(tmp_path: Path):
     script_root = _script_root()
     script = script_root / "tooling" / "runtime" / "reset_workspace_state.sh"
 
     workspace = tmp_path / "workspace"
-    fileorganize_runs = workspace / ".fileorganize" / "runs"
-    fileorganize_runs.mkdir(parents=True)
+    fileman_runs = workspace / ".fileman" / "runs"
+    fileman_runs.mkdir(parents=True)
     env = os.environ.copy()
-    env["FILEORGANIZE_WORKSPACE_ROOT"] = str(workspace)
+    env["FILEMAN_WORKSPACE_ROOT"] = str(workspace)
 
     subprocess.run([str(script)], cwd=str(script_root), env=env, check=True)
-    assert (workspace / ".fileorganize").exists()
+    assert (workspace / ".fileman").exists()
 
 
 def test_prune_repo_runtime_does_not_touch_machine_cache_or_workspace(tmp_path: Path):
@@ -48,15 +48,15 @@ def test_prune_repo_runtime_does_not_touch_machine_cache_or_workspace(tmp_path: 
     machine_cache = tmp_path / "machine-cache"
     workspace = tmp_path / "workspace"
     (machine_cache / "pycache").mkdir(parents=True)
-    (workspace / ".fileorganize" / "runs").mkdir(parents=True)
+    (workspace / ".fileman" / "runs").mkdir(parents=True)
     (machine_cache / "pycache" / "marker.pyc").write_text("x", encoding="utf-8")
-    (workspace / ".fileorganize" / "runs" / "marker.txt").write_text("x", encoding="utf-8")
+    (workspace / ".fileman" / "runs" / "marker.txt").write_text("x", encoding="utf-8")
 
     subprocess.run(["bash", str(script), str(repo)], check=True, cwd=str(repo))
 
     assert not (repo / ".runtime-cache" / "tmp" / "case" / "x.txt").exists()
     assert (machine_cache / "pycache" / "marker.pyc").exists()
-    assert (workspace / ".fileorganize" / "runs" / "marker.txt").exists()
+    assert (workspace / ".fileman" / "runs" / "marker.txt").exists()
 
 
 def test_runtime_reset_requires_confirmation(tmp_path: Path):
@@ -88,7 +88,7 @@ def test_prune_machine_cache_safe_and_rebuildable_modes(tmp_path: Path):
     env["NPM_CONFIG_CACHE"] = str(npm_cache)
     env["PLAYWRIGHT_BROWSERS_PATH"] = str(playwright)
     env["XDG_CACHE_HOME"] = str(tmp_path / "machine" / "xdg")
-    env["FILEORGANIZE_VENV_DIR"] = str(venv)
+    env["FILEMAN_VENV_DIR"] = str(venv)
 
     subprocess.run(["bash", str(script), "--safe"], cwd=str(script_root), env=env, check=True)
     assert not pycache.exists()
@@ -134,7 +134,7 @@ def test_prune_machine_cache_aggressive_host_removes_venv(tmp_path: Path):
     env["NPM_CONFIG_CACHE"] = str(npm_cache)
     env["PLAYWRIGHT_BROWSERS_PATH"] = str(playwright)
     env["XDG_CACHE_HOME"] = str(tmp_path / "machine" / "xdg")
-    env["FILEORGANIZE_VENV_DIR"] = str(venv)
+    env["FILEMAN_VENV_DIR"] = str(venv)
 
     subprocess.run(["bash", str(script), "--aggressive-host"], cwd=str(script_root), env=env, check=True)
     assert not pycache.exists()
@@ -156,7 +156,7 @@ def test_prune_machine_cache_dry_run_does_not_create_missing_targets(tmp_path: P
     env["NPM_CONFIG_CACHE"] = str(machine / "npm")
     env["PLAYWRIGHT_BROWSERS_PATH"] = str(machine / "playwright")
     env["XDG_CACHE_HOME"] = str(machine / "xdg")
-    env["FILEORGANIZE_VENV_DIR"] = str(machine / "venv" / "default")
+    env["FILEMAN_VENV_DIR"] = str(machine / "venv" / "default")
 
     subprocess.run(["bash", str(script), "--rebuildable", "--dry-run"], cwd=str(script_root), env=env, check=True)
 
@@ -173,9 +173,9 @@ def test_prune_workspace_runtime_preserves_manifests_and_preferences(tmp_path: P
     script = script_root / "tooling" / "cleanup" / "prune_workspace_runtime.sh"
 
     workspace = tmp_path / "workspace"
-    runs_root = workspace / ".fileorganize" / "runs"
-    artifact_root = workspace / ".fileorganize" / "artifacts"
-    manifest_root = workspace / ".fileorganize" / "manifests"
+    runs_root = workspace / ".fileman" / "runs"
+    artifact_root = workspace / ".fileman" / "artifacts"
+    manifest_root = workspace / ".fileman" / "manifests"
     manifest_root.mkdir(parents=True)
     (manifest_root / "keep.jsonl").write_text("{}\n", encoding="utf-8")
 
@@ -213,9 +213,9 @@ def test_prune_workspace_runtime_preserves_manifests_and_preferences(tmp_path: P
         os.utime(path, (now - age, now - age))
 
     env = os.environ.copy()
-    env["FILEORGANIZE_RUN_BUNDLE_ROOT"] = str(runs_root)
-    env["FILEORGANIZE_ARTIFACT_ROOT"] = str(artifact_root)
-    env["FILEORGANIZE_MANIFEST_ROOT"] = str(manifest_root)
+    env["FILEMAN_RUN_BUNDLE_ROOT"] = str(runs_root)
+    env["FILEMAN_ARTIFACT_ROOT"] = str(artifact_root)
+    env["FILEMAN_MANIFEST_ROOT"] = str(manifest_root)
 
     subprocess.run(["bash", str(script)], cwd=str(script_root), env=env, check=True)
 
@@ -232,9 +232,9 @@ def test_prune_workspace_runtime_keeps_newest_runs_by_mtime_not_name(tmp_path: P
     script = script_root / "tooling" / "cleanup" / "prune_workspace_runtime.sh"
 
     workspace = tmp_path / "workspace"
-    runs_root = workspace / ".fileorganize" / "runs"
-    artifact_root = workspace / ".fileorganize" / "artifacts"
-    manifest_root = workspace / ".fileorganize" / "manifests"
+    runs_root = workspace / ".fileman" / "runs"
+    artifact_root = workspace / ".fileman" / "artifacts"
+    manifest_root = workspace / ".fileman" / "manifests"
     manifest_root.mkdir(parents=True)
 
     names = ["aaa-oldest"] + [f"slot-{idx:02d}" for idx in range(50)] + ["zzz-newest"]
@@ -247,9 +247,9 @@ def test_prune_workspace_runtime_keeps_newest_runs_by_mtime_not_name(tmp_path: P
         os.utime(run_dir, (ts, ts))
 
     env = os.environ.copy()
-    env["FILEORGANIZE_RUN_BUNDLE_ROOT"] = str(runs_root)
-    env["FILEORGANIZE_ARTIFACT_ROOT"] = str(artifact_root)
-    env["FILEORGANIZE_MANIFEST_ROOT"] = str(manifest_root)
+    env["FILEMAN_RUN_BUNDLE_ROOT"] = str(runs_root)
+    env["FILEMAN_ARTIFACT_ROOT"] = str(artifact_root)
+    env["FILEMAN_MANIFEST_ROOT"] = str(manifest_root)
 
     subprocess.run(["bash", str(script)], cwd=str(script_root), env=env, check=True)
 
@@ -262,14 +262,14 @@ def test_prune_workspace_runtime_dry_run_does_not_create_missing_workspace_dirs(
     script = script_root / "tooling" / "cleanup" / "prune_workspace_runtime.sh"
 
     workspace = tmp_path / "workspace"
-    run_root = workspace / ".fileorganize" / "runs"
-    artifact_root = workspace / ".fileorganize" / "artifacts"
-    manifest_root = workspace / ".fileorganize" / "manifests"
+    run_root = workspace / ".fileman" / "runs"
+    artifact_root = workspace / ".fileman" / "artifacts"
+    manifest_root = workspace / ".fileman" / "manifests"
 
     env = os.environ.copy()
-    env["FILEORGANIZE_RUN_BUNDLE_ROOT"] = str(run_root)
-    env["FILEORGANIZE_ARTIFACT_ROOT"] = str(artifact_root)
-    env["FILEORGANIZE_MANIFEST_ROOT"] = str(manifest_root)
+    env["FILEMAN_RUN_BUNDLE_ROOT"] = str(run_root)
+    env["FILEMAN_ARTIFACT_ROOT"] = str(artifact_root)
+    env["FILEMAN_MANIFEST_ROOT"] = str(manifest_root)
 
     subprocess.run(["bash", str(script), "--dry-run"], cwd=str(script_root), env=env, check=True)
 
@@ -304,25 +304,25 @@ with log_path.open("a", encoding="utf-8") as handle:
         print(
             "Images space usage:\\n\\n"
         "REPOSITORY                     TAG      IMAGE ID       CREATED          SIZE      SHARED SIZE   UNIQUE SIZE   CONTAINERS\\n"
-        "fileorganize-ci                        local    abc123         1 hour ago       3.32GB    0B            3.323GB       0\\n\\n"
+        "fileman-ci                        local    abc123         1 hour ago       3.32GB    0B            3.323GB       0\\n\\n"
         "Containers space usage:\\n\\n"
         "CONTAINER ID   IMAGE   COMMAND   LOCAL VOLUMES   SIZE   CREATED   STATUS   NAMES\\n\\n"
         "Local Volumes space usage:\\n\\n"
         "VOLUME NAME                              LINKS     SIZE\\n"
-        "fileorganize-web-stack_fileorganize_playwright           0         972MB\\n"
-        "fileorganize-web-stack_fileorganize_venv                 0         401.6MB\\n"
-        "fileorganize-web-stack_fileorganize_webui_node_modules   0         0B\\n\\n"
+        "fileman-web-stack_fileman_playwright           0         972MB\\n"
+        "fileman-web-stack_fileman_venv                 0         401.6MB\\n"
+        "fileman-web-stack_fileman_webui_node_modules   0         0B\\n\\n"
         "Build cache usage: 188MB\\n"
         )
         raise SystemExit(0)
     if args == ["system", "df", "-v", "--format", "json"]:
         print(
-            '{{"Images":[{{"Repository":"fileorganize-ci","Tag":"local","UniqueSize":"3.323GB","Size":"3.32GB"}}],'
+            '{{"Images":[{{"Repository":"fileman-ci","Tag":"local","UniqueSize":"3.323GB","Size":"3.32GB"}}],'
             '"Containers":[],'
             '"Volumes":['
-            '{{"Name":"fileorganize-web-stack_fileorganize_playwright","Size":"972MB","Mountpoint":"/docker/playwright"}},'
-            '{{"Name":"fileorganize-web-stack_fileorganize_venv","Size":"401.6MB","Mountpoint":"/docker/venv"}},'
-            '{{"Name":"fileorganize-web-stack_fileorganize_webui_node_modules","Size":"0B","Mountpoint":"/docker/node_modules"}}'
+            '{{"Name":"fileman-web-stack_fileman_playwright","Size":"972MB","Mountpoint":"/docker/playwright"}},'
+            '{{"Name":"fileman-web-stack_fileman_venv","Size":"401.6MB","Mountpoint":"/docker/venv"}},'
+            '{{"Name":"fileman-web-stack_fileman_webui_node_modules","Size":"0B","Mountpoint":"/docker/node_modules"}}'
             '],'
             '"BuildCache":['
             '{{"Description":"[stage-1 6/8] COPY tooling/requirements.lock.txt '
@@ -330,12 +330,12 @@ with log_path.open("a", encoding="utf-8") as handle:
             ']}}'
         )
         raise SystemExit(0)
-if args[:3] == ["image", "inspect", "fileorganize-ci:local"]:
+if args[:3] == ["image", "inspect", "fileman-ci:local"]:
     print("884283278")
     raise SystemExit(0)
 if args[:2] == ["volume", "inspect"]:
     name = args[2]
-    print(f'{{"com.docker.compose.project":"fileorganize-web-stack"}} /tmp/{{name}}')
+    print(f'{{"com.docker.compose.project":"fileman-web-stack"}} /tmp/{{name}}')
     raise SystemExit(0)
 if args == ["buildx", "du", "--verbose"]:
     print(
@@ -379,16 +379,16 @@ raise SystemExit(1)
     )
     calls = log_path.read_text(encoding="utf-8")
     assert "buildx prune -f --all" in calls
-    assert "image rm -f fileorganize-ci:local" in calls
-    assert "volume rm -f fileorganize-web-stack_fileorganize_playwright" in calls
-    assert "volume rm -f fileorganize-web-stack_fileorganize_venv" in calls
-    assert "volume rm -f fileorganize-web-stack_fileorganize_webui_node_modules" in calls
+    assert "image rm -f fileman-ci:local" in calls
+    assert "volume rm -f fileman-web-stack_fileman_playwright" in calls
+    assert "volume rm -f fileman-web-stack_fileman_venv" in calls
+    assert "volume rm -f fileman-web-stack_fileman_webui_node_modules" in calls
 
 
 def test_prune_shared_runner_workdirs_respects_worker_guard_and_keeps_runner_layers(tmp_path: Path):
     script_root = _script_root()
     script = script_root / "tooling" / "ci" / "prune_shared_runner_workdirs.sh"
-    runner_root = tmp_path / "fileorganize-shared-runners"
+    runner_root = tmp_path / "fileman-shared-runners"
     workdir = runner_root / "temp-shared-pool-01" / "_work"
     externals = runner_root / "temp-shared-pool-01" / "externals"
     bin_dir = runner_root / "temp-shared-pool-01" / "bin"

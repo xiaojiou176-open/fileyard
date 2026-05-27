@@ -91,8 +91,8 @@ set_optional_secret() {
 
 set_required_secret "GEMINI_API_KEY"
 set_required_secret "GEMINI_MODEL"
-set_required_secret "FILEORGANIZE_LIVE_TEST_URL"
-set_optional_secret "FILEORGANIZE_ROLLBACK_HMAC_KEY"
+set_required_secret "FILEMAN_LIVE_TEST_URL"
+set_optional_secret "FILEMAN_ROLLBACK_HMAC_KEY"
 
 model_value="${GEMINI_UI_AUDIT_MODEL:-}"
 if [ -z "$model_value" ]; then

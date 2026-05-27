@@ -1,4 +1,4 @@
-# Fileorganize Agent Bundle Install And Proof
+# Fileman Agent Bundle Install And Proof
 
 Status: `submission-ready-unlisted`
 

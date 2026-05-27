@@ -119,7 +119,7 @@ def main() -> int:
         if not _resolve(str(raw), repo_root).exists():
             issues.append(f"missing machine cache path: {raw}")
 
-    for key in ("workspace_root", "fileorganize_root", "manifest_root", "artifact_root", "run_bundle_root", "env_root"):
+    for key in ("workspace_root", "fileman_root", "manifest_root", "artifact_root", "run_bundle_root", "env_root"):
         raw = contract.get("workspace_runtime", {}).get(key)
         if not raw:
             issues.append(f"workspace runtime missing contract field: {key}")

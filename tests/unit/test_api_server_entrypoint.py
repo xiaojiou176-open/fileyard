@@ -8,8 +8,8 @@ from apps.api import server
 
 
 def test_parse_args_uses_env_defaults(monkeypatch) -> None:
-    monkeypatch.setenv("FILEORGANIZE_WEB_API_HOST", "0.0.0.0")
-    monkeypatch.setenv("FILEORGANIZE_WEB_API_PORT", "19090")
+    monkeypatch.setenv("FILEMAN_WEB_API_HOST", "0.0.0.0")
+    monkeypatch.setenv("FILEMAN_WEB_API_PORT", "19090")
 
     args = server.parse_args([])
 
@@ -20,8 +20,8 @@ def test_parse_args_uses_env_defaults(monkeypatch) -> None:
 
 
 def test_parse_args_prefers_cli_args_over_env(monkeypatch) -> None:
-    monkeypatch.setenv("FILEORGANIZE_WEB_API_HOST", "127.0.0.5")
-    monkeypatch.setenv("FILEORGANIZE_WEB_API_PORT", "19555")
+    monkeypatch.setenv("FILEMAN_WEB_API_HOST", "127.0.0.5")
+    monkeypatch.setenv("FILEMAN_WEB_API_PORT", "19555")
 
     args = server.parse_args(["--host", "127.0.0.1", "--port", "18081", "--log-level", "warning", "--reload"])
 
@@ -73,9 +73,9 @@ def test_module_main_branch_uses_env_defaults(monkeypatch) -> None:
         )
 
     monkeypatch.setitem(sys.modules, "uvicorn", types.SimpleNamespace(run=fake_run))
-    monkeypatch.setenv("FILEORGANIZE_WEB_API_HOST", "127.0.0.3")
-    monkeypatch.setenv("FILEORGANIZE_WEB_API_PORT", "18123")
-    monkeypatch.setattr(sys, "argv", ["fileorganize-web-api"])
+    monkeypatch.setenv("FILEMAN_WEB_API_HOST", "127.0.0.3")
+    monkeypatch.setenv("FILEMAN_WEB_API_PORT", "18123")
+    monkeypatch.setattr(sys, "argv", ["fileman-web-api"])
 
     runpy.run_module("apps.api.server", run_name="__main__")
 

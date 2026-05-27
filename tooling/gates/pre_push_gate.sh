@@ -22,7 +22,7 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(dirname "$DIR")"
 REPO_ROOT="$(dirname "$ROOT")"
 CONFIG_LIB="$ROOT/scripts/lib_config.sh"
-MODE="${1:-${FILEORGANIZE_PRE_PUSH_MODE:-standard}}"
+MODE="${1:-${FILEMAN_PRE_PUSH_MODE:-standard}}"
 
 # shellcheck source=tooling/scripts/lib_config.sh
 . "$CONFIG_LIB"
@@ -32,12 +32,12 @@ VENV="$(governance_runtime_venv_path "$REPO_ROOT")"
 
 ARTIFACT_LOGS="$(governance_runtime_logs_path "$REPO_ROOT")/pre-push-gate"
 
-if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ] && [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
+if [ "${FILEMAN_IN_CONTAINER:-0}" != "1" ] && [ "${FILEMAN_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
   exec bash "$ROOT/scripts/container_exec.sh" --label pre-push-gate -- bash tooling/gates/pre_push_gate.sh "$@"
 fi
 
-if [ "${FILEORGANIZE_IN_CONTAINER:-0}" != "1" ] && [ "${FILEORGANIZE_ALLOW_HOST_EXECUTION:-0}" = "1" ]; then
-  echo "⚠️ pre_push_gate: emergency host execution enabled (FILEORGANIZE_ALLOW_HOST_EXECUTION=1)." >&2
+if [ "${FILEMAN_IN_CONTAINER:-0}" != "1" ] && [ "${FILEMAN_ALLOW_HOST_EXECUTION:-0}" = "1" ]; then
+  echo "⚠️ pre_push_gate: emergency host execution enabled (FILEMAN_ALLOW_HOST_EXECUTION=1)." >&2
 fi
 
 if [ ! -x "$VENV/bin/python" ]; then
@@ -48,7 +48,7 @@ fi
 
 mkdir -p "$ARTIFACT_LOGS"
 RANGE_FLAGS=()
-if [ "${FILEORGANIZE_REQUIRE_NON_EMPTY_RANGE:-0}" = "1" ]; then
+if [ "${FILEMAN_REQUIRE_NON_EMPTY_RANGE:-0}" = "1" ]; then
   RANGE_FLAGS+=(--require-non-empty-range)
 fi
 
@@ -100,7 +100,7 @@ step() {
       echo "Hint: run tracked privacy/path scan -> bash tooling/gates/sensitive_surface_gate.sh --mode auto" >&2
       ;;
     feature-state-layout)
-      echo "Hint: durable workbench state must stay under <workspace-root>/.fileorganize, not repo root or repo runtime cache." >&2
+      echo "Hint: durable workbench state must stay under <workspace-root>/.fileman, not repo root or repo runtime cache." >&2
       ;;
     strategy-pack-registry)
       echo "Hint: repo-shipped strategy packs must stay valid under contracts/strategies." >&2
@@ -166,7 +166,7 @@ case "$MODE" in
     echo "  strict: fast lane + changed-only secret scan + commit governance + mutation canary (<90s)" >&2
     echo "  full: strict + full quality gate (5-15min)" >&2
     echo "" >&2
-    echo "Set FILEORGANIZE_PRE_PUSH_MODE env var to change default." >&2
+    echo "Set FILEMAN_PRE_PUSH_MODE env var to change default." >&2
     exit 2
     ;;
 esac

@@ -7,9 +7,9 @@ active_strategy_pack_id = ""
 
 [analyze]
 input = "<workspace-root>/data/raw"
-manifest = "<workspace-root>/.fileorganize/manifests/manifest.jsonl"
-csv = "<workspace-root>/.fileorganize/artifacts/csv/manifest.csv"
-report = "<workspace-root>/.fileorganize/artifacts/report/report_summary.json"
+manifest = "<workspace-root>/.fileman/manifests/manifest.jsonl"
+csv = "<workspace-root>/.fileman/artifacts/csv/manifest.csv"
+report = "<workspace-root>/.fileman/artifacts/report/report_summary.json"
 model = ""
 categories = ["工作", "旅行", "美食", "收据", "文档", "聊天", "错误", "产品", "风景", "人物", "其他"]
 durability = "batch"
@@ -35,7 +35,7 @@ sleep = 0.0
 chunk_size = 500
 
 [apply]
-manifest = "<workspace-root>/.fileorganize/manifests/manifest.jsonl"
+manifest = "<workspace-root>/.fileman/manifests/manifest.jsonl"
 output = ""
 categories = ""
 input_root = ""
@@ -43,8 +43,8 @@ trust_manifest_input_root = false
 manifest_input_root_allowlist = ""
 dry_run = false
 out_manifest = ""
-report = "<workspace-root>/.fileorganize/artifacts/report/report_summary.json"
-rollback_manifest = "<workspace-root>/.fileorganize/artifacts/rollback/rollback.jsonl"
+report = "<workspace-root>/.fileman/artifacts/report/report_summary.json"
+rollback_manifest = "<workspace-root>/.fileman/artifacts/rollback/rollback.jsonl"
 verify_sha1 = false
 durability = "batch"
 fsync_interval = 50
@@ -54,13 +54,13 @@ retry_errors = false
 chunk_size = 500
 
 [rollback]
-manifest = "<workspace-root>/.fileorganize/manifests/manifest.jsonl"
+manifest = "<workspace-root>/.fileman/manifests/manifest.jsonl"
 dry_run = false
 overwrite = false
 allowed_root = "<workspace-root>/data/raw,<workspace-root>/data/organized"
 
 [report]
-manifest = "<workspace-root>/.fileorganize/manifests/manifest.jsonl"
-out = "<workspace-root>/.fileorganize/artifacts/report/report_summary.json"
+manifest = "<workspace-root>/.fileman/manifests/manifest.jsonl"
+out = "<workspace-root>/.fileman/artifacts/report/report_summary.json"
 validate = false
 chunk_size = 500

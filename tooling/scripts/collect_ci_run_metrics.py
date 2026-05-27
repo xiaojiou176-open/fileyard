@@ -51,7 +51,7 @@ def _github_get(path: str, token: str) -> dict[str, Any]:
         headers={
             "Accept": "application/vnd.github+json",
             "Authorization": f"Bearer {token}",
-            "User-Agent": "fileorganize-ci-run-metrics",
+            "User-Agent": "fileman-ci-run-metrics",
             "X-GitHub-Api-Version": "2022-11-28",
         },
     )

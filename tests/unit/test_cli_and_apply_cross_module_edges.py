@@ -32,7 +32,7 @@ def test_cli_main_logs_config_warnings_and_errors(monkeypatch, tmp_path: Path):
         sys,
         "argv",
         [
-            "fileorganize",
+            "fileman",
             "report",
             "--manifest",
             str(tmp_path / "m.jsonl"),
@@ -70,7 +70,7 @@ def test_cli_main_lock_fail_exits(monkeypatch, tmp_path: Path):
         sys,
         "argv",
         [
-            "fileorganize",
+            "fileman",
             "report",
             "--manifest",
             str(tmp_path / "m.jsonl"),
@@ -152,7 +152,7 @@ def test_cmd_rollback_manifest_read_fail(tmp_path: Path):
 def test_cmd_rollback_strict_integrity_requires_hmac_key(monkeypatch, tmp_path: Path):
     manifest = tmp_path / "rollback.jsonl"
     manifest.write_text("", encoding="utf-8")
-    monkeypatch.delenv("FILEORGANIZE_ROLLBACK_HMAC_KEY", raising=False)
+    monkeypatch.delenv("FILEMAN_ROLLBACK_HMAC_KEY", raising=False)
 
     args = argparse.Namespace(
         manifest=str(manifest),
@@ -163,7 +163,7 @@ def test_cmd_rollback_strict_integrity_requires_hmac_key(monkeypatch, tmp_path: 
         strict_integrity=True,
     )
 
-    with pytest.raises(SystemExit, match="strict_integrity=true requires FILEORGANIZE_ROLLBACK_HMAC_KEY"):
+    with pytest.raises(SystemExit, match="strict_integrity=true requires FILEMAN_ROLLBACK_HMAC_KEY"):
         apply_changes.cmd_rollback(args)
 
 

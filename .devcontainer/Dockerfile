@@ -12,7 +12,7 @@ ARG GITLEAKS_SHA256_AMD64
 ARG GITLEAKS_SHA256_ARM64
 ARG TARGETARCH
 
-LABEL org.opencontainers.image.source="https://github.com/xiaojiou176-open/fileorganize"
+LABEL org.opencontainers.image.source="https://github.com/xiaojiou176-open/fileman"
 
 RUN rm -f /etc/apt/sources.list.d/yarn.list /etc/apt/sources.list.d/yarn.list.save
 
@@ -71,15 +71,15 @@ RUN set -eux; \
     echo "${GITLEAKS_SHA256}  /tmp/gitleaks.tar.gz" | sha256sum -c -; \
     tar -xzf /tmp/gitleaks.tar.gz -C /tmp gitleaks; \
     install -m 0755 /tmp/gitleaks /usr/local/bin/gitleaks; \
-    python -m venv /opt/fileorganize-ci-venv; \
-    /opt/fileorganize-ci-venv/bin/python -m pip install --disable-pip-version-check --require-hashes -r /tmp/organizer-build/requirements-pip.lock.txt; \
-    /opt/fileorganize-ci-venv/bin/python -m pip install --require-hashes -r /tmp/organizer-build/requirements.lock.txt; \
+    python -m venv /opt/fileman-ci-venv; \
+    /opt/fileman-ci-venv/bin/python -m pip install --disable-pip-version-check --require-hashes -r /tmp/organizer-build/requirements-pip.lock.txt; \
+    /opt/fileman-ci-venv/bin/python -m pip install --require-hashes -r /tmp/organizer-build/requirements.lock.txt; \
     awk 'BEGIN {emit=0} /^setuptools==/ {emit=1} emit {print} emit && /^    # via/ {exit}' \
       /tmp/organizer-build/requirements-dev.lock.txt > /tmp/organizer-build/setuptools-bootstrap.txt; \
     test -s /tmp/organizer-build/setuptools-bootstrap.txt; \
-    /opt/fileorganize-ci-venv/bin/python -m pip install --require-hashes -r /tmp/organizer-build/setuptools-bootstrap.txt; \
-    /opt/fileorganize-ci-venv/bin/python -m pip install --require-hashes -r /tmp/organizer-build/requirements-dev.lock.txt; \
-    cat /tmp/organizer-build/requirements.lock.txt /tmp/organizer-build/requirements-dev.lock.txt | sha256sum | awk '{print $1}' > /opt/fileorganize-ci-venv/.fileorganize_req_hash; \
+    /opt/fileman-ci-venv/bin/python -m pip install --require-hashes -r /tmp/organizer-build/setuptools-bootstrap.txt; \
+    /opt/fileman-ci-venv/bin/python -m pip install --require-hashes -r /tmp/organizer-build/requirements-dev.lock.txt; \
+    cat /tmp/organizer-build/requirements.lock.txt /tmp/organizer-build/requirements-dev.lock.txt | sha256sum | awk '{print $1}' > /opt/fileman-ci-venv/.fileman_req_hash; \
     node -v; \
     npm -v; \
     gitleaks version; \

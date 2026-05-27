@@ -95,11 +95,11 @@ DEFAULT_WORKERS = 1
 DEFAULT_LOG_LEVEL = "INFO"
 DEFAULT_LOG_JSON = False
 
-DEFAULT_WORKSPACE_ROOT = Path(os.environ.get("FILEORGANIZE_WORKSPACE_ROOT", "~/.fileorganize/workspaces/default")).expanduser()
+DEFAULT_WORKSPACE_ROOT = Path(os.environ.get("FILEMAN_WORKSPACE_ROOT", "~/.fileman/workspaces/default")).expanduser()
 DEFAULT_INPUT_DIR = DEFAULT_WORKSPACE_ROOT / "data" / "raw"
 DEFAULT_OUTPUT_PARENT = DEFAULT_WORKSPACE_ROOT / "data" / "organized"
 
-APP_NAME = "fileorganize"
+APP_NAME = "fileman"
 # Keep this aligned with pyproject.toml [project].version until version loading is centralized.
 APP_VERSION = "4.0.5"
 MANIFEST_SCHEMA_VERSION = 2

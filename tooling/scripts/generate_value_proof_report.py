@@ -56,13 +56,13 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 
 
 def _external_tmp_root() -> Path:
-    root = Path("/tmp/fileorganize-value-proof")
+    root = Path("/tmp/fileman-value-proof")
     root.mkdir(parents=True, exist_ok=True)
     return root
 
 
 def _durable_artifact_root(repo_root: Path) -> Path:
-    raw = os.environ.get("FILEORGANIZE_ARTIFACT_ROOT", "").strip()
+    raw = os.environ.get("FILEMAN_ARTIFACT_ROOT", "").strip()
     if raw:
         return Path(raw).expanduser().resolve() / "value-proof"
     return (repo_root / ".runtime-cache" / "logs" / "value-proof" / "artifacts").resolve()
@@ -86,16 +86,16 @@ def _run(repo_root: Path, cmd: list[str]) -> float:
 
 def _run_with_bundle_root(repo_root: Path, cmd: list[str], *, run_bundle_root: Path | None) -> float:
     env = os.environ.copy()
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
     external_tmp = _external_tmp_root()
     env["TMPDIR"] = str(external_tmp)
     env["TMP"] = str(external_tmp)
     env["TEMP"] = str(external_tmp)
     if run_bundle_root is not None:
         run_bundle_root.mkdir(parents=True, exist_ok=True)
-        env["FILEORGANIZE_RUN_BUNDLE_ROOT"] = str(run_bundle_root)
-    if not str(env.get("FILEORGANIZE_ROLLBACK_HMAC_KEY", "")).strip():
-        env["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = "value-proof-benchmark-hmac-key"
+        env["FILEMAN_RUN_BUNDLE_ROOT"] = str(run_bundle_root)
+    if not str(env.get("FILEMAN_ROLLBACK_HMAC_KEY", "")).strip():
+        env["FILEMAN_ROLLBACK_HMAC_KEY"] = "value-proof-benchmark-hmac-key"
     started = time.perf_counter()
     proc = subprocess.run(cmd, cwd=repo_root, env=env, text=True, capture_output=True, check=False)
     duration_ms = round((time.perf_counter() - started) * 1000, 2)
@@ -352,7 +352,7 @@ def main() -> int:
     input_root = workspace_root / "input"
     output_root = workspace_root / "organized"
     artifacts_root = workspace_root / "artifacts"
-    run_bundle_root = workspace_root / ".fileorganize" / "runs"
+    run_bundle_root = workspace_root / ".fileman" / "runs"
     manifest_path = artifacts_root / "manifest.jsonl"
     analyze_report = artifacts_root / "analyze-report.json"
     applied_manifest = artifacts_root / "applied-manifest.jsonl"

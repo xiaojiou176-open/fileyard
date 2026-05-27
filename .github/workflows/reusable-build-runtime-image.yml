@@ -60,7 +60,7 @@ jobs:
             echo "❌ reusable-build-runtime-image: missing required secret GHCR_PUSH_TOKEN" >&2
             exit 1
           fi
-          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileorganize-docker-config"
+          DOCKER_CONFIG_DIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/fileman-docker-config"
           mkdir -p "$DOCKER_CONFIG_DIR"
           printf '%s\n' '{"auths":{}}' > "$DOCKER_CONFIG_DIR/config.json"
           export DOCKER_CONFIG="$DOCKER_CONFIG_DIR"
@@ -77,7 +77,7 @@ jobs:
         run: |
           set -euo pipefail
           CONTRACT_DIR=".runtime-cache/ci-contract"
-          IMAGE_REF="ghcr.io/${REPOSITORY_OWNER}/fileorganize-ci:${IMAGE_TAG_PREFIX}-${GITHUB_SHA}-py311"
+          IMAGE_REF="ghcr.io/${REPOSITORY_OWNER}/fileman-ci:${IMAGE_TAG_PREFIX}-${GITHUB_SHA}-py311"
           mkdir -p "$CONTRACT_DIR"
           docker build \
             --file .devcontainer/Dockerfile \
@@ -125,7 +125,7 @@ jobs:
         if: steps.provenance-eligibility.outputs.enabled == 'true'
         uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a
         with:
-          subject-name: ghcr.io/${{ github.repository_owner }}/fileorganize-ci
+          subject-name: ghcr.io/${{ github.repository_owner }}/fileman-ci
           subject-digest: ${{ steps.build.outputs.image-digest }}
       - name: Collect provenance artifact pointers
         if: always()
@@ -137,10 +137,10 @@ jobs:
             cat >"$summary_file" <<EOF
           {
             "status": "generated",
-            "subject_name": "ghcr.io/${{ github.repository_owner }}/fileorganize-ci",
+            "subject_name": "ghcr.io/${{ github.repository_owner }}/fileman-ci",
             "subject_digest": "${{ steps.build.outputs.image-digest }}",
             "image_ref": "${{ steps.build.outputs.image-ref }}",
-            "verify_hint": "gh attestation verify oci://ghcr.io/${{ github.repository_owner }}/fileorganize-ci@${{ steps.build.outputs.image-digest }} --repo ${{ github.repository }}"
+            "verify_hint": "gh attestation verify oci://ghcr.io/${{ github.repository_owner }}/fileman-ci@${{ steps.build.outputs.image-digest }} --repo ${{ github.repository }}"
           }
           EOF
           fi

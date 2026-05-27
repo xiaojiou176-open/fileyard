@@ -56,7 +56,7 @@ def test_release_helpers_enforce_tag_policy_and_post_publish_verification() -> N
     assert "gh release view" in verify_script
     assert '"release", "download"' in verify_script
     assert "targetCommitish" in verify_script
-    assert "fileorganize-" in verify_script
+    assert "fileman-" in verify_script
     assert "release-manifest.json" in verify_script
     assert "python-runtime-sbom.cdx.json" in verify_script
     assert "webui-runtime-sbom.cdx.json" in verify_script

@@ -26,7 +26,7 @@ export function RollbackPage() {
   const [activeRollbackJobId, setActiveRollbackJobId] = useState('')
   const [sourceJobId, setSourceJobId] = useState(jobId)
   const [manifestPath, setManifestPath] = useState('')
-  const [allowedRoot, setAllowedRoot] = useState('~/.fileorganize/workspaces/default/data/raw,~/.fileorganize/workspaces/default/data/organized')
+  const [allowedRoot, setAllowedRoot] = useState('~/.fileman/workspaces/default/data/raw,~/.fileman/workspaces/default/data/organized')
   const [strictIntegrity, setStrictIntegrity] = useState(true)
   const [auditReason, setAuditReason] = useState('')
   const [dryRunApproved, setDryRunApproved] = useState(false)
@@ -37,7 +37,7 @@ export function RollbackPage() {
 
   const trackedRollbackId = activeRollbackJobId || jobId
   const { job, events, state, refresh } = useLiveJob(trackedRollbackId, trackedRollbackId.length > 0)
-  const defaultAllowedRoot = runtimeSettings?.allowed_root ?? '~/.fileorganize/workspaces/default/data/raw,~/.fileorganize/workspaces/default/data/organized'
+  const defaultAllowedRoot = runtimeSettings?.allowed_root ?? '~/.fileman/workspaces/default/data/raw,~/.fileman/workspaces/default/data/organized'
 
   const applyFallbackDefaults = useCallback(() => {
     setSourceJob(null)

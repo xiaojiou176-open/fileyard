@@ -8,7 +8,7 @@ from pathlib import Path
 
 def test_apply_generates_rollback_manifest(tmp_path: Path):
     repo_root = Path(__file__).resolve().parents[2]
-    entry = repo_root / "apps" / "cli" / "fileorganize.py"
+    entry = repo_root / "apps" / "cli" / "fileman.py"
 
     input_dir = tmp_path / "input"
     output_dir = tmp_path / "output"
@@ -57,7 +57,7 @@ def test_apply_generates_rollback_manifest(tmp_path: Path):
         str(rollback_manifest),
     ]
     env = os.environ.copy()
-    env["FILEORGANIZE_ROLLBACK_HMAC_KEY"] = "e2e-test-rollback-key"
+    env["FILEMAN_ROLLBACK_HMAC_KEY"] = "e2e-test-rollback-key"
     subprocess.run(apply_cmd, check=True, cwd=str(repo_root), env=env)
 
     assert not src.exists()

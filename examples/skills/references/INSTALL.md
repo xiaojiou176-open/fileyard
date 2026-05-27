@@ -1,14 +1,14 @@
-# Install And Attach Fileorganize MCP
+# Install And Attach Fileman MCP
 
-Use this when the host runtime does not already have Fileorganize connected.
+Use this when the host runtime does not already have Fileman connected.
 
 ## Local repo setup
 
 1. Clone the public repo:
 
 ```bash
-git clone https://github.com/xiaojiou176-open/fileorganize.git
-cd fileorganize
+git clone https://github.com/xiaojiou176-open/fileman.git
+cd fileman
 npm install
 ```
 

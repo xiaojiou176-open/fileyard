@@ -43,7 +43,7 @@ class LearnedRule:
 
 
 def learned_rule_path(workspace_root: str | Path) -> Path:
-    return Path(workspace_root).expanduser() / ".fileorganize" / "preferences" / "learned_rules.json"
+    return Path(workspace_root).expanduser() / ".fileman" / "preferences" / "learned_rules.json"
 
 
 def load_learned_rules(workspace_root: str | Path) -> List[LearnedRule]:

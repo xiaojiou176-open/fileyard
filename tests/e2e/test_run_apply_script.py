@@ -51,7 +51,7 @@ def test_run_apply_script_dry_run(tmp_path: Path):
         "--dry-run",
     ]
     env = os.environ.copy()
-    env["FILEORGANIZE_ALLOW_HOST_EXECUTION"] = "1"
+    env["FILEMAN_ALLOW_HOST_EXECUTION"] = "1"
     subprocess.run(cmd, check=True, cwd=str(script_root), env=env)
 
     assert src.exists()

@@ -202,13 +202,13 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--max-files",
         type=int,
-        default=_parse_env_int("FILEORGANIZE_ATOMIC_MAX_FILES", 40),
+        default=_parse_env_int("FILEMAN_ATOMIC_MAX_FILES", 40),
         help="Per-commit max changed files (excluding allowlist).",
     )
     parser.add_argument(
         "--max-lines",
         type=int,
-        default=_parse_env_int("FILEORGANIZE_ATOMIC_MAX_LINES", 4500),
+        default=_parse_env_int("FILEMAN_ATOMIC_MAX_LINES", 4500),
         help="Per-commit max changed lines add+del (excluding allowlist).",
     )
     parser.add_argument(
@@ -241,7 +241,7 @@ def main(argv: list[str]) -> int:
 
     allowlist = _parse_allowlist(args.allowlist)
     allowlist.extend(DEFAULT_ALLOWLIST)
-    allowlist.extend(_parse_allowlist([os.getenv("FILEORGANIZE_ATOMIC_ALLOWLIST", "")]))
+    allowlist.extend(_parse_allowlist([os.getenv("FILEMAN_ATOMIC_ALLOWLIST", "")]))
 
     if args.mode == "staged":
         try:

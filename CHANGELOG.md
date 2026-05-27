@@ -27,7 +27,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Live WebUI hosted browser selection: the live WebUI lane now prefers Chromium first when running under CI/hosted automation, only falling back to WebKit when Chromium launch is unavailable, so hosted runs no longer depend on a browser family that has not yet been proven stable in that lane.
 - Live browser cache hygiene: `run_live_tests.sh` now installs its Playwright browser bundles into an isolated live-only cache directory so real live verification no longer bloats the governed machine-cache surface and trips unrelated cache-size gates afterward.
 - Mutation canary local gate isolation: `quality_gate` now runs the mutation canary against a temporary repo snapshot instead of mutating the bind-mounted working tree in place, avoiding stale source/cache bleed between `pytest-fast` and later canary cases on local containerized runs.
-- Live workflow closeout: `live-integration` now pulls the private `fileorganize-ci` GHCR image with `GHCR_PUSH_TOKEN` and a `github.token` fallback, matching the working CI pull posture instead of relying on the `github.token`-only path that returned `403 Forbidden` on the self-hosted live lane.
+- Live workflow closeout: `live-integration` now pulls the private `fileman-ci` GHCR image with `GHCR_PUSH_TOKEN` and a `github.token` fallback, matching the working CI pull posture instead of relying on the `github.token`-only path that returned `403 Forbidden` on the self-hosted live lane.
 - Live browser stability: moved the manual `live-integration` execution lane onto `ubuntu-latest` so the amd64 runtime image no longer runs Playwright Chromium under arm64 qemu emulation on the shared pool.
 - Live timeout budget: widened the manual `live-integration` job timeout and `LIVE_MAX_DURATION_SECONDS` so the hosted live suite can finish or fail inside the wrapper budget instead of being hard-cancelled by the job wall clock first.
 
@@ -59,7 +59,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Quality gates: `quality_gate.sh` now writes the only coverage truth from the full non-live suite, and containerized bootstrap installs hash-locked base requirements separately from unhashed dev extras.
 - Frontend gates: `lint_frontend.sh` now treats missing/blocked Gemini access as explicit local skips while keeping CI fail-closed, and `gemini_ui_ux_audit.py` batches all frontend files instead of truncating at 20.
 - WebUI: aligned Vite build output with `/app/` static hosting, added route/base-aware router mounting, and hardened WebUI API wiring for SSE, manifest overlay/conflicts, preview fallback, saved views, and naming templates.
-- Web stack: added one-command local/compose startup flows for Web API + WebUI (`run_web_api.sh`, `run_webui.sh`, `run_web_stack.sh`) and expanded `docker-compose.yml` with `fileorganize-web-api` / `fileorganize-webui`.
+- Web stack: added one-command local/compose startup flows for Web API + WebUI (`run_web_api.sh`, `run_webui.sh`, `run_web_stack.sh`) and expanded `docker-compose.yml` with `fileman-web-api` / `fileman-webui`.
 - Tests: expanded `tests/unit/test_web_api.py` coverage for jobs SSE, preview payloads, and WebUI-style rollback request fields.
 - Docs: documented newly added `Web API + WebUI` startup flow in `README.md` and `docs/usage.md`, including `/app` static hosting and `/api/jobs/*` endpoints.
 - Docs: added WebUI V2 documentation in `README.md` and `docs/usage.md` for SSE real-time task flow, manifest `overlay/resolved snapshot` model, jobs history, saved views, naming templates, rollback audit, and V2 endpoint families (`events/stream`, manifest overlay/resolved, views, naming templates, rollback audit).
@@ -80,7 +80,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### test
 
 - ci: extended the weekly mutation lane to the `reporting` module, pinned `mutmut==2.4.4`, and added cache-hit version validation to avoid silent drift.
-- test: strengthened e2e and gatekeeper fixtures and unified the `FILEORGANIZE_ALLOW_HOST_EXECUTION=1` execution rule so the suite stays stable under strict environment gates.
+- test: strengthened e2e and gatekeeper fixtures and unified the `FILEMAN_ALLOW_HOST_EXECUTION=1` execution rule so the suite stays stable under strict environment gates.
 
 ### Added
 
@@ -108,7 +108,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - CI: extended hosted->self-hosted fallback to `ci.yml` lightweight gates (`change-detection`, `commit-message-lint`, `atomic-commit-gate`, `secrets-supply-chain-gate`, `ci-hardening-gate`) while preserving original required-check job IDs and strict fail-closed behavior for real gate failures.
 - CI: routed all heavy workflows/jobs to `[self-hosted, e2-core]` so Core + Spot (5 Google Cloud runners) share high-load execution, while lightweight gates remain GitHub-hosted-first with fallback.
 - CI: hardened semantic UI/UX gate to fail when frontend files exist but `GEMINI_API_KEY` is missing (no silent skip on CI).
-- CI: hardened live-integration and live test runner to require explicit `GEMINI_API_KEY` + `GEMINI_MODEL` + `FILEORGANIZE_LIVE_TEST_URL` (no default model/URL fallback).
+- CI: hardened live-integration and live test runner to require explicit `GEMINI_API_KEY` + `GEMINI_MODEL` + `FILEMAN_LIVE_TEST_URL` (no default model/URL fallback).
 - Tooling: `sync_github_actions_secrets.sh` now fails-fast if required secrets are absent in `.env` instead of skipping missing keys.
 - Tooling: clarified local pre-push default is `standard` mode (`fast-lane -> changed-only secret scan -> tracked-tests-integrity -> atomic-commit -> commit-message`); `strict/full` remain optional for deeper local verification.
 - Release audit policy: clarified CLI scoring path where `CWV/RUM` is `N/A` (non-blocking), replaced by executable CLI performance baseline + rollback RTO baseline checks.
@@ -124,7 +124,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 - Follow the release runbook and the executable release evidence surfaces for step-by-step migration and release evidence.
 - N-1 manifest compatibility evidence source:
-  - `~/.cache/fileorganize/venv/default/bin/python -m pytest -q tests/e2e/test_apply_schema_newer_warning.py`
-  - `~/.cache/fileorganize/venv/default/bin/python -m pytest -q tests/unit/test_manifest_store_writer_and_schema_versions.py`
+  - `~/.cache/fileman/venv/default/bin/python -m pytest -q tests/e2e/test_apply_schema_newer_warning.py`
+  - `~/.cache/fileman/venv/default/bin/python -m pytest -q tests/unit/test_manifest_store_writer_and_schema_versions.py`
 
 - Ops: retried CI execution due to transient GitHub Actions scheduler instability (no functional code change).

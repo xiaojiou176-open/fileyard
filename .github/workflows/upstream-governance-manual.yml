@@ -20,7 +20,7 @@ jobs:
           set -euo pipefail
           mkdir -p "${GITHUB_WORKSPACE:-$PWD}"
           if [ -n "${RUNNER_TEMP:-}" ]; then
-            mkdir -p "${RUNNER_TEMP}/fileorganize-hygiene"
+            mkdir -p "${RUNNER_TEMP}/fileman-hygiene"
           fi
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:

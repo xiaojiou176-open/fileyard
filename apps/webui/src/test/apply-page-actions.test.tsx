@@ -96,7 +96,7 @@ describe('ApplyPage actions', () => {
   })
 
   it('renders translated apply copy when locale switches to zh-CN', async () => {
-    window.localStorage.setItem('fileorganize.locale', 'zh-CN')
+    window.localStorage.setItem('fileman.locale', 'zh-CN')
     mocks.getJobMock.mockResolvedValueOnce(
       makeJob({
         id: 'source-job',

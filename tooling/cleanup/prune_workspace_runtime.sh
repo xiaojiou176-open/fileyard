@@ -18,12 +18,12 @@ Usage:
   bash tooling/cleanup/prune_workspace_runtime.sh [--dry-run]
 
 Applies workspace retention to:
-  - FILEORGANIZE_RUN_BUNDLE_ROOT
-  - managed artifact roots under FILEORGANIZE_ARTIFACT_ROOT
+  - FILEMAN_RUN_BUNDLE_ROOT
+  - managed artifact roots under FILEMAN_ARTIFACT_ROOT
 
 Never deletes:
-  - FILEORGANIZE_MANIFEST_ROOT
-  - the workspace .fileorganize root itself
+  - FILEMAN_MANIFEST_ROOT
+  - the workspace .fileman root itself
   - web_api/preferences
 EOF
 }

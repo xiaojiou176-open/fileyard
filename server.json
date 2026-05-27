@@ -1,12 +1,12 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.xiaojiou176-open/fileorganize-mcp",
-  "title": "Fileorganize MCP v1",
-  "description": "Review-first stdio MCP for Fileorganize: analyze, review, overlay edit, and dry-run preview.",
+  "name": "io.github.xiaojiou176-open/fileman-mcp",
+  "title": "Fileman MCP v1",
+  "description": "Review-first stdio MCP for Fileman: analyze, review, overlay edit, and dry-run preview.",
   "repository": {
-    "url": "https://github.com/xiaojiou176-open/fileorganize",
+    "url": "https://github.com/xiaojiou176-open/fileman",
     "source": "github"
   },
-  "websiteUrl": "https://github.com/xiaojiou176-open/fileorganize/blob/main/docs/mcp.md",
+  "websiteUrl": "https://github.com/xiaojiou176-open/fileman/blob/main/docs/mcp.md",
   "version": "4.0.5"
 }
