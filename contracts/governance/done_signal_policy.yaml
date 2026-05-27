@@ -1,0 +1,25 @@
+version: 1
+canonical_delivery_gate: bash tooling/gates/quality_gate.sh
+governance_scorecard_gate: bash tooling/gates/verify_repo_final.sh
+canonical_receipt_path: .runtime-cache/logs/quality-gate/summary.json
+current_snapshot_truth_policy:
+  authoritative_receipt: latest canonical summary alias at `.runtime-cache/logs/quality-gate/summary.json`
+  historical_run_receipts: audit-only unless a specific run id is explicitly under review
+  precedence_rule: current latest canonical summary overrides older same-day pass receipts in closeout wording
+host_emergency_gate: env FILEYARD_ALLOW_HOST_EXECUTION=1 bash tooling/gates/quality_gate.sh
+host_emergency_receipt_path: .runtime-cache/logs/quality-gate/host-summary.json
+host_emergency_semantics: diagnostic-only-non-canonical
+claim_surfaces:
+  - path: README.md
+    required_snippets:
+      - delivery-complete receipt
+  - path: docs/usage.md
+    required_snippets:
+      - Delivery-complete truth for the current snapshot
+  - path: docs/open_source_runbook.md
+    required_snippets:
+      - the only delivery-complete signal
+  - path: tooling/ci/prepare_release_draft.py
+    required_snippets:
+      - repo-side governance scorecard only
+      - only delivery-complete signal

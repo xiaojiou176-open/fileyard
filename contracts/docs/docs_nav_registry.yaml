@@ -1,0 +1,159 @@
+version: 1
+docs:
+  - path: README.md
+    layer: fragment-rendered
+    scope: strict
+    generated_blocks:
+      - root-release-identity
+      - root-web-api-routes
+      - root-runtime-topology
+      - root-ci-governance-summary
+    command_smoke: false
+  - path: DISTRIBUTION.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: INTEGRATIONS.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/usage.md
+    layer: fragment-rendered
+    scope: strict
+    generated_blocks:
+      - script-readme-release-identity
+      - script-readme-web-api-routes
+      - script-readme-runtime-topology
+      - script-readme-ci-governance-summary
+      - script-readme-governance-truth
+    command_smoke: true
+    requires_config_example: true
+  - path: docs/architecture.md
+    layer: fragment-rendered
+    scope: strict
+    generated_blocks:
+      - architecture-web-api-summary
+      - architecture-runtime-topology
+      - architecture-governance-truth
+    command_smoke: false
+  - path: docs/logging_observability.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/env_contract.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/open_source_runbook.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+    manual_fact_enforced: true
+    generated_blocks:
+      - open-source-platform-truth
+  - path: docs/adr/2026-03-29-manifest-workbench-v2.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/index.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/public_proof.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/brand_positioning.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/seo_landing_map.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/mcp.md
+    layer: human-authored
+    scope: strict
+    command_smoke: true
+  - path: docs/codex_mcp.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/claude_code_mcp.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/developer_guide.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/review_first_ai_file_organizer.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/photo_organizer.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/screenshot_organizer.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/receipt_organizer.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/quickstart.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+    requires_config_example: true
+  - path: docs/faq.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/runner_contract.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+    manual_fact_enforced: true
+    generated_blocks:
+      - runner-contract-governance-truth
+  - path: docs/AGENTS.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/CLAUDE.md
+    layer: human-authored
+    scope: strict
+    command_smoke: false
+  - path: docs/required_checks_matrix.md
+    layer: render-only
+    scope: strict
+    command_smoke: false
+  - path: docs/reference/env_contract.generated.md
+    layer: render-only
+    scope: generated
+    command_smoke: false
+  - path: docs/reference/web_api_routes.generated.md
+    layer: render-only
+    scope: generated
+    command_smoke: false
+  - path: docs/reference/runtime_topology.generated.md
+    layer: render-only
+    scope: generated
+    command_smoke: false
+  - path: docs/reference/governance_truth.generated.md
+    layer: render-only
+    scope: generated
+    command_smoke: false
+  - path: docs/_generated/render_state.json
+    layer: render-only
+    scope: generated
+    command_smoke: false
+  - path: apps/webui/README.md
+    layer: fragment-rendered
+    scope: strict
+    generated_blocks:
+      - webui-api-contract
+    command_smoke: true

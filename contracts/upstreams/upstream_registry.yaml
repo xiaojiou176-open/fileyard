@@ -1,0 +1,61 @@
+version: 1
+registry:
+  inventory_file: contracts/upstreams/upstream_inventory.yaml
+  compatibility_file: contracts/upstreams/compatibility_matrix.yaml
+  patch_registry_file: contracts/upstreams/patch_registry.yaml
+  host_capability_policy_file: contracts/upstreams/host_capability_policy.yaml
+  license_policy_file: contracts/upstreams/license_policy.yaml
+  upgrade_policy_file: contracts/upstreams/upgrade_policy.yaml
+  failure_ownership_file: contracts/upstreams/failure_ownership.yaml
+download_roots:
+  runtime_tmp_downloads: .runtime-cache/tmp/downloads
+required_inventory_fields:
+  - id
+  - class
+  - role
+  - source
+  - pin_kind
+  - pinned_value
+  - checksum_or_digest
+  - license
+  - owner
+  - upgrade_cadence
+  - verification_suite
+  - rollback_strategy
+  - failure_domain
+  - provenance_required
+  - floating_allowed
+required_classes:
+  - python-registry-lock
+  - node-registry-lock
+  - container-base-image
+  - container-runtime-image
+  - browser-binary
+  - ai-sdk
+  - ai-model-provider-contract
+  - system-binary
+  - runtime-capability-contract
+required_external_surfaces:
+  - github-release-download
+  - npm-overrides
+declared_verification_modes:
+  - governed-host-binary-declaration
+  - governed-unsupported-capability-declaration
+declaration_artifact_root: contracts/upstreams/declarations
+class_required_fields:
+  system-binary:
+    - assurance_tier
+    - repo_preflight_gate
+    - host_management
+    - verification_mode
+    - verification_strategy
+    - capability_status
+    - install_hint
+    - binary_names
+  runtime-capability-contract:
+    - assurance_tier
+    - repo_preflight_gate
+    - verification_mode
+    - verification_strategy
+    - capability_status
+    - status_reason

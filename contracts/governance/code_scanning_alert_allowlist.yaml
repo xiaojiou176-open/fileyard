@@ -1,0 +1,10 @@
+version: 1
+status: active
+reason: >
+  2026-04-08 final distribution prep accepts three GitHub Scorecard governance
+  findings as temporary non-blockers while keeping all other code-scanning,
+  dependency, and secret findings blocking.
+accepted_rule_ids:
+  - CIIBestPracticesID
+  - MaintainedID
+  - CodeReviewID

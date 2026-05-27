@@ -1,0 +1,25 @@
+version: 1
+required_gates:
+  - gate_name: quality-gate
+    summary_path: .runtime-cache/logs/quality-gate/summary.json
+    bridge_log_step_name: logging-contract
+    bridge_required_event_fields:
+      - gate_run_id
+      - gate_name
+  - gate_name: platform-alignment
+    summary_path: .runtime-cache/logs/platform-alignment/summary.json
+required_top_level_fields:
+  - gate_run_id
+  - gate_name
+  - status
+  - started_at
+  - ended_at
+  - duration_ms
+  - steps
+required_step_fields:
+  - step_name
+  - status
+  - started_at
+  - ended_at
+  - duration_ms
+  - artifact_log_path

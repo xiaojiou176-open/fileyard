@@ -1,0 +1,75 @@
+version: 1
+modes:
+  governed-host-binary-declaration:
+    required_inventory_fields:
+      - assurance_tier
+      - repo_preflight_gate
+      - host_management
+      - verification_mode
+      - verification_strategy
+      - capability_status
+      - install_hint
+      - binary_names
+    required_pair_fields:
+      - assurance_tier
+      - repo_preflight_gate
+      - allowed_missing_behavior
+      - preflight_policy
+  governed-unsupported-capability-declaration:
+    required_inventory_fields:
+      - assurance_tier
+      - repo_preflight_gate
+      - verification_mode
+      - verification_strategy
+      - capability_status
+      - status_reason
+    required_pair_fields:
+      - assurance_tier
+      - repo_preflight_gate
+      - allowed_missing_behavior
+      - preflight_policy
+targets:
+  - upstream_id: ffmpeg-system-binary
+    probe: ffmpeg
+    expected_inventory:
+      class: system-binary
+      assurance_tier: host-preflight-optional
+      host_management: operator-managed
+      verification_mode: governed-host-binary-declaration
+      capability_status: host-managed-optional
+      repo_preflight_gate: bash tooling/gates/host_capability_preflight.sh ffmpeg-system-binary
+    expected_pair:
+      assurance_tier: host-preflight-optional
+      verification_mode: governed-host-binary-declaration
+      repo_preflight_gate: bash tooling/gates/host_capability_preflight.sh ffmpeg-system-binary
+      allowed_missing_behavior: allow-and-report
+      preflight_policy: trusted-binary-resolution
+  - upstream_id: document-conversion-system-binary
+    probe: document-conversion
+    expected_inventory:
+      class: system-binary
+      assurance_tier: host-preflight-optional
+      host_management: operator-managed
+      verification_mode: governed-host-binary-declaration
+      capability_status: host-managed-optional
+      repo_preflight_gate: bash tooling/gates/host_capability_preflight.sh document-conversion-system-binary
+    expected_pair:
+      assurance_tier: host-preflight-optional
+      verification_mode: governed-host-binary-declaration
+      repo_preflight_gate: bash tooling/gates/host_capability_preflight.sh document-conversion-system-binary
+      allowed_missing_behavior: allow-and-report
+      preflight_policy: trusted-binary-resolution
+  - upstream_id: ocr-capability-contract
+    probe: unsupported-capability
+    expected_inventory:
+      class: runtime-capability-contract
+      assurance_tier: unsupported-declaration
+      verification_mode: governed-unsupported-capability-declaration
+      capability_status: unsupported
+      repo_preflight_gate: bash tooling/gates/host_capability_preflight.sh ocr-capability-contract
+    expected_pair:
+      assurance_tier: unsupported-declaration
+      verification_mode: governed-unsupported-capability-declaration
+      repo_preflight_gate: bash tooling/gates/host_capability_preflight.sh ocr-capability-contract
+      allowed_missing_behavior: declared-unsupported
+      preflight_policy: declared-unsupported

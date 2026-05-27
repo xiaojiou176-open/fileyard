@@ -1,0 +1,33 @@
+version: 1
+claim_surfaces:
+  - path: README.md
+    required_snippets:
+      - limited-maintenance open source
+      - Delivery-complete truth for the current snapshot
+      - Public readiness gates
+      - Current source package version
+      - Current current-head release boundary
+  - path: docs/usage.md
+    required_snippets:
+      - Delivery-complete truth for the current snapshot
+      - Repo-side governance scorecard, not delivery completion
+      - limited-maintenance open-source project
+      - Current source package version
+      - Current current-head release boundary
+  - path: docs/architecture.md
+    required_snippets:
+      - single source of truth
+      - Repository Segmentation And Boundaries
+  - path: docs/open_source_runbook.md
+    required_snippets:
+      - limited-maintenance open source + a GitHub source repo + GitHub Releases
+      - bash tooling/gates/platform_alignment_gate.sh
+  - path: docs/mcp.md
+    required_snippets:
+      - stdio-first
+      - local-first
+      - does not get a secret “move files now” shortcut
+  - path: docs/developer_guide.md
+    required_snippets:
+      - Fileyard MCP v1
+      - no direct file-move shortcut for agents

@@ -1,0 +1,28 @@
+{
+  "required_any": [
+    "CLAUDE.md",
+    "AGENTS.md"
+  ],
+  "required_all": [
+    "apps/api/AGENTS.md",
+    "apps/api/CLAUDE.md",
+    "apps/cli/AGENTS.md",
+    "apps/cli/CLAUDE.md",
+    "apps/webui/AGENTS.md",
+    "apps/webui/CLAUDE.md",
+    "packages/application/AGENTS.md",
+    "packages/application/CLAUDE.md",
+    "packages/domain/AGENTS.md",
+    "packages/domain/CLAUDE.md",
+    "packages/infrastructure/AGENTS.md",
+    "packages/infrastructure/CLAUDE.md",
+    "packages/observability/AGENTS.md",
+    "packages/observability/CLAUDE.md",
+    "tests/AGENTS.md",
+    "tests/CLAUDE.md",
+    "tooling/scripts/AGENTS.md",
+    "tooling/scripts/CLAUDE.md",
+    "docs/AGENTS.md",
+    "docs/CLAUDE.md"
+  ]
+}

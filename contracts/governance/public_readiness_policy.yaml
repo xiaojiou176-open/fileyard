@@ -1,0 +1,63 @@
+version: 1
+default_branch: main
+accepted_code_scanning_rules_contract: contracts/governance/code_scanning_alert_allowlist.yaml
+required_repo_surface_files:
+  - .nvmrc
+  - LICENSE
+  - NOTICE
+  - THIRD_PARTY_NOTICES.md
+  - SECURITY.md
+  - CONTRIBUTING.md
+  - DISTRIBUTION.md
+  - INTEGRATIONS.md
+  - manifest.yaml
+  - server.json
+  - SUPPORT.md
+  - CODE_OF_CONDUCT.md
+  - .github/CODEOWNERS
+  - .github/PULL_REQUEST_TEMPLATE.md
+  - .github/ISSUE_TEMPLATE/bug_report.yml
+  - .github/ISSUE_TEMPLATE/documentation.yml
+  - .github/ISSUE_TEMPLATE/config.yml
+  - docs/index.md
+  - docs/architecture.md
+  - docs/usage.md
+  - docs/open_source_runbook.md
+  - docs/brand_positioning.md
+  - docs/seo_landing_map.md
+  - docs/mcp.md
+  - docs/developer_guide.md
+  - docs/review_first_ai_file_organizer.md
+  - apps/mcp/README.md
+  - examples/skills/README.md
+  - examples/skills/SKILL.md
+  - examples/openclaw/README.md
+required_package_scripts:
+  - release:draft
+  - security:history-scan
+  - public:readiness
+  - platform:align
+  - mcp:stdio
+required_runbook_snippets:
+  - bash tooling/gates/public_readiness_gate.sh repo
+  - bash tooling/gates/public_readiness_gate.sh release
+  - bash tooling/gates/platform_alignment_gate.sh
+required_asset_provenance_entries:
+  - tests/fixtures/golden_input/archive.pdf
+  - apps/webui/public/fileyard-mark.svg
+  - tests/fixtures/golden_input/doc.pdf
+  - tests/fixtures/golden_input/invoice.pdf
+  - tests/fixtures/golden_input/my_screenshot.png
+  - tests/fixtures/golden_input/note.pdf
+  - tests/fixtures/golden_input/photo.png
+  - tests/fixtures/golden_input/photo_02.png
+  - tests/fixtures/golden_input/report.pdf
+  - tests/fixtures/golden_input/screenshot_02.png
+  - tests/fixtures/golden_input/screenshot_03.png
+release_mode:
+  require_tracked_files: true
+  require_public_repo: true
+  require_pvr: true
+  require_branch_protection: true
+  require_zero_code_scanning_alerts: true
+  require_zero_secret_scanning_alerts: true

@@ -1,0 +1,13 @@
+version: 1
+entries:
+  - id: CVE-2026-4539
+    package: pygments
+    version: 2.19.2
+    scope: dev-lock-only
+    status: active
+    accepted_on: 2026-03-26
+    rationale: >
+      No patched Pygments release is available on PyPI as of 2026-03-26. The
+      vulnerable package is only present in the dev lock via pytest/rich and
+      does not ship in the runtime lock.
+    review_after: 2026-04-09

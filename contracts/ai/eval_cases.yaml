@@ -1,0 +1,257 @@
+version: 1
+suites:
+  - id: offline-golden
+    mode: offline
+    input_dir: tests/fixtures/golden_input
+    expected_manifest: tests/fixtures/golden_expected/manifest.jsonl
+    cases:
+      - id: offline-doc-media-type
+        row: doc.pdf
+        kind: equals
+        field: media_type
+        expected: pdf
+      - id: offline-doc-kind
+        row: doc.pdf
+        kind: equals
+        field: ai.kind
+        expected: 文档
+      - id: offline-doc-category
+        row: doc.pdf
+        kind: equals
+        field: ai.category
+        expected: 其他
+      - id: offline-doc-title
+        row: doc.pdf
+        kind: equals
+        field: ai.title
+        expected: 未命名
+      - id: offline-doc-confidence
+        row: doc.pdf
+        kind: equals
+        field: ai.confidence
+        expected: 0
+      - id: offline-doc-warning
+        row: doc.pdf
+        kind: equals
+        field: ai_warning
+        expected: "Offline mode: local rules were used"
+      - id: offline-screenshot-media-type
+        row: my_screenshot.png
+        kind: equals
+        field: media_type
+        expected: image
+      - id: offline-screenshot-kind
+        row: my_screenshot.png
+        kind: equals
+        field: ai.kind
+        expected: 截图
+      - id: offline-screenshot-category
+        row: my_screenshot.png
+        kind: equals
+        field: ai.category
+        expected: 其他
+      - id: offline-screenshot-title
+        row: my_screenshot.png
+        kind: equals
+        field: ai.title
+        expected: 未命名
+      - id: offline-screenshot-confidence
+        row: my_screenshot.png
+        kind: equals
+        field: ai.confidence
+        expected: 0
+      - id: offline-screenshot-warning
+        row: my_screenshot.png
+        kind: equals
+        field: ai_warning
+        expected: "Offline mode: local rules were used"
+      - id: offline-photo-media-type
+        row: photo.png
+        kind: equals
+        field: media_type
+        expected: image
+      - id: offline-photo-kind
+        row: photo.png
+        kind: equals
+        field: ai.kind
+        expected: 照片
+      - id: offline-photo-category
+        row: photo.png
+        kind: equals
+        field: ai.category
+        expected: 其他
+      - id: offline-photo-title
+        row: photo.png
+        kind: equals
+        field: ai.title
+        expected: 未命名
+      - id: offline-photo-confidence
+        row: photo.png
+        kind: equals
+        field: ai.confidence
+        expected: 0
+      - id: offline-photo-warning
+        row: photo.png
+        kind: equals
+        field: ai_warning
+        expected: "Offline mode: local rules were used"
+  - id: offline-audio-contract
+    mode: offline
+    synthetic_audio:
+      filename: 语音样例.wav
+      duration_seconds: 0.25
+      frequency_hz: 440.0
+    cases:
+      - id: offline-audio-media-type
+        row: 语音样例.wav
+        kind: equals
+        field: media_type
+        expected: audio
+      - id: offline-audio-kind
+        row: 语音样例.wav
+        kind: equals
+        field: ai.kind
+        expected: 音频
+      - id: offline-audio-category
+        row: 语音样例.wav
+        kind: equals
+        field: ai.category
+        expected: 其他
+      - id: offline-audio-title
+        row: 语音样例.wav
+        kind: equals
+        field: ai.title
+        expected: 语音样例
+      - id: offline-audio-confidence
+        row: 语音样例.wav
+        kind: equals
+        field: ai.confidence
+        expected: 0
+      - id: offline-audio-notes
+        row: 语音样例.wav
+        kind: equals
+        field: ai.notes
+        expected: offline
+      - id: offline-audio-status
+        row: 语音样例.wav
+        kind: equals
+        field: status
+        expected: pending
+      - id: offline-audio-schema-version
+        row: 语音样例.wav
+        kind: equals
+        field: schema_version
+        expected: 2
+  - id: live-rubric
+    mode: live
+    input_dir: tests/fixtures/golden_input
+    cases:
+      - id: live-doc-kind
+        row: doc.pdf
+        kind: equals
+        field: ai.kind
+        expected: 文档
+      - id: live-doc-category
+        row: doc.pdf
+        kind: in_set
+        field: ai.category
+        expected:
+          - 工作
+          - 旅行
+          - 美食
+          - 收据
+          - 文档
+          - 聊天
+          - 错误
+          - 产品
+          - 风景
+          - 人物
+          - 其他
+      - id: live-doc-title
+        row: doc.pdf
+        kind: nonempty
+        field: ai.title
+      - id: live-doc-confidence
+        row: doc.pdf
+        kind: range
+        field: ai.confidence
+        min: 0
+        max: 1
+      - id: live-doc-notes
+        row: doc.pdf
+        kind: exists
+        field: ai.notes
+      - id: live-screenshot-kind
+        row: my_screenshot.png
+        kind: in_set
+        field: ai.kind
+        expected:
+          - 截图
+          - 照片
+      - id: live-screenshot-category
+        row: my_screenshot.png
+        kind: in_set
+        field: ai.category
+        expected:
+          - 工作
+          - 旅行
+          - 美食
+          - 收据
+          - 文档
+          - 聊天
+          - 错误
+          - 产品
+          - 风景
+          - 人物
+          - 其他
+      - id: live-screenshot-title
+        row: my_screenshot.png
+        kind: nonempty
+        field: ai.title
+      - id: live-screenshot-confidence
+        row: my_screenshot.png
+        kind: range
+        field: ai.confidence
+        min: 0
+        max: 1
+      - id: live-screenshot-notes
+        row: my_screenshot.png
+        kind: exists
+        field: ai.notes
+      - id: live-photo-kind
+        row: photo.png
+        kind: in_set
+        field: ai.kind
+        expected:
+          - 照片
+          - 截图
+      - id: live-photo-category
+        row: photo.png
+        kind: in_set
+        field: ai.category
+        expected:
+          - 工作
+          - 旅行
+          - 美食
+          - 收据
+          - 文档
+          - 聊天
+          - 错误
+          - 产品
+          - 风景
+          - 人物
+          - 其他
+      - id: live-photo-title
+        row: photo.png
+        kind: nonempty
+        field: ai.title
+      - id: live-photo-confidence
+        row: photo.png
+        kind: range
+        field: ai.confidence
+        min: 0
+        max: 1
+      - id: live-photo-notes
+        row: photo.png
+        kind: exists
+        field: ai.notes

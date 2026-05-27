@@ -1,0 +1,116 @@
+version: 1
+layers:
+  apps_cli:
+    paths:
+      - apps/cli/**
+    may_import_from:
+      - packages/application/**
+      - packages/domain/**
+      - packages/infrastructure/config_loader.py
+      - packages/infrastructure/runtime_env_store.py
+      - packages/observability/**
+      - contracts/runtime/**
+  apps_api:
+    paths:
+      - apps/api/**
+    may_import_from:
+      - packages/application/**
+      - packages/domain/**
+      - packages/infrastructure/**
+      - packages/observability/**
+      - contracts/api/**
+      - contracts/runtime/**
+  apps_mcp:
+    paths:
+      - apps/mcp/**
+    may_import_from:
+      - apps/api/**
+      - apps/mcp/**
+      - packages/application/**
+      - packages/domain/**
+      - packages/infrastructure/**
+      - packages/observability/**
+      - contracts/api/**
+      - contracts/runtime/**
+  apps_webui:
+    paths:
+      - apps/webui/src/**
+    may_import_from:
+      - apps/webui/src/**
+      - contracts/api/generated/webui/**
+      - contracts/runtime/**
+  packages_domain:
+    paths:
+      - packages/domain/**
+    may_import_from: []
+  packages_application:
+    paths:
+      - packages/application/**
+    may_import_from:
+      - packages/domain/**
+      - packages/infrastructure/**
+      - packages/observability/**
+      - contracts/runtime/**
+  packages_infrastructure:
+    paths:
+      - packages/infrastructure/**
+    may_import_from:
+      - packages/domain/**
+      - packages/observability/**
+      - contracts/runtime/**
+      - contracts/upstreams/**
+  packages_observability:
+    paths:
+      - packages/observability/**
+    may_import_from:
+      - contracts/runtime/**
+      - contracts/upstreams/**
+  contracts_api:
+    paths:
+      - contracts/api/**
+    may_import_from: []
+  contracts_runtime:
+    paths:
+      - contracts/runtime/**
+    may_import_from: []
+  contracts_governance:
+    paths:
+      - contracts/governance/**
+    may_import_from: []
+  contracts_upstreams:
+    paths:
+      - contracts/upstreams/**
+    may_import_from: []
+  tooling_scripts:
+    paths:
+      - tooling/scripts/**
+    may_import_from:
+      - apps/api/web_api.py
+      - contracts/api/**
+      - contracts/docs/**
+      - contracts/governance/**
+      - contracts/runtime/**
+      - contracts/upstreams/**
+      - packages/domain/**
+      - packages/observability/**
+  tests:
+    paths:
+      - tests/**
+    may_import_from:
+      - apps/api/**
+      - apps/cli/**
+      - apps/mcp/**
+      - apps/webui/**
+      - contracts/api/**
+      - contracts/docs/**
+      - contracts/governance/**
+      - contracts/runtime/**
+      - contracts/upstreams/**
+      - packages/application/**
+      - packages/domain/**
+      - packages/infrastructure/**
+      - packages/observability/**
+      - tooling/scripts/**
+forbidden_roots:
+  - webui/**
+  - 脚本/**

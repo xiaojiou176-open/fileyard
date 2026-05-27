@@ -1,0 +1,14 @@
+id: meeting-notes
+name: Meeting Notes Pack
+description: Bias categorization and review toward screenshots, notes, slides, and recordings from the same meeting batch.
+categories:
+  - 工作
+  - 文档
+  - 产品
+  - 聊天
+model: gemini-3.1-pro-preview
+workers: 1
+review_confidence_threshold: 0.8
+default_rule_ids: []
+default_template_patterns:
+  - "{date}/{category}/{title}__{hash8}"

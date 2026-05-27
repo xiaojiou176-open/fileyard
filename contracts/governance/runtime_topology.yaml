@@ -1,0 +1,21 @@
+version: 1
+repo_runtime:
+  runtime_cache_root: .runtime-cache
+  temp_dir: .runtime-cache/tmp
+  log_dir: .runtime-cache/logs
+  ci_dir: .runtime-cache/ci
+  ci_contract_dir: .runtime-cache/ci-contract
+  test_dir: .runtime-cache/test
+  build_dir: .runtime-cache/build
+  codegen_dir: .runtime-cache/codegen
+  venv_dir: ~/.cache/fileyard/venv/default
+  mutmut_cache_file: .runtime-cache/test/mutation/.mutmut-cache
+  webui_lock_hash_file: .runtime-cache/build/apps/webui/.movi_webui_lock_hash
+workspace_runtime:
+  workspace_root: ~/.fileyard/workspaces/default
+  input_dir: ~/.fileyard/workspaces/default/data/raw
+  output_dir: ~/.fileyard/workspaces/default/data/organized
+  manifest_root: ~/.fileyard/workspaces/default/.fileyard/manifests
+  artifact_root: ~/.fileyard/workspaces/default/.fileyard/artifacts
+  evidence_bundle_path: ~/.fileyard/workspaces/default/.fileyard/artifacts/evidence-bundle.json
+  run_bundle_root: ~/.fileyard/workspaces/default/.fileyard/runs

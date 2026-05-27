@@ -1,0 +1,17 @@
+version: 1
+policies:
+  default_action: review
+  required_fields:
+    - id
+    - license
+    - owner
+  deny_licenses:
+    - GPL-3.0-only
+    - AGPL-3.0-only
+  allow_review_buckets:
+    - Apache-2.0
+    - BSD-3-Clause
+    - MIT
+    - commercial-friendly
+    - mixed
+    - provider-contract

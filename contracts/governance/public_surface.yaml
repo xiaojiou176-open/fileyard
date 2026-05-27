@@ -1,0 +1,45 @@
+version: 1
+public_docs:
+  - README.md
+  - manifest.yaml
+  - server.json
+  - AGENTS.md
+  - CLAUDE.md
+  - LICENSE
+  - NOTICE
+  - THIRD_PARTY_NOTICES.md
+  - SECURITY.md
+  - CONTRIBUTING.md
+  - DISTRIBUTION.md
+  - INTEGRATIONS.md
+  - SUPPORT.md
+  - CODE_OF_CONDUCT.md
+  - docs/usage.md
+  - docs/architecture.md
+  - apps/mcp/README.md
+  - examples/skills/README.md
+  - examples/openclaw/README.md
+public_doc_globs:
+  - apps/**/AGENTS.md
+  - apps/**/CLAUDE.md
+  - packages/**/AGENTS.md
+  - packages/**/CLAUDE.md
+  - tests/AGENTS.md
+  - tests/CLAUDE.md
+  - tooling/AGENTS.md
+  - tooling/CLAUDE.md
+  - docs/AGENTS.md
+  - docs/CLAUDE.md
+public_wrapper_prefixes:
+  - tooling/runtime/
+  - tooling/gates/
+  - tooling/docs/
+  - tooling/cleanup/
+  - tooling/ci/
+  - tooling/upstreams/
+forbidden_command_patterns:
+  - "(?:^|\\s)(?:python3?|bash)\\s+tooling/scripts/"
+  - "(?:^|\\s)\\./tooling/scripts/"
+  - "(?:^|\\s)tooling/scripts/[A-Za-z0-9._/-]+\\.(?:py|sh)\\b"
+package_json_script_forbidden_substrings:
+  - tooling/scripts/

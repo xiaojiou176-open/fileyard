@@ -1,0 +1,28 @@
+version: 1
+forbidden_phrases:
+  - fully green
+  - open-source ready
+  - platform aligned
+  - WS4 正在跑
+  - 终局未收口
+claim_surfaces:
+  - path: README.md
+    required_snippets:
+      - Minimal Truth Routes
+      - Current current-head release boundary
+      - "current-head release` boundaries depend on local/CI runtime evidence"
+  - path: docs/usage.md
+    required_snippets:
+      - bash tooling/gates/platform_alignment_gate.sh
+      - Detailed operator guide
+  - path: docs/open_source_runbook.md
+    required_snippets:
+      - bash tooling/gates/platform_alignment_gate.sh
+      - Do not mistake a repo-mode pass for full platform closure
+  - path: docs/mcp.md
+    required_snippets:
+      - not a hosted API platform
+      - apply.execute
+  - path: docs/developer_guide.md
+    required_snippets:
+      - no direct file-move shortcut for agents

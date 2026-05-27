@@ -1,0 +1,22 @@
+version: 1
+allowed_labels:
+  - current-live-verified
+  - repo-side-only
+  - platform-side-not-fresh
+  - historical-only
+required_docs:
+  - path: docs/open_source_runbook.md
+    required_labels:
+      - repo-side-only
+      - platform-side-not-fresh
+latest_plan:
+  glob: .agents/Plans/*master-plan*.md
+  allow_missing: true
+  required_labels:
+    - current-live-verified
+    - repo-side-only
+    - platform-side-not-fresh
+  required_snippets:
+    - Current Source Of Truth
+    - Supersedes
+    - historical-only

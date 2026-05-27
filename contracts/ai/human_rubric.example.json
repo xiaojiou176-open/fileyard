@@ -1,0 +1,14 @@
+{
+  "status": "template",
+  "reviewer": "human_reviewer",
+  "captured_at": "2026-03-17T10:00:00-07:00",
+  "agreement_rate": 0.75,
+  "notes": "Review live-rubric output row by row and replace this example with a real human assessment.",
+  "rows": [
+    {
+      "row": "example-row",
+      "status": "borderline",
+      "notes": "Use pass / borderline / fail and explain disagreements briefly."
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+version: 1
+assets:
+  - path: apps/webui/public/fileyard-mark.svg
+    kind: public-brand-asset
+    status: repository-authored
+    license: MIT
+    sha256: 58e3bacd3f3bd9e1b155ed5adc12a0ce871e7a3eca0a981fdbf170d33d431053
+    file_size_bytes: 380
+    notes: Replaces the default Vite favicon for repository-specific branding and provenance clarity.
+  - path: tests/fixtures/golden_input/doc.pdf
+    kind: public-test-fixture
+    status: repository-maintained-synthetic
+    license: MIT
+    sha256: ab08f6c74fd33a7702091e0262c1d94ef43e9574467e5ab504f7979884fd6e2a
+    file_size_bytes: 632
+    notes: Synthetic deterministic document fixture used for offline/golden regression coverage.
+  - path: tests/fixtures/golden_input/my_screenshot.png
+    kind: public-test-fixture
+    status: repository-maintained-synthetic
+    license: MIT
+    sha256: 5e0606a4e0392114d20500fe317089f1e55b823b6961f04b3370a38da83b4c3e
+    file_size_bytes: 1047
+    notes: Synthetic deterministic screenshot fixture used for offline/golden regression coverage.
+  - path: tests/fixtures/golden_input/photo.png
+    kind: public-test-fixture
+    status: repository-maintained-synthetic
+    license: MIT
+    sha256: 2033d04f9c10e5cf14199650aa1e072d6c50f9d786b87e4f1858f305b6c33629
+    file_size_bytes: 1810
+    notes: Synthetic deterministic photo fixture used for offline/golden regression coverage.
+  - path: tests/fixtures/golden_input/archive.pdf
+    kind: public-test-fixture
+    status: repository-maintained-synthetic
+    license: MIT
+    sha256: ab08f6c74fd33a7702091e0262c1d94ef43e9574467e5ab504f7979884fd6e2a
+    file_size_bytes: 632
+    notes: Synthetic deterministic document fixture used for expanded offline/golden regression coverage.
+  - path: tests/fixtures/golden_input/invoice.pdf
+    kind: public-test-fixture
+    status: repository-maintained-synthetic
+    license: MIT
+    sha256: ab08f6c74fd33a7702091e0262c1d94ef43e9574467e5ab504f7979884fd6e2a
+    file_size_bytes: 632
+    notes: Synthetic deterministic invoice-style document fixture used for expanded offline/golden regression coverage.
+  - path: tests/fixtures/golden_input/note.pdf
+    kind: public-test-fixture
+    status: repository-maintained-synthetic
+    license: MIT
+    sha256: ab08f6c74fd33a7702091e0262c1d94ef43e9574467e5ab504f7979884fd6e2a
+    file_size_bytes: 632
+    notes: Synthetic deterministic note-style document fixture used for expanded offline/golden regression coverage.
+  - path: tests/fixtures/golden_input/report.pdf
+    kind: public-test-fixture
+    status: repository-maintained-synthetic
+    license: MIT
+    sha256: ab08f6c74fd33a7702091e0262c1d94ef43e9574467e5ab504f7979884fd6e2a
+    file_size_bytes: 632
+    notes: Synthetic deterministic report-style document fixture used for expanded offline/golden regression coverage.
+  - path: tests/fixtures/golden_input/photo_02.png
+    kind: public-test-fixture
+    status: repository-maintained-synthetic
+    license: MIT
+    sha256: 2033d04f9c10e5cf14199650aa1e072d6c50f9d786b87e4f1858f305b6c33629
+    file_size_bytes: 1810
+    notes: Synthetic deterministic photo fixture used for expanded offline/golden regression coverage.
+  - path: tests/fixtures/golden_input/screenshot_02.png
+    kind: public-test-fixture
+    status: repository-maintained-synthetic
+    license: MIT
+    sha256: 5e0606a4e0392114d20500fe317089f1e55b823b6961f04b3370a38da83b4c3e
+    file_size_bytes: 1047
+    notes: Synthetic deterministic screenshot fixture used for expanded offline/golden regression coverage.
+  - path: tests/fixtures/golden_input/screenshot_03.png
+    kind: public-test-fixture
+    status: repository-maintained-synthetic
+    license: MIT
+    sha256: 5e0606a4e0392114d20500fe317089f1e55b823b6961f04b3370a38da83b4c3e
+    file_size_bytes: 1047
+    notes: Synthetic deterministic screenshot fixture used for expanded offline/golden regression coverage.

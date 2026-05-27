@@ -1,0 +1,10 @@
+version: 1
+upgrade_entrypoint: tooling/scripts/upgrade_one_upstream.py
+fetch_entrypoint: tooling/scripts/fetch_upstream_artifact.py
+rules:
+  - all upgrades must reference an upstream_id
+  - all fetched binaries must be registered in upstream_inventory.yaml
+  - all fetched binaries must provide checksum_or_digest and source_url
+  - all compatibility changes must update compatibility_matrix.yaml
+  - all compatibility rows must provide verification_mode, verification_artifact, verification_max_age_hours, and rollback_baseline
+  - all npm overrides or similar patch surfaces must update patch_registry.yaml

@@ -1,0 +1,96 @@
+version: 1
+tier_order:
+  - smoke
+  - interview
+  - public
+value_proof:
+  upgrade_pack:
+    pack_id: value-proof-upgrade-pack
+    manifest_file_name: upgrade-pack.json
+    copied_file_name: manual-baseline.json
+    template_status: template
+    recorded_input_status_required: recorded
+    current_claim_tier_cap: smoke
+    recorded_input_unlocks_tier: interview
+    still_blocked_tiers_after_recorded_input:
+      - public
+    human_input_kind: manual_baseline
+    prepare_command: bash tooling/runtime/run_value_proof.sh --prepare-upgrade-pack
+    rerun_flag: --manual-baseline-json
+    fail_close: true
+  tier_requirements:
+    smoke:
+      min_dataset_files: 1
+      manual_baseline_statuses:
+        - manual_capture_required
+        - recorded
+      durable_receipts_required: true
+      summary: The fixed minimum sample is still reproducible, which is enough for smoke-tier self-verification.
+    interview:
+      min_dataset_files: 10
+      manual_baseline_statuses:
+        - recorded
+      durable_receipts_required: true
+      summary: The sample is larger than smoke-tier and now includes a recorded human baseline, which is strong enough for interview-grade before/after discussion.
+    public:
+      min_dataset_files: 25
+      manual_baseline_statuses:
+        - recorded
+      durable_receipts_required: true
+      summary: This is strong enough for more public value claims, but it still does not prove long-run production outcomes.
+ai_eval:
+  live_suite_id: live-rubric
+  upgrade_pack:
+    pack_id: ai-eval-upgrade-pack
+    manifest_file_name: upgrade-pack.json
+    copied_file_name: human-rubric.json
+    template_status: template
+    recorded_input_status_required: recorded
+    current_claim_tier_cap: smoke
+    recorded_input_unlocks_tier: public
+    prerequisite_before_recorded_input_unlocks:
+      - live_receipt.status == passed
+    human_input_kind: human_rubric
+    prepare_command: bash tooling/gates/ai_eval_gate.sh --prepare-upgrade-pack
+    rerun_flag: --human-rubric-json
+    fail_close: true
+  tier_requirements:
+    smoke:
+      required_offline_suites:
+        - offline-golden
+        - offline-audio-contract
+      live_receipt_required: false
+      human_rubric_statuses:
+        - not_recorded
+        - recorded
+      summary: Offline contracts and the minimum sample are stable, but they do not prove current live Gemini quality.
+    interview:
+      required_offline_suites:
+        - offline-golden
+        - offline-audio-contract
+      live_receipt_required: true
+      human_rubric_statuses:
+        - not_recorded
+        - recorded
+      summary: A real live receipt exists, so you can discuss live model boundaries, but the run still lacks a recorded human rubric.
+    public:
+      required_offline_suites:
+        - offline-golden
+        - offline-audio-contract
+      live_receipt_required: true
+      human_rubric_statuses:
+        - recorded
+      summary: This is strong enough for public live-quality claims, but it still needs repeated reruns instead of one-off screenshots.
+docs:
+  operator_guide:
+    path: docs/usage.md
+    required_snippets:
+      - "Detailed Operator Guide"
+      - "quality_gate.sh"
+      - "open_source_runbook"
+  open_source_runbook:
+    path: docs/open_source_runbook.md
+    required_snippets:
+      - "public_readiness_gate.sh repo"
+      - "published_release_verified"
+      - "Repository docs are not a live platform dashboard."

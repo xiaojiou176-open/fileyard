@@ -1,0 +1,121 @@
+version: 1
+repo_runtime:
+  allowed_top_level:
+    - build
+    - ci
+    - codegen
+    - logs
+    - test
+    - tmp
+  allowed_paths:
+    - .runtime-cache/build
+    - .runtime-cache/build/apps
+    - .runtime-cache/build/apps/webui
+    - .runtime-cache/build/images
+    - .runtime-cache/build/tooling
+    - .runtime-cache/ci
+    - .runtime-cache/ci/contracts
+    - .runtime-cache/ci/metrics
+    - .runtime-cache/ci/reports
+    - .runtime-cache/codegen
+    - .runtime-cache/logs
+    - .runtime-cache/logs/lint-frontend
+    - .runtime-cache/logs/local-ci-matrix
+    - .runtime-cache/logs/quality-gate
+    - .runtime-cache/logs/upstream-upgrade
+    - .runtime-cache/test
+    - .runtime-cache/test/coverage
+    - .runtime-cache/test/junit
+    - .runtime-cache/test/mutation
+    - .runtime-cache/test/playwright
+    - .runtime-cache/test/pytest
+    - .runtime-cache/test/ui-audit
+    - .runtime-cache/tmp
+    - .runtime-cache/tmp/docs-smoke
+    - .runtime-cache/tmp/downloads
+    - .runtime-cache/tmp/webui-build
+  recursive_allowed_roots:
+    - .runtime-cache/build/apps/webui
+    - .runtime-cache/build/images
+    - .runtime-cache/build/tooling
+    - .runtime-cache/ci
+    - .runtime-cache/logs
+    - .runtime-cache/test/coverage
+    - .runtime-cache/test/junit
+    - .runtime-cache/test/mutation
+    - .runtime-cache/test/playwright
+    - .runtime-cache/test/pytest
+    - .runtime-cache/test/ui-audit
+    - .runtime-cache/tmp
+  forbidden_roots:
+    - apps/.runtime-cache
+    - packages/**/.cache
+    - packages/**/.runtime-cache
+    - build
+    - dist
+    - coverage
+    - htmlcov
+    - playwright-report
+    - .venv
+    - .cache
+    - .pytest_cache
+    - .mypy_cache
+    - .ruff_cache
+  forbidden_repo_residue_globs:
+    - "apps/**/node_modules"
+    - "apps/**/dist"
+    - "apps/**/dist-ssr"
+    - "**/__pycache__"
+    - "**/*.egg-info"
+    - "**/.pytest_cache"
+    - "**/.mypy_cache"
+    - "**/.ruff_cache"
+workspace_runtime:
+  workspace_root: ~/.fileyard/workspaces/default
+  movi_root: ~/.fileyard/workspaces/default/.fileyard
+  manifest_root: ~/.fileyard/workspaces/default/.fileyard/manifests
+  artifact_root: ~/.fileyard/workspaces/default/.fileyard/artifacts
+  run_bundle_root: ~/.fileyard/workspaces/default/.fileyard/runs
+  env_root: ~/.fileyard/workspaces/default/.fileyard/env
+machine_cache:
+  root: ~/.cache/fileyard
+  required_paths:
+    - ~/.cache/fileyard/venv/default
+    - ~/.cache/fileyard/pip
+    - ~/.cache/fileyard/npm
+    - ~/.cache/fileyard/xdg
+    - ~/.cache/fileyard/playwright
+    - ~/.cache/fileyard/pycache
+docker_runtime:
+  compose_project: fileyard-web-stack
+  canonical_image: fileyard-ci:local
+  protected_volumes:
+    - fileyard-web-stack_movi_playwright
+    - fileyard-web-stack_movi_venv
+  optional_volumes:
+    - fileyard-web-stack_movi_webui_node_modules
+  shared_related_surface:
+    - docker build cache
+  cleanup_modes:
+    - safe
+    - rebuildable
+    - aggressive
+budgets_mb:
+  repo_runtime_warn: 256
+  repo_runtime_error: 512
+  machine_cache_warn: 768
+  machine_cache_error: 1280
+  docker_runtime_warn: 4096
+  docker_runtime_error: 6144
+  docker_build_cache_warn: 2048
+  docker_build_cache_error: 4096
+retention:
+  repo_logs_days: 7
+  repo_receipts_keep_latest: 20
+  repo_receipts_days: 7
+  repo_tmp_hours: 24
+  repo_test_keep_failed_runs: 3
+  workspace_runs_days: 14
+  workspace_runs_keep_latest: 50
+  workspace_artifacts_days: 14
+  workspace_failed_artifacts_days: 30

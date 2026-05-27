@@ -1,0 +1,16 @@
+{
+  "contract_total": 29,
+  "broad_total": 44,
+  "observed_business_envs": 23,
+  "baseline_update_policy": "governance-cycle-only",
+  "category_counts": {
+    "FILEYARD_": 17,
+    "GEMINI_": 2,
+    "LIVE_": 3,
+    "CLEAN_CACHE_": 1,
+    "PRE_COMMIT_": 2,
+    "PYTEST_": 2,
+    "HEARTBEAT_": 1,
+    "QUALITY_GATE_": 1
+  }
+}

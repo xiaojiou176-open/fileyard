@@ -1,0 +1,103 @@
+version: 1
+workflow_file: .github/workflows/ci.yml
+branch_protection_target: main
+required_checks:
+  - job_id: fork-pr-safety-gate
+    purpose: Fork PR safety gate that asserts untrusted PRs stay on hosted-only public checks
+    blocking_level: required
+    branch_protection: Mark as a required status check
+    failure_domain_policy: hosted-primary-plus-hosted-retry
+    failure_domain_reason: Control-style gate with no runtime image dependency; keep the public safety check on GitHub-hosted lanes only.
+  - job_id: commit-message-lint
+    purpose: Conventional Commits message gate
+    blocking_level: required
+    branch_protection: Mark as a required status check
+    failure_domain_policy: hosted-primary-plus-hosted-retry
+    failure_domain_reason: Depends only on git history and deterministic script logic, so hosted primary plus hosted retry is appropriate.
+  - job_id: atomic-commit-gate
+    purpose: Atomic commit gate for file-count and line-count thresholds
+    blocking_level: required
+    branch_protection: Mark as a required status check
+    failure_domain_policy: hosted-primary-plus-hosted-retry
+    failure_domain_reason: Pure diff/script gate with no need for secrets or repository-owned runner inventory.
+  - job_id: secrets-supply-chain-gate
+    purpose: Secrets and supply-chain blocking scan
+    blocking_level: required
+    branch_protection: Mark as a required status check
+    failure_domain_policy: hosted-primary-plus-hosted-retry
+    failure_domain_reason: Secrets and supply-chain scanning stays on GitHub-hosted lanes so fork PRs can run it without private infrastructure.
+  - job_id: lint-backend
+    purpose: Backend lint plus docs/logging/contract gates
+    blocking_level: required
+    branch_protection: Mark as a required status check
+    failure_domain_policy: hosted-primary-plus-hosted-retry
+    failure_domain_reason: Backend lint and docs/policy gates are deterministic and containerized, so hosted primary with hosted retry remains appropriate.
+  - job_id: lint-frontend
+    purpose: Frontend/style/UI audit gate
+    blocking_level: required
+    branch_protection: Mark as a required status check
+    failure_domain_policy: hosted-primary-plus-hosted-retry
+    failure_domain_reason: Frontend lint and deterministic build/lint paths fit hosted primary, while hosted retry preserves a second GitHub-hosted lane.
+  - job_id: webui-build-test
+    purpose: WebUI correctness gate (`npm ci` + `vitest` + `vite build`)
+    blocking_level: required
+    branch_protection: Mark as a required status check
+    failure_domain_policy: hosted-primary-plus-hosted-retry
+    failure_domain_reason: Deterministic frontend test/build lane stays GitHub-hosted for public collaboration safety.
+  - job_id: ci-hardening-gate
+    purpose: CI hardening gate for workflow structure and dependency anti-regression
+    blocking_level: required
+    branch_protection: Mark as a required status check
+    failure_domain_policy: hosted-primary-plus-hosted-retry
+    failure_domain_reason: Pure workflow-structure validation belongs on GitHub-hosted lanes only.
+  - job_id: quality-gate-full
+    purpose: Remote canonical full-verification gate (coverage/static/security/full pytest plus canonical short checks)
+    blocking_level: required
+    branch_protection: Mark as a required status check
+    failure_domain_policy: hosted-primary-plus-hosted-retry
+    failure_domain_reason: The canonical full gate is fully containerized and uses hosted retry instead of repository-owned runner fallback.
+  - job_id: packaging-gate
+    purpose: Packaging/installability gate (`docs_smoke --install-smoke`)
+    blocking_level: required
+    branch_protection: Mark as a required status check
+    failure_domain_policy: hosted-primary-plus-hosted-retry
+    failure_domain_reason: Install smoke is deterministic packaging validation, so hosted primary plus hosted retry is appropriate.
+  - job_id: mutation-canary-gate
+    purpose: Dedicated mutation canary gate split from the test job to block false greens
+    blocking_level: required
+    branch_protection: Mark as a required status check
+    failure_domain_policy: hosted-primary-plus-hosted-retry
+    failure_domain_reason: Mutation canary is deterministic and containerized, so hosted primary with hosted retry remains the right failure-domain split.
+  - job_id: functional-gate
+    purpose: Supplemental critical-functional smoke gate
+    blocking_level: required
+    branch_protection: Mark as a required status check
+    failure_domain_policy: hosted-primary-plus-hosted-retry
+    failure_domain_reason: Critical functional smoke is containerized and does not depend on repository-owned runner state.
+  - job_id: test
+    purpose: Python version parity and supplemental regression verification (without duplicating short-check terminal truth)
+    blocking_level: required
+    branch_protection: Mark the aggregated `test` resolver as required; matrix lanes remain diagnostic detail
+    failure_domain_policy: hosted-primary-plus-hosted-retry
+    failure_domain_reason: The Python version parity matrix already consumes the runtime image family, so hosted primary with hosted retry is sufficient.
+  - job_id: zizmor
+    workflow_file: .github/workflows/zizmor.yml
+    purpose: GitHub Actions security lint for closeout-owned workflow surfaces
+    blocking_level: required
+    branch_protection: Mark as a required status check
+    failure_domain_policy: hosted-single-lane
+    failure_domain_reason: Zizmor runs as a single GitHub-hosted workflow that blocks high-severity workflow-security regressions.
+  - job_id: trivy-fs
+    workflow_file: .github/workflows/trivy-fs.yml
+    purpose: Filesystem vulnerability scan for tracked repository content
+    blocking_level: required
+    branch_protection: Mark as a required status check
+    failure_domain_policy: hosted-single-lane
+    failure_domain_reason: Trivy filesystem scanning runs as a single GitHub-hosted workflow and blocks high/critical findings.
+  - job_id: trufflehog
+    workflow_file: .github/workflows/trufflehog.yml
+    purpose: Git history secret scan with a second engine in addition to gitleaks
+    blocking_level: required
+    branch_protection: Mark as a required status check
+    failure_domain_policy: hosted-single-lane
+    failure_domain_reason: TruffleHog runs as a single GitHub-hosted workflow and blocks verified/unknown secret findings in git history.

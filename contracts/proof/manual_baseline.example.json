@@ -1,0 +1,10 @@
+{
+  "status": "template",
+  "reason": "Template only. Replace with a real human-timed baseline before using this file for interview/public proof.",
+  "operator": "your_name",
+  "captured_at": "2026-03-17T10:00:00-07:00",
+  "duration_ms": 0,
+  "mistake_count": 0,
+  "rework_required": true,
+  "notes": "Use the same dataset as tests/fixtures/golden_input and record a real human baseline. Replace every value with actual observations."
+}

@@ -1,0 +1,191 @@
+version: 1
+render_state_path: docs/_generated/render_state.json
+renders:
+  - id: env-contract-reference
+    kind: file
+    renderer: env-contract-reference
+    source_paths:
+      - contracts/runtime/env_contract_registry.yaml
+    output_path: docs/reference/env_contract.generated.md
+  - id: required-checks-matrix
+    kind: file
+    renderer: required-checks-matrix
+    source_paths:
+      - .github/workflows/ci.yml
+      - contracts/governance/required_checks_policy.yaml
+    output_path: docs/required_checks_matrix.md
+  - id: web-api-reference
+    kind: file
+    renderer: web-api-reference
+    source_paths:
+      - contracts/api/web_api.openapi.yaml
+    output_path: docs/reference/web_api_routes.generated.md
+  - id: runtime-topology-reference
+    kind: file
+    renderer: runtime-topology-reference
+    source_paths:
+      - ops/compose/docker-compose.yml
+      - contracts/governance/governance.defaults.env
+      - pyproject.toml
+      - package.json
+      - .env.example
+    output_path: docs/reference/runtime_topology.generated.md
+  - id: governance-truth-reference
+    kind: file
+    renderer: governance-truth-reference
+    source_paths:
+      - contracts/governance/done_signal_policy.yaml
+      - contracts/governance/public_readiness_policy.yaml
+      - contracts/governance/required_checks_policy.yaml
+      - .github/workflows/ci.yml
+      - .github/workflows/pre-commit.yml
+      - .github/workflows/live-integration.yml
+      - .github/workflows/mutation-manual.yml
+    output_path: docs/reference/governance_truth.generated.md
+  - id: root-web-api-routes
+    kind: fragment
+    renderer: readme-web-api-summary
+    source_paths:
+      - contracts/api/web_api.openapi.yaml
+    output_path: README.md
+    block_id: root-web-api-routes
+  - id: root-runtime-topology
+    kind: fragment
+    renderer: root-runtime-topology-summary
+    source_paths:
+      - ops/compose/docker-compose.yml
+      - contracts/governance/governance.defaults.env
+      - pyproject.toml
+      - package.json
+      - .env.example
+    output_path: README.md
+    block_id: root-runtime-topology
+  - id: root-ci-governance-summary
+    kind: fragment
+    renderer: root-ci-governance-summary
+    source_paths:
+      - .github/workflows/ci.yml
+      - .github/workflows/reusable-build-runtime-image.yml
+      - .github/workflows/nightly-drift-audit.yml
+      - contracts/governance/required_checks_policy.yaml
+      - package.json
+    output_path: README.md
+    block_id: root-ci-governance-summary
+  - id: root-release-identity
+    kind: fragment
+    renderer: root-release-identity-summary
+    source_paths:
+      - pyproject.toml
+    output_path: README.md
+    block_id: root-release-identity
+  - id: script-readme-web-api-routes
+    kind: fragment
+    renderer: script-readme-web-api-summary
+    source_paths:
+      - contracts/api/web_api.openapi.yaml
+    output_path: docs/usage.md
+    block_id: script-readme-web-api-routes
+  - id: script-readme-runtime-topology
+    kind: fragment
+    renderer: script-readme-runtime-topology-summary
+    source_paths:
+      - ops/compose/docker-compose.yml
+      - contracts/governance/governance.defaults.env
+      - pyproject.toml
+      - package.json
+      - .env.example
+    output_path: docs/usage.md
+    block_id: script-readme-runtime-topology
+  - id: script-readme-ci-governance-summary
+    kind: fragment
+    renderer: script-readme-ci-governance-summary
+    source_paths:
+      - .github/workflows/ci.yml
+      - .github/workflows/reusable-build-runtime-image.yml
+      - .github/workflows/nightly-drift-audit.yml
+      - contracts/governance/required_checks_policy.yaml
+      - package.json
+    output_path: docs/usage.md
+    block_id: script-readme-ci-governance-summary
+  - id: script-readme-release-identity
+    kind: fragment
+    renderer: script-readme-release-identity-summary
+    source_paths:
+      - pyproject.toml
+    output_path: docs/usage.md
+    block_id: script-readme-release-identity
+  - id: script-readme-governance-truth
+    kind: fragment
+    renderer: script-readme-governance-truth-summary
+    source_paths:
+      - contracts/governance/done_signal_policy.yaml
+      - contracts/governance/public_readiness_policy.yaml
+      - contracts/governance/required_checks_policy.yaml
+      - .github/workflows/ci.yml
+      - .github/workflows/pre-commit.yml
+      - .github/workflows/live-integration.yml
+      - .github/workflows/mutation-manual.yml
+    output_path: docs/usage.md
+    block_id: script-readme-governance-truth
+  - id: architecture-web-api-summary
+    kind: fragment
+    renderer: architecture-web-api-summary
+    source_paths:
+      - contracts/api/web_api.openapi.yaml
+    output_path: docs/architecture.md
+    block_id: architecture-web-api-summary
+  - id: architecture-runtime-topology
+    kind: fragment
+    renderer: architecture-runtime-topology-summary
+    source_paths:
+      - ops/compose/docker-compose.yml
+      - contracts/governance/governance.defaults.env
+      - pyproject.toml
+      - package.json
+      - .env.example
+    output_path: docs/architecture.md
+    block_id: architecture-runtime-topology
+  - id: architecture-governance-truth
+    kind: fragment
+    renderer: architecture-governance-truth-summary
+    source_paths:
+      - contracts/governance/done_signal_policy.yaml
+      - contracts/governance/public_readiness_policy.yaml
+      - contracts/governance/required_checks_policy.yaml
+      - .github/workflows/ci.yml
+      - .github/workflows/pre-commit.yml
+      - .github/workflows/live-integration.yml
+      - .github/workflows/mutation-manual.yml
+    output_path: docs/architecture.md
+    block_id: architecture-governance-truth
+  - id: open-source-platform-truth
+    kind: fragment
+    renderer: open-source-platform-truth-summary
+    source_paths:
+      - contracts/governance/done_signal_policy.yaml
+      - contracts/governance/public_readiness_policy.yaml
+      - contracts/governance/required_checks_policy.yaml
+      - .github/workflows/ci.yml
+      - .github/workflows/pre-commit.yml
+      - .github/workflows/live-integration.yml
+      - .github/workflows/mutation-manual.yml
+    output_path: docs/open_source_runbook.md
+    block_id: open-source-platform-truth
+  - id: runner-contract-governance-truth
+    kind: fragment
+    renderer: runner-contract-governance-truth-summary
+    source_paths:
+      - contracts/governance/required_checks_policy.yaml
+      - .github/workflows/ci.yml
+      - .github/workflows/pre-commit.yml
+      - .github/workflows/live-integration.yml
+      - .github/workflows/mutation-manual.yml
+    output_path: docs/runner_contract.md
+    block_id: runner-contract-governance-truth
+  - id: webui-api-contract
+    kind: fragment
+    renderer: webui-api-contract
+    source_paths:
+      - contracts/api/web_api.openapi.yaml
+    output_path: apps/webui/README.md
+    block_id: webui-api-contract

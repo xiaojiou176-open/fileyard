@@ -1,0 +1,59 @@
+version: 1
+target_layers:
+  - fragment-rendered
+rules:
+  manual-api-inventory:
+    patterns:
+      - "任务接口族："
+      - "作业接口族："
+      - "Jobs/history:"
+      - "Job events:"
+      - "Manifest:"
+      - "Job actions:"
+      - "Report/audit:"
+      - "Preferences:"
+  manual-runtime-topology:
+    patterns:
+      - "Compose 服务名："
+      - "运行地址、服务名与默认端口事实由 renderer 注入："
+      - "Web API 健康检查："
+      - "Vite WebUI："
+  manual-model-facts:
+    patterns:
+      - "gemini-3-flash-preview"
+      - "gemini-3.1-pro-preview"
+      - "gemini-3-pro"
+      - "Provider 策略："
+      - "模型策略："
+  manual-runner-facts:
+    patterns:
+      - "pool-core01-"
+      - "pool-core02-"
+      - "pool-core03-"
+      - "pool-core04-"
+      - "pool-core05-"
+      - "当前只要求："
+      - "在线 runner 数量默认 `>=12`"
+      - "已跨 failure-domain（hosted primary + shared-pool fallback）："
+      - "当前接受 shared-pool-only："
+  manual-ci-governance:
+    patterns:
+      - "CI 真值路径 vs 开发 fallback 路径："
+      - "CI 真值路径："
+      - "开发 fallback 路径："
+      - "failure-domain 说明："
+      - "本地 CI 收口产物："
+      - "Canonical truth path:"
+      - "Dual failure-domain required jobs:"
+      - "Shared-pool-only required jobs:"
+      - "Side workflows:"
+      - "Local auxiliary evidence:"
+      - "远端 CI 新增 `quality-gate-full` 作业"
+      - "远端 CI 新增 `functional-gate` 作业"
+      - "CI `test` 矩阵采用分层执行："
+      - "`quality-gate-full` 也显式安装 Node 24"
+  manual-platform-observation:
+    patterns:
+      - "当前平台观测状态（动态检查）"
+      - "如果 `isPrivate=true`"
+      - "如果 `isPrivate=false`"

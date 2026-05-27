@@ -1,0 +1,13 @@
+version: 1
+review_confidence_threshold: 0.6
+human_rubric_template: contracts/ai/human_rubric.example.json
+suites:
+  offline-golden:
+    min_pass_rate: 1.0
+    allow_skip: false
+  offline-audio-contract:
+    min_pass_rate: 1.0
+    allow_skip: false
+  live-rubric:
+    min_pass_rate: 0.9
+    allow_skip_without_credentials: true

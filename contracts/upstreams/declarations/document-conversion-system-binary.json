@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-04-01T11:51:16.340282+00:00",
+  "source_bundle": ".runtime-cache/ci/evidence-bundle.json",
+  "source_bundle_truth": {
+    "truth_class": "derived-report",
+    "source_run_type": "local",
+    "authoritative_terminal_receipt": {
+      "status": "present",
+      "truth_class": "authoritative-terminal-receipt",
+      "path": ".runtime-cache/logs/quality-gate/summary.json",
+      "gate_name": "quality-gate",
+      "gate_run_id": "quality-gate-20260401T113307Z-79542",
+      "summary_path": ".runtime-cache/logs/quality-gate/runs/quality-gate-20260401T113307Z-79542/summary.json",
+      "latest_summary_path": ".runtime-cache/logs/quality-gate/summary.json",
+      "execution_mode": "canonical-container",
+      "is_canonical_signal": true,
+      "terminal_status": "pass"
+    },
+    "remote_traceability": {
+      "status": "local-only",
+      "has_github_run_id": false,
+      "event": "local",
+      "run_id": null,
+      "run_number": null,
+      "workflow": null,
+      "repository": null
+    }
+  },
+  "upstream_id": "document-conversion-system-binary",
+  "pair_slug": "document-conversion-system-binary-allow-and-report-host-preflight-optional-soffice-or-libreoffice-or-unoconv-trusted-binary-resolution-bash-tooling-gates-host-capability-preflight-sh-document-conversion-system-binary-host-managed-optional",
+  "pair_index": 1,
+  "supported_pair": {
+    "binary_contract": "soffice-or-libreoffice-or-unoconv",
+    "state": "host-managed-optional",
+    "verification_suite": "upstream-governance-system-binary",
+    "verification_mode": "governed-host-binary-declaration",
+    "verification_artifact": "contracts/upstreams/declarations/document-conversion-system-binary.json",
+    "verification_max_age_hours": 8760,
+    "rollback_baseline": "restore previous LibreOffice or unoconv installation, or accept document-conversion failure paths",
+    "assurance_tier": "host-preflight-optional",
+    "repo_preflight_gate": "bash tooling/gates/host_capability_preflight.sh document-conversion-system-binary",
+    "allowed_missing_behavior": "allow-and-report",
+    "preflight_policy": "trusted-binary-resolution"
+  },
+  "summary": {
+    "overall_status": "passed",
+    "gate_overall": "partial"
+  },
+  "upstream_summary": {
+    "status": "ok",
+    "inventory_path": "contracts/upstreams/upstream_inventory.yaml",
+    "upstream": {
+      "id": "document-conversion-system-binary",
+      "class": "system-binary",
+      "role": "runtime",
+      "pin_kind": "external-state",
+      "pinned_value": "host-managed-installation",
+      "verification_suite": "upstream-governance-system-binary",
+      "failure_domain": "ci_environment"
+    },
+    "failure_ownership": {
+      "owner": "repo",
+      "failure_owner": "repo",
+      "escalation": "verify host LibreOffice or unoconv installation contract and refresh declaration if document conversion behavior changes"
+    }
+  }
+}

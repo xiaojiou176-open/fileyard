@@ -1,0 +1,32 @@
+version: 1
+value_proof:
+  current_tier: smoke
+  canonical_command: bash tooling/runtime/run_value_proof.sh
+  smoke_dataset: tests/fixtures/golden_input
+  manual_baseline_status: manual_capture_required
+  manual_baseline_template: contracts/proof/manual_baseline.example.json
+  headline_public_allowed: false
+  required_doc_snippets:
+    - "Current tier: `smoke`"
+    - "smoke / interview / public"
+    - "Current claim cap: the canonical pack proves that the minimal mainline value pack is still alive,"
+    - "manual_capture_required"
+    - "--prepare-upgrade-pack"
+    - "upgrade-pack.json"
+    - "What It Can Prove"
+    - "What It Still Cannot Prove"
+ai_eval:
+  current_tier: smoke
+  canonical_command: bash tooling/gates/ai_eval_gate.sh
+  offline_mode_required: true
+  live_suite_id: live-rubric
+  live_suite_expected_status_without_credentials: skipped
+  required_doc_snippets:
+    - "Current tier: `smoke`"
+    - "missing credentials do **not** mean \"AI passed\""
+    - "live-rubric"
+    - "smoke / interview / public"
+    - "--prepare-upgrade-pack"
+    - "upgrade-pack.json"
+    - "What AI Eval Can Prove"
+    - "What AI Eval Still Cannot Prove"

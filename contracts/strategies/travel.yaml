@@ -1,0 +1,15 @@
+id: travel
+name: Travel Pack
+description: Bias categorization, naming, and review defaults toward trip albums, tickets, and mixed travel intake.
+categories:
+  - 旅行
+  - 收据
+  - 文档
+  - 风景
+  - 人物
+model: gemini-3-flash-preview
+workers: 2
+review_confidence_threshold: 0.82
+default_rule_ids: []
+default_template_patterns:
+  - "{date}/{category}/{title}__{hash8}"

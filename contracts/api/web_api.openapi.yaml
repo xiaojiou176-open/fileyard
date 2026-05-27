@@ -1,0 +1,1368 @@
+openapi: 3.1.0
+info:
+  title: Fileyard Web API
+  version: 2.0.0
+paths:
+  /healthz:
+    get:
+      operationId: get_healthz
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/history:
+    get:
+      operationId: get_api_jobs_history
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs:
+    get:
+      operationId: get_api_jobs
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/stream:
+    get:
+      operationId: get_api_jobs_stream
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}:
+    get:
+      operationId: get_api_jobs_job_id
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}/events:
+    get:
+      operationId: get_api_jobs_job_id_events
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}/stream:
+    get:
+      operationId: get_api_jobs_job_id_stream
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}/events/stream:
+    get:
+      operationId: get_api_jobs_job_id_events_stream
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}/cancel:
+    post:
+      operationId: post_api_jobs_job_id_cancel
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}/retry:
+    post:
+      operationId: post_api_jobs_job_id_retry
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}/manifest:
+    get:
+      operationId: get_api_jobs_job_id_manifest
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}/manifest/view:
+    get:
+      operationId: get_api_jobs_job_id_manifest_view
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}/manifest/{row_id}/preview:
+    get:
+      operationId: get_api_jobs_job_id_manifest_row_id_preview
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}/manifest/rows/{row_id}:
+    patch:
+      operationId: patch_api_jobs_job_id_manifest_rows_row_id
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}/manifest/batch:
+    post:
+      operationId: post_api_jobs_job_id_manifest_batch
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}/manifest/conflicts:
+    get:
+      operationId: get_api_jobs_job_id_manifest_conflicts
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}/manifest/conflicts/resolve:
+    post:
+      operationId: post_api_jobs_job_id_manifest_conflicts_resolve
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}/review-queue:
+    get:
+      operationId: get_review_queue
+      summary: Return review queue rows with explainability and deterministic copilot
+        hints
+      responses:
+        '200':
+          description: Review-only queue payload with deterministic guardrails and
+            batch suggestions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewQueueResponse'
+  /api/jobs/{job_id}/report:
+    get:
+      operationId: get_job_report
+      summary: Return persisted report payload enriched with Wave 2 review intelligence
+        context
+      responses:
+        '200':
+          description: Report payload plus review intelligence summary for frontends.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobReportResponse'
+  /api/jobs/{job_id}/audit:
+    get:
+      operationId: get_api_jobs_job_id_audit
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/analyze:
+    post:
+      operationId: post_api_jobs_analyze
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/preferences/runtime:
+    get:
+      operationId: get_api_preferences_runtime
+      responses:
+        '200':
+          description: fallback-generated response
+    post:
+      operationId: post_api_preferences_runtime
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/preferences/runtime/validate:
+    post:
+      operationId: post_api_preferences_runtime_validate
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/apply:
+    post:
+      operationId: post_api_jobs_apply
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/rollback:
+    post:
+      operationId: post_api_jobs_rollback
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/preferences/views:
+    get:
+      operationId: get_api_preferences_views
+      responses:
+        '200':
+          description: fallback-generated response
+    post:
+      operationId: post_api_preferences_views
+      responses:
+        '200':
+          description: fallback-generated response
+    delete:
+      operationId: delete_api_preferences_views
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/preferences/naming-templates:
+    get:
+      operationId: get_api_preferences_naming-templates
+      responses:
+        '200':
+          description: fallback-generated response
+    post:
+      operationId: post_api_preferences_naming-templates
+      responses:
+        '200':
+          description: fallback-generated response
+    delete:
+      operationId: delete_api_preferences_naming-templates
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/preferences/review-rules:
+    get:
+      operationId: get_api_preferences_review-rules
+      responses:
+        '200':
+          description: fallback-generated response
+    post:
+      operationId: post_api_preferences_review-rules
+      responses:
+        '200':
+          description: fallback-generated response
+    delete:
+      operationId: delete_api_preferences_review-rules
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}/review-rules/preview:
+    post:
+      operationId: post_api_jobs_job_id_review-rules_preview
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/jobs/{job_id}/review-rules/apply:
+    post:
+      operationId: apply_review_rule
+      summary: Apply a saved or inline rule to the overlay only
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewRuleApplyRequest'
+      responses:
+        '200':
+          description: Overlay-only rule application result. Execution remains disallowed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewRuleApplyResponse'
+  /api/jobs/{job_id}/review-rules/from-examples:
+    post:
+      operationId: draft_review_rule_from_examples
+      summary: Infer a draft rule from reviewed examples without saving or auto-applying
+        it
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewRuleFromExamplesRequest'
+      responses:
+        '200':
+          description: Draft-only response with explicit no-save and no-execute guardrails.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewRuleDraftResponse'
+  /api/jobs/{job_id}/review-queue/batch-triage:
+    post:
+      operationId: batch_triage_review_queue
+      summary: Apply review queue edits to the overlay for a selected batch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewQueueBatchTriageRequest'
+      responses:
+        '200':
+          description: Overlay-only batch triage response. Execution remains disallowed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewQueueBatchTriageResponse'
+  /api/preferences/strategy-packs:
+    get:
+      operationId: list_strategy_packs
+      summary: List repo-shipped strategy packs with defaults and explainability
+      responses:
+        '200':
+          description: Strategy packs remain template defaults, not a plugin marketplace.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StrategyPackListResponse'
+  /api/preferences/learned-rules:
+    get:
+      operationId: list_learned_rules
+      summary: List learned suggestions and clarify transient vs reusable scope
+      responses:
+        '200':
+          description: Suggestion-layer learned rules only; apply remains manual.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearnedRuleListResponse'
+    delete:
+      operationId: delete_api_preferences_learned-rules
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/preferences/watch-sources:
+    get:
+      operationId: list_watch_sources
+      summary: List watch sources with strategy pack context
+      responses:
+        '200':
+          description: Watch sources stay local-first and only drive discovery plus
+            explicit analyze actions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WatchSourceListResponse'
+    post:
+      operationId: post_api_preferences_watch-sources
+      responses:
+        '200':
+          description: fallback-generated response
+    delete:
+      operationId: delete_api_preferences_watch-sources
+      responses:
+        '200':
+          description: fallback-generated response
+  /api/inbox/scan:
+    post:
+      operationId: scan_inbox_sources
+      summary: Discover inbox batches without auto-enqueueing analyze
+      responses:
+        '200':
+          description: Discovery-only inbox response with explicit analyze action
+            payloads.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InboxScanResponse'
+  /api/inbox/analyze:
+    post:
+      operationId: start_inbox_analyze
+      summary: Explicitly start analyze from an inbox batch using strategy pack defaults
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InboxAnalyzeRequest'
+      responses:
+        '202':
+          description: Explicit inbox analyze bridge from discovery into review-first
+            analyze.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InboxAnalyzeResponse'
+components:
+  schemas:
+    ReviewExplainability:
+      type: object
+      required:
+      - bucket
+      - reason_codes
+      - reasons
+      - collection_confidence
+      - learned_suggestion_count
+      - edited
+      - has_conflict
+      properties:
+        bucket:
+          type: string
+          enum: &id001
+          - auto_safe
+          - needs_review
+          - conflict
+          - blocked
+        reason_codes:
+          type: array
+          items:
+            type: string
+        reasons:
+          type: array
+          items:
+            type: string
+        collection_confidence:
+          type: number
+        learned_suggestion_count:
+          type: integer
+        edited:
+          type: boolean
+        has_conflict:
+          type: boolean
+    ReviewQueueBatchSuggestion:
+      type: object
+      required:
+      - id
+      - kind
+      - label
+      - review_bucket
+      - count
+      - row_ids
+      - reason
+      - next_step
+      properties:
+        id:
+          type: string
+        kind:
+          type: string
+          enum:
+          - bucket
+          - collection
+        label:
+          type: string
+        review_bucket:
+          type: string
+          enum: *id001
+        collection_id:
+          type: string
+        count:
+          type: integer
+        row_ids:
+          type: array
+          items:
+            type: string
+        reason:
+          type: string
+        next_step:
+          type: string
+    ReviewCopilotReason:
+      type: object
+      required:
+      - key
+      - title
+      - count
+      - detail
+      properties:
+        key:
+          type: string
+        title:
+          type: string
+        count:
+          type: integer
+        detail:
+          type: string
+    ReviewCopilotPriority:
+      type: object
+      required:
+      - row_id
+      - file_name
+      - bucket
+      - reason
+      - suggested_action
+      - confidence
+      properties:
+        row_id:
+          type: string
+        file_name:
+          type: string
+        bucket:
+          type: string
+          enum: *id001
+        reason:
+          type: string
+        suggested_action:
+          type: string
+        confidence:
+          type: number
+    ReviewCopilotRuleOpportunity:
+      type: object
+      required:
+      - key
+      - title
+      - reason
+      - row_ids
+      - suggested_action
+      properties:
+        key:
+          type: string
+        title:
+          type: string
+        reason:
+          type: string
+        row_ids:
+          type: array
+          items:
+            type: string
+        suggested_action:
+          type: string
+    ReviewCopilotGuardrails:
+      type: object
+      required:
+      - review_only
+      - draft_only
+      - overlay_only
+      - execute_allowed
+      - auto_apply
+      - allowed_routes
+      properties:
+        review_only:
+          type: boolean
+        draft_only:
+          type: boolean
+        overlay_only:
+          type: boolean
+        execute_allowed:
+          type: boolean
+        auto_apply:
+          type: boolean
+        allowed_routes:
+          type: array
+          items:
+            type: string
+    ReviewCopilotSummary:
+      type: object
+      required:
+      - mode
+      - headline
+      - reasons
+      - priorities
+      - rule_opportunities
+      - batch_triage
+      - guardrails
+      properties:
+        mode:
+          type: string
+        headline:
+          type: string
+        reasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewCopilotReason'
+        priorities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewCopilotPriority'
+        rule_opportunities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewCopilotRuleOpportunity'
+        batch_triage:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewQueueBatchSuggestion'
+        guardrails:
+          $ref: '#/components/schemas/ReviewCopilotGuardrails'
+    ReviewBridge:
+      type: object
+      required:
+      - mode
+      - next_step
+      - review_queue_path
+      - batch_triage_path
+      - rule_from_examples_path
+      - needs_review_count
+      - conflict_count
+      - blocked_count
+      - collection_focus_ids
+      - rule_opportunity_keys
+      - execute_allowed
+      properties:
+        mode:
+          type: string
+        next_step:
+          type: string
+        review_queue_path:
+          type: string
+        batch_triage_path:
+          type: string
+        rule_from_examples_path:
+          type: string
+        needs_review_count:
+          type: integer
+        conflict_count:
+          type: integer
+        blocked_count:
+          type: integer
+        collection_focus_ids:
+          type: array
+          items:
+            type: string
+        rule_opportunity_keys:
+          type: array
+          items:
+            type: string
+        execute_allowed:
+          type: boolean
+    LearnedSuggestion:
+      type: object
+      required:
+      - signal_key
+      - signal_value
+      - suggestion_type
+      - suggestion_value
+      - confidence
+      - count
+      - confidence_label
+      - strength
+      - reuse_scope
+      - source
+      - reason
+      - explanation
+      - scope_reason
+      properties:
+        signal_key:
+          type: string
+        signal_value:
+          type: string
+        suggestion_type:
+          type: string
+        suggestion_value:
+          type: string
+        confidence:
+          type: number
+        count:
+          type: integer
+        confidence_label:
+          type: string
+        strength:
+          type: string
+        reuse_scope:
+          type: string
+          enum:
+          - transient
+          - reusable
+        source:
+          type: string
+        reason:
+          type: string
+        explanation:
+          type: string
+        scope_reason:
+          type: string
+    ManifestRow:
+      type: object
+      required:
+      - row_id
+      - file_name
+      - media_type
+      - category
+      - title
+      - tags
+      - status
+      - error_code
+      - target_path
+      - target_suggestion
+      - confidence
+      - original_path
+      - notes
+      - ignore
+      - metadata
+      properties:
+        row_id:
+          type: string
+        id:
+          type: string
+        file_name:
+          type: string
+        media_type:
+          type: string
+        category:
+          type: string
+        title:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+        error_code:
+          type: string
+        target_path:
+          type: string
+        target_suggestion:
+          type: string
+        dedupe_of:
+          type: string
+        confidence:
+          type: number
+        original_path:
+          type: string
+        notes:
+          type: string
+        ignore:
+          type: boolean
+        review_bucket:
+          type: string
+          enum: *id001
+        has_conflict:
+          type: boolean
+        edited:
+          type: boolean
+        collection_id:
+          type: string
+        collection_title:
+          type: string
+        collection_reason:
+          type: string
+        collection_confidence:
+          type: number
+        collection_capture_day:
+          type: string
+        collection_batch_hint:
+          type: string
+        collection_source_root:
+          type: string
+        collection_kind:
+          type: string
+        collection_next_step:
+          type: string
+        collection_explainability:
+          type: array
+          items:
+            type: string
+        learned_suggestions:
+          type: array
+          items:
+            $ref: '#/components/schemas/LearnedSuggestion'
+        review_explainability:
+          $ref: '#/components/schemas/ReviewExplainability'
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+    ReviewQueueSummary:
+      type: object
+      required:
+      - total
+      - auto_safe
+      - needs_review
+      - conflict
+      - blocked
+      properties:
+        total:
+          type: integer
+        auto_safe:
+          type: integer
+        needs_review:
+          type: integer
+        conflict:
+          type: integer
+        blocked:
+          type: integer
+    CollectionSummary:
+      type: object
+      required:
+      - id
+      - title
+      - reason
+      - confidence
+      - row_ids
+      - kind
+      - next_step
+      - capture_day
+      - batch_hint
+      - source_root
+      - dominant_media_type
+      - media_types
+      - explainability
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        reason:
+          type: string
+        confidence:
+          type: number
+        row_ids:
+          type: array
+          items:
+            type: string
+        kind:
+          type: string
+        next_step:
+          type: string
+        capture_day:
+          type: string
+        batch_hint:
+          type: string
+        source_root:
+          type: string
+        dominant_media_type:
+          type: string
+        media_types:
+          type: array
+          items:
+            type: string
+        explainability:
+          type: array
+          items:
+            type: string
+    ReviewQueueResponse:
+      type: object
+      required:
+      - job_id
+      - manifest_path
+      - overlay_path
+      - summary
+      - collections
+      - rows
+      - returned
+      properties:
+        job:
+          type: object
+        job_id:
+          type: string
+        manifest_path:
+          type: string
+        overlay_path:
+          type: string
+        overlay_updated_at:
+          type: string
+        summary:
+          $ref: '#/components/schemas/ReviewQueueSummary'
+        copilot_summary:
+          $ref: '#/components/schemas/ReviewCopilotSummary'
+        collections:
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectionSummary'
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManifestRow'
+        returned:
+          type: integer
+    ReviewRuleAction:
+      type: object
+      properties:
+        set_category:
+          type: string
+        set_ignore:
+          type: boolean
+        target_pattern:
+          type: string
+    ReviewRuleCondition:
+      type: object
+      properties:
+        query:
+          type: string
+        statuses:
+          type: array
+          items:
+            type: string
+        media_types:
+          type: array
+          items:
+            type: string
+        categories:
+          type: array
+          items:
+            type: string
+        review_buckets:
+          type: array
+          items:
+            type: string
+        min_confidence:
+          type: number
+        max_confidence:
+          type: number
+        has_conflict:
+          type: boolean
+        ignore_state:
+          type: boolean
+    ReviewRuleApplyRequest:
+      type: object
+      properties:
+        rule_id:
+          type: string
+        rule:
+          type: object
+      additionalProperties: false
+    ReviewRuleFromExamplesRequest:
+      type: object
+      required:
+      - row_ids
+      properties:
+        row_ids:
+          type: array
+          items:
+            type: string
+          minItems: 2
+          maxItems: 5
+        name:
+          type: string
+      additionalProperties: false
+    ReviewRuleDraftExplainability:
+      type: object
+      required:
+      - selected_count
+      - selected_row_ids
+      - shared_media_types
+      - shared_review_buckets
+      - shared_query
+      - inferred_actions
+      - save_allowed
+      - apply_allowed
+      properties:
+        selected_count:
+          type: integer
+        selected_row_ids:
+          type: array
+          items:
+            type: string
+        shared_media_types:
+          type: array
+          items:
+            type: string
+        shared_review_buckets:
+          type: array
+          items:
+            type: string
+        shared_query:
+          type: string
+        inferred_actions:
+          type: array
+          items:
+            type: string
+        save_allowed:
+          type: boolean
+        apply_allowed:
+          type: boolean
+    ReviewRuleDraft:
+      type: object
+      required:
+      - name
+      - scope
+      - description
+      - version
+      - mode
+      - draft_source
+      - conditions
+      - actions
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        scope:
+          type: string
+          enum:
+          - manifest
+          - report
+          - jobs
+        description:
+          type: string
+        version:
+          type: integer
+        mode:
+          type: string
+          enum:
+          - draft_only
+        draft_source:
+          type: string
+        conditions:
+          $ref: '#/components/schemas/ReviewRuleCondition'
+        actions:
+          $ref: '#/components/schemas/ReviewRuleAction'
+        warnings:
+          type: array
+          items:
+            type: string
+        example_row_ids:
+          type: array
+          items:
+            type: string
+        explainability:
+          $ref: '#/components/schemas/ReviewRuleDraftExplainability'
+    ReviewRuleDraftResponse:
+      type: object
+      required:
+      - job_id
+      - selected_count
+      - selected_row_ids
+      - mode
+      - save_allowed
+      - apply_allowed
+      - execute_allowed
+      - draft
+      - warnings
+      properties:
+        job_id:
+          type: string
+        selected_count:
+          type: integer
+        selected_row_ids:
+          type: array
+          items:
+            type: string
+        mode:
+          type: string
+          enum:
+          - draft_only
+        save_allowed:
+          type: boolean
+        apply_allowed:
+          type: boolean
+        execute_allowed:
+          type: boolean
+        draft:
+          $ref: '#/components/schemas/ReviewRuleDraft'
+        warnings:
+          type: array
+          items:
+            type: string
+    ReviewQueueBatchTriageRequest:
+      type: object
+      required:
+      - row_ids
+      properties:
+        row_ids:
+          type: array
+          items:
+            type: string
+        set_category:
+          type: string
+        set_ignore:
+          type: boolean
+      additionalProperties: false
+    ReviewQueueBatchTriageResponse:
+      allOf:
+      - $ref: '#/components/schemas/ReviewQueueResponse'
+      - type: object
+        required:
+        - applied_count
+        - mode
+        - execute_allowed
+        properties:
+          applied_count:
+            type: integer
+          mode:
+            type: string
+            enum:
+            - overlay_only
+          execute_allowed:
+            type: boolean
+    ReviewRuleApplyResponse:
+      allOf:
+      - $ref: '#/components/schemas/ReviewQueueResponse'
+      - type: object
+        required:
+        - applied_rule_id
+        - matched_count
+        - mode
+        - execute_allowed
+        properties:
+          applied_rule_id:
+            type: string
+          matched_count:
+            type: integer
+          mode:
+            type: string
+            enum:
+            - overlay_only
+          execute_allowed:
+            type: boolean
+    JobReportPayload:
+      type: object
+      properties:
+        total:
+          type: integer
+        by_review_bucket:
+          $ref: '#/components/schemas/ReviewQueueSummary'
+        collection_count:
+          type: integer
+        collection_ids:
+          type: array
+          items:
+            type: string
+        collection_summaries:
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectionSummary'
+        rows_with_learning_suggestions:
+          type: integer
+        learned_rule_count:
+          type: integer
+        reusable_learning_rule_count:
+          type: integer
+        review_copilot_summary:
+          $ref: '#/components/schemas/ReviewCopilotSummary'
+        review_bridge:
+          $ref: '#/components/schemas/ReviewBridge'
+      additionalProperties: true
+    JobReportResponse:
+      type: object
+      required:
+      - job_id
+      - report_path
+      - report
+      properties:
+        job_id:
+          type: string
+        report_path:
+          type: string
+        report:
+          $ref: '#/components/schemas/JobReportPayload'
+    StrategyPack:
+      type: object
+      required:
+      - id
+      - name
+      - description
+      - categories
+      - workers
+      - review_confidence_threshold
+      - default_rule_ids
+      - default_template_patterns
+      - defaults
+      - explainability
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+        model:
+          type: string
+        workers:
+          type: integer
+        review_confidence_threshold:
+          type: number
+        default_rule_ids:
+          type: array
+          items:
+            type: string
+        default_template_patterns:
+          type: array
+          items:
+            type: string
+        defaults:
+          type: object
+          additionalProperties: true
+        explainability:
+          type: object
+          additionalProperties:
+            type: string
+    StrategyPackListResponse:
+      type: object
+      required:
+      - items
+      - count
+      - active_strategy_pack_id
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StrategyPack'
+        count:
+          type: integer
+        active_strategy_pack_id:
+          type: string
+        active_pack:
+          $ref: '#/components/schemas/StrategyPack'
+    WatchSource:
+      type: object
+      required:
+      - id
+      - name
+      - input_root
+      - enabled
+      - strategy_pack_id
+      - created_at
+      - updated_at
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        input_root:
+          type: string
+        enabled:
+          type: boolean
+        strategy_pack_id:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        strategy_pack:
+          $ref: '#/components/schemas/StrategyPack'
+    WatchSourceListResponse:
+      type: object
+      required:
+      - items
+      - count
+      - path
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WatchSource'
+        count:
+          type: integer
+        path:
+          type: string
+    LearnedRuleListResponse:
+      type: object
+      required:
+      - items
+      - count
+      - path
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LearnedSuggestion'
+        count:
+          type: integer
+        path:
+          type: string
+    AnalyzeDefaults:
+      type: object
+      required:
+      - model
+      - categories
+      - workers
+      - max_files
+      - max_total_mb
+      - max_file_mb
+      - offline
+      properties:
+        model:
+          type: string
+        categories:
+          type: string
+        workers:
+          type: integer
+        max_files:
+          type: integer
+        max_total_mb:
+          type: number
+        max_file_mb:
+          type: number
+        offline:
+          type: boolean
+    InboxAction:
+      type: object
+      required:
+      - method
+      - path
+      - payload
+      properties:
+        method:
+          type: string
+        path:
+          type: string
+        payload:
+          type: object
+          additionalProperties: true
+    InboxBatch:
+      type: object
+      required:
+      - id
+      - watch_source_id
+      - source_name
+      - input_root
+      - file_count
+      - file_paths
+      - strategy_pack_id
+      - analyze_job_id
+      - analyze_ready
+      - discovery_mode
+      - analyze_defaults
+      - analyze_action
+      properties:
+        id:
+          type: string
+        watch_source_id:
+          type: string
+        source_name:
+          type: string
+        input_root:
+          type: string
+        file_count:
+          type: integer
+        file_paths:
+          type: array
+          items:
+            type: string
+        strategy_pack_id:
+          type: string
+        analyze_job_id:
+          type: string
+        analyze_ready:
+          type: boolean
+        discovery_mode:
+          type: string
+        strategy_pack:
+          $ref: '#/components/schemas/StrategyPack'
+        analyze_defaults:
+          $ref: '#/components/schemas/AnalyzeDefaults'
+        analyze_action:
+          $ref: '#/components/schemas/InboxAction'
+    InboxAnalyzeRequest:
+      type: object
+      required:
+      - watch_source_id
+      properties:
+        watch_source_id:
+          type: string
+        batch_id:
+          type: string
+        strategy_pack_id:
+          type: string
+        model:
+          type: string
+        categories:
+          type: string
+        workers:
+          type: integer
+        max_files:
+          type: integer
+        max_total_mb:
+          type: number
+        max_file_mb:
+          type: number
+        offline:
+          type: boolean
+      additionalProperties: false
+    InboxAnalyzeResponse:
+      type: object
+      required:
+      - job
+      - job_id
+      - mode
+      - batch
+      - review_next
+      properties:
+        job:
+          type: object
+        job_id:
+          type: string
+        mode:
+          type: string
+        batch:
+          $ref: '#/components/schemas/InboxBatch'
+        strategy_pack:
+          $ref: '#/components/schemas/StrategyPack'
+        review_next:
+          type: object
+          additionalProperties: true
+    InboxScanResponse:
+      type: object
+      required:
+      - items
+      - count
+      - mode
+      - analyze_route
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/InboxBatch'
+        count:
+          type: integer
+        mode:
+          type: string
+        analyze_route:
+          type: string

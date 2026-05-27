@@ -1,0 +1,33 @@
+version: 1
+python_scan_roots:
+  - apps
+  - packages
+  - tooling/scripts
+frontend_scan_roots:
+  - apps/webui/src
+text_scan_roots:
+  - tooling/runtime
+  - tooling/gates
+  - tooling/scripts
+  - .github/workflows
+local_python_prefixes:
+  - apps.
+  - packages.
+  - tooling.
+  - tests.
+  - contracts.
+forbidden_python_segments:
+  - "._"
+  - ".internal."
+  - ".private."
+forbidden_frontend_segments:
+  - /dist/
+  - /src/
+  - /lib/
+  - /cjs/
+  - /esm/
+  - /internal/
+  - /_internal/
+forbidden_text_patterns:
+  - "site-packages/"
+  - "node_modules/[A-Za-z0-9@._-]+/(dist|src|lib|cjs|esm|internal)/"

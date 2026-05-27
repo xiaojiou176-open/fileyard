@@ -1,0 +1,52 @@
+version: 1
+default_language: en
+fail_close: true
+notes:
+  - Scope is limited to public collaboration surfaces, not README or product copy.
+  - English-first means the hard-scope files below must stay in English.
+global_forbidden_regex:
+  - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+targets:
+  - path: SECURITY.md
+    required_substrings:
+      - "# Security Policy"
+      - "GitHub Private Vulnerability Reporting is the primary private reporting"
+      - "No separate fallback private email is currently configured"
+      - "Do not report security vulnerabilities in public GitHub issues"
+    forbidden_substrings:
+      - "placeholder private contact channel"
+      - "This address is an explicit placeholder"
+  - path: SUPPORT.md
+    required_substrings:
+      - "# Support"
+      - "limited-maintenance public project"
+      - "Before Opening An Issue"
+      - "Where To Ask What"
+  - path: CONTRIBUTING.md
+    required_substrings:
+      - "# Contributing"
+      - "Before You Open A Pull Request"
+      - "Pull Request Expectations"
+      - "limited-maintenance public repository"
+  - path: CODE_OF_CONDUCT.md
+    required_substrings:
+      - "# Code of Conduct"
+      - "Our Standard"
+      - "Unacceptable Behavior"
+      - "This code of conduct applies"
+  - path: .github/ISSUE_TEMPLATE/bug_report.yml
+    required_substrings:
+      - "Please read `SUPPORT.md` first"
+      - "Describe the bug in one or two clear sentences."
+      - "I removed secrets and private data from the report."
+  - path: .github/ISSUE_TEMPLATE/documentation.yml
+    required_substrings:
+      - "Use this template for documentation drift"
+      - "What is currently wrong, missing, stale, or confusing?"
+      - "I checked whether the same point is already covered"
+  - path: .github/PULL_REQUEST_TEMPLATE.md
+    required_substrings:
+      - "## Summary"
+      - "## Verification"
+      - "## Collaboration Surface"
+      - "Public collaboration docs/templates remain English-first"

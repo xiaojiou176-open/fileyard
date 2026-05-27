@@ -1,0 +1,14 @@
+version: 1
+hotspots:
+  - path: apps/cli/cli_app.py
+    max_lines: 700
+  - path: packages/application/apply_command.py
+    max_lines: 800
+  - path: packages/application/analyze_media.py
+    max_lines: 800
+shim_guards:
+  - shim_path: packages/application/apply_changes.py
+    module_name: packages.application.apply_changes
+    allowed_importers: []
+    allowed_importer_prefixes:
+      - tests/

@@ -1,0 +1,14 @@
+id: chat-export
+name: Chat Export Pack
+description: Bias categorization and review toward screenshots, shared documents, and mixed chat exports.
+categories:
+  - 聊天
+  - 截图
+  - 文档
+  - 产品
+model: gemini-3-flash-preview
+workers: 1
+review_confidence_threshold: 0.75
+default_rule_ids: []
+default_template_patterns:
+  - "{category}/{date}__{stem}__{hash8}{ext}"

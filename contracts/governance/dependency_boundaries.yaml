@@ -1,0 +1,92 @@
+version: 1
+python_layers:
+  apps_cli:
+    paths:
+      - apps/cli/**/*.py
+    allow_modules:
+      - apps.cli
+      - packages.application
+      - packages.domain
+      - packages.infrastructure.config_loader
+      - packages.observability
+  apps_api:
+    paths:
+      - apps/api/**/*.py
+    allow_modules:
+      - apps.api
+      - packages.application
+      - packages.domain
+      - packages.infrastructure
+      - packages.observability
+  apps_mcp:
+    paths:
+      - apps/mcp/**/*.py
+    allow_modules:
+      - apps.mcp
+      - apps.api
+      - packages.application
+      - packages.domain
+      - packages.infrastructure
+      - packages.observability
+  packages_domain:
+    paths:
+      - packages/domain/**/*.py
+    allow_modules:
+      - packages.domain
+  packages_application:
+    paths:
+      - packages/application/**/*.py
+    allow_modules:
+      - packages.application
+      - packages.domain
+      - packages.infrastructure
+      - packages.observability
+  packages_infrastructure:
+    paths:
+      - packages/infrastructure/**/*.py
+    allow_modules:
+      - packages.infrastructure
+      - packages.domain
+      - packages.observability
+  packages_observability:
+    paths:
+      - packages/observability/**/*.py
+    allow_modules:
+      - packages.observability
+      - packages.domain.pipeline_config
+  tooling:
+    paths:
+      - tooling/scripts/**/*.py
+    allow_modules:
+      - packages.domain
+      - packages.observability
+      - tooling.scripts
+  tests:
+    paths:
+      - tests/**/*.py
+    allow_modules:
+      - apps.api
+      - apps.cli
+      - apps.mcp
+      - packages.application
+      - packages.domain
+      - packages.infrastructure
+      - packages.observability
+      - tooling.scripts
+forbidden_python_modules:
+  - tests
+  - webui
+frontend_layers:
+  webui:
+    paths:
+      - apps/webui/src/**/*.ts
+      - apps/webui/src/**/*.tsx
+    allowed_repo_import_roots:
+      - apps/webui/src
+      - contracts/api/generated/webui
+    forbidden_import_prefixes:
+      - tests
+      - tooling/scripts
+      - apps/api
+      - apps/cli
+      - packages/

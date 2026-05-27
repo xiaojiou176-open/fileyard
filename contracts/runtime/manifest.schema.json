@@ -1,0 +1,239 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "fileyard_manifest",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "generator_version": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "input_root": {
+      "type": "string"
+    },
+    "sha1": {
+      "type": "string"
+    },
+    "hash8": {
+      "type": "string"
+    },
+    "file_mtime": {
+      "type": "string"
+    },
+    "exif_datetime": {
+      "type": "string"
+    },
+    "gps_lat": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "gps_lon": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "width": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "height": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "mime": {
+      "type": "string"
+    },
+    "media_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "audio",
+        "pdf",
+        "docx",
+        "doc",
+        "pptx",
+        "ppt",
+        "unknown",
+        ""
+      ]
+    },
+    "duration_s": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "sample_rate": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "channels": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "bitrate_kbps": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "transcript": {
+      "type": "string"
+    },
+    "transcript_lang": {
+      "type": "string"
+    },
+    "transcript_confidence": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "transcript_segments": {
+      "type": [
+        "array",
+        "string"
+      ]
+    },
+    "transcript_retry": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "ai": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "string"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "ai_warning": {
+      "type": "string"
+    },
+    "ai_retry": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "dedupe_of": {
+      "type": "string"
+    },
+    "new_path": {
+      "type": "string"
+    },
+    "error": {
+      "type": "string"
+    },
+    "error_code": {
+      "type": "string",
+      "enum": [
+        "",
+        "INPUT_DIR_MISSING",
+        "PROVIDER_CREDENTIAL_MISSING",
+        "MODEL_MISSING",
+        "MANIFEST_READ_FAIL",
+        "MANIFEST_WRITE_FAIL",
+        "MANIFEST_UPDATE_FAIL",
+        "MANIFEST_ROW_INVALID",
+        "REPORT_WRITE_FAIL",
+        "OUTPUT_CREATE_FAIL",
+        "SOURCE_MISSING",
+        "SOURCE_MOVED",
+        "FILE_STAT_FAIL",
+        "INPUT_ROOT_INVALID",
+        "INPUT_ROOT_MISMATCH",
+        "HASH_MISSING",
+        "HASH_FAIL",
+        "HASH_MISMATCH",
+        "BUILD_DEST_FAIL",
+        "MOVE_FAIL",
+        "DEDUPE_PATH_FAIL",
+        "DEDUPE_MOVE_FAIL",
+        "AUDIO_PREP_FAIL",
+        "AUDIO_TRANSCRIBE_FAIL",
+        "IMAGE_PREP_FAIL",
+        "DOC_PREP_FAIL",
+        "DOC_CONVERT_FAIL",
+        "AI_FAIL",
+        "AI_TIMEOUT",
+        "DOC_CONVERT_TIMEOUT",
+        "AUDIO_PREP_TIMEOUT",
+        "EXIF_FAIL",
+        "FILE_TOO_LARGE",
+        "CSV_WRITE_FAIL",
+        "CONFIG_INVALID",
+        "CONFIG_UNKNOWN_KEY",
+        "PREFLIGHT_LIMIT",
+        "ROLLBACK_FAIL"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "applied",
+        "duplicate",
+        "skipped",
+        "error",
+        ""
+      ]
+    },
+    "status_reason": {
+      "type": "string"
+    },
+    "applied_at": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "path",
+    "media_type"
+  ],
+  "additionalProperties": true
+}

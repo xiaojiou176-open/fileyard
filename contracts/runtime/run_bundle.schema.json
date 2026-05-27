@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fileyard/contracts/runtime/run_bundle.schema.json",
+  "title": "Fileyard Run Bundle Summary",
+  "type": "object",
+  "required": [
+    "run_id",
+    "command",
+    "status",
+    "started_at",
+    "finished_at",
+    "paths"
+  ],
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_\\-]+$"
+    },
+    "command": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "running",
+        "success",
+        "fail"
+      ]
+    },
+    "started_at": {
+      "type": "string"
+    },
+    "finished_at": {
+      "type": "string"
+    },
+    "paths": {
+      "type": "object",
+      "required": [
+        "events",
+        "stderr",
+        "evidence_index"
+      ],
+      "properties": {
+        "events": {
+          "type": "string"
+        },
+        "stderr": {
+          "type": "string"
+        },
+        "evidence_index": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

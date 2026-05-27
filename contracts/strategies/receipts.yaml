@@ -1,0 +1,13 @@
+id: receipts
+name: Receipt Pack
+description: Bias categorization and review toward receipt-heavy batches and paperwork.
+categories:
+  - 收据
+  - 文档
+  - 工作
+model: gemini-3-flash-preview
+workers: 1
+review_confidence_threshold: 0.78
+default_rule_ids: []
+default_template_patterns:
+  - "{category}/{date}__{title}__{hash8}"

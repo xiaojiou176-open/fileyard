@@ -1,0 +1,281 @@
+version: 1
+default_language: en
+fail_close: true
+notes:
+  - This policy governs runtime and maintainer-facing language boundaries.
+  - Maintainer-facing diagnostics must stay English-first so failures remain searchable and globally diagnosable.
+  - Product-localized semantics may remain localized only when they are part of manifest/output compatibility or user-facing product vocabulary explicitly allowed here.
+targets:
+  - path: docs/runner_contract.md
+    class: maintainer-facing
+    required_substrings:
+      - "This document explains why the runner contract exists."
+      - "GitHub org runner inventory no longer depends on fixed machine names."
+      - "The only live source of truth is:"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: packages/domain/rollback_integrity.py
+    class: maintainer-facing
+    required_substrings:
+      - "Invalid run_id:"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: packages/application/reporting.py
+    class: maintainer-facing
+    required_substrings:
+      - "Failed to read manifest:"
+      - "Failed to write report:"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: apps/webui/src/pages/not-found-page.tsx
+    class: shell-fallback
+    required_substrings:
+      - "Page not found"
+      - "Back to home"
+      - "This route is not assigned to an Fileyard WebUI workflow yet."
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: apps/webui/src/pages/setup-page.tsx
+    class: shell-fallback
+    required_substrings:
+      - "setup.hero.description"
+      - "setup.cta.save"
+      - "setup.alert.ready.description"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: apps/webui/src/pages/analyze-page.tsx
+    class: shell-fallback
+    required_substrings:
+      - "analyze.page.title"
+      - "analyze.upload.title"
+      - "analyze.alert.setupIncomplete.description"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: apps/webui/src/pages/apply-page.tsx
+    class: shell-fallback
+    required_substrings:
+      - "apply.page.title"
+      - "apply.alert.dryRunDescription"
+      - "apply.guardrails.description"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: apps/webui/src/components/layout/job-center-sheet.tsx
+    class: shell-fallback
+    required_substrings:
+      - "Job Center"
+      - "Subscribe to the job center over SSE"
+      - "Search job id / kind / status"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: apps/webui/src/lib/api.ts
+    class: mixed-with-allowed-localized-literals
+    required_substrings:
+      - "Batch save failed:"
+      - "Saving the view failed:"
+      - "Creating the naming template failed:"
+      - "category: '其他'"
+      - "title: '未命名条目'"
+    allowed_regex:
+      - "其他"
+      - "未命名条目"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: packages/domain/pipeline_config.py
+    class: product-localized
+    required_substrings:
+      - "Product semantic values remain localized Chinese for manifest/output compatibility."
+      - 'CATEGORY_OTHER = "其他"'
+      - 'SCREENSHOT = "截图"'
+      - 'PHOTO = "照片"'
+      - 'AUDIO = "音频"'
+      - 'DOCUMENT = "文档"'
+  - path: packages/domain/time_naming.py
+    class: maintainer-facing
+    required_substrings:
+      - "format_output_timestamp"
+      - "Default output naming stays predictable and globally readable."
+      - "organized-images-"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: packages/application/analyze_media_hotspot.py
+    class: maintainer-facing
+    required_substrings:
+      - "Temporary directory cleanup failed:"
+      - "Audio metadata error:"
+      - "Offline mode: local rules were used"
+      - "Document-to-PDF conversion failed:"
+      - "Unsupported document format. Convert it to PDF, DOCX, PPTX, DOC, or PPT first."
+      - "Image preparation error:"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: apps/webui/src/pages/analyze-page.tsx
+    class: shell-fallback
+    required_substrings:
+      - "analyze.alert.setupIncomplete.title"
+      - "analyze.upload.title"
+      - "analyze.alert.setupIncomplete.description"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: apps/webui/src/pages/apply-page.tsx
+    class: shell-fallback
+    required_substrings:
+      - "apply.page.description"
+      - "apply.dialog.title"
+      - "apply.guardrails.description"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: apps/webui/src/pages/setup-page.tsx
+    class: shell-fallback
+    required_substrings:
+      - "setup.hero.description"
+      - "setup.card.connect.title"
+      - "setup.alert.ready.title"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: apps/webui/src/components/layout/job-center-sheet.tsx
+    class: shell-fallback
+    required_substrings:
+      - "Subscribe to the job center over SSE, search job history, and inspect the full logs."
+      - "Search job id / kind / status"
+      - "Current job"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: packages/application/analyze_media_command.py
+    class: maintainer-facing
+    required_substrings:
+      - "Input directory does not exist:"
+      - "Missing GEMINI_API_KEY environment variable."
+      - "Missing model name. Set --model or GEMINI_MODEL."
+      - "Model name must start with gemini- (Gemini-only policy)."
+      - "Preflight failed:"
+      - "Preflight limit exceeded"
+      - "No media files found."
+      - "Thread client shutdown failed"
+      - "Failed to write manifest:"
+      - "Failed to update manifest:"
+      - "Failed to write CSV:"
+      - "Failed to write report:"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: packages/application/analyze_media_hotspot.py
+    class: maintainer-facing
+    required_substrings:
+      - "Temporary directory cleanup failed:"
+      - "Audio metadata error:"
+      - "Unsupported document format. Convert it to PDF, DOCX, PPTX, DOC, or PPT first."
+      - "Image preparation error:"
+      - 'AI_TITLE: "Untitled"'
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: .github/workflows/release.yml
+    class: maintainer-facing
+    required_substrings:
+      - "Release stage (`bundle-only` builds assets only, `draft` updates the draft release, `publish` publishes immediately)"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: packages/application/analyze_media.py
+    class: mixed-with-allowed-localized-literals
+    required_substrings:
+      - "Failed to clean expired queue file; skipping"
+      - "Failed to scan expired queue files; skipping"
+      - "Cleanup queue contains an invalid JSON line; skipping"
+      - "Cleanup queue contains multiple invalid JSON lines; skipping"
+      - "Upload cleanup retry failed"
+      - "源文件在处理过程中消失"
+      - "哈希/属性错误:"
+      - "读取文件大小失败:"
+      - "文件超过上限("
+    allowed_regex:
+      - "源文件在处理过程中消失"
+      - "哈希/属性错误:"
+      - "读取文件大小失败:"
+      - "文件超过上限\\([^\\n]*?\\):"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: packages/application/apply_command_helpers.py
+    class: mixed-with-allowed-localized-literals
+    required_substrings:
+      - "crash_inject is available only in test mode"
+      - "Unknown crash_inject:"
+      - "WAL file parsing failed; recovering with an empty state"
+      - "Ignoring unsafe partial manifest and preserving crash evidence"
+      - "Ignoring unsafe partial rollback and preserving crash evidence"
+      - "WAL recovery failed:"
+      - "Preserved crash manifest"
+      - "Failed to preserve crash manifest:"
+      - "Preserved crash rollback"
+      - "Failed to preserve crash rollback:"
+      - '"音频"'
+      - '"文档"'
+    allowed_regex:
+      - "音频"
+      - "文档"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: packages/application/apply_command.py
+    class: maintainer-facing
+    required_substrings:
+      - "Manifest schema_version is newer than the current version; upgrade the tool before running again"
+      - "Manifest schema_version is older than the current version;"
+      - "compatibility mode is not supported. Upgrade the manifest first"
+      - "Failed to create output directory:"
+      - "Failed to open rollback manifest:"
+      - "Failed to write rollback manifest:"
+      - "Failed to write updated manifest:"
+      - "Failed to update manifest:"
+      - "Failed to update rollback manifest:"
+      - "Failed to write report:"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: packages/application/apply_manifest_processor.py
+    class: maintainer-facing
+    required_substrings:
+      - "Input root must not be the filesystem root"
+      - "Failed to resolve input root:"
+      - "Failed to resolve manifest input-root allowlist:"
+      - "Manifest input-root allowlist must not include the filesystem root"
+      - "apply requires --input-root; to trust manifest input_root values, explicitly set --trust-manifest-input-root"
+      - "--trust-manifest-input-root requires --manifest-input-root-allowlist"
+      - "manifest row is missing the path field"
+      - "resume target is outside the output root"
+      - "resume digest verification failed:"
+      - "resume digest mismatch:"
+      - "source file does not exist"
+      - "manifest row is missing input_root; path boundaries cannot be verified"
+      - "manifest input_root is outside the allowlist"
+      - "source file is outside the input root"
+      - "input root validation failed:"
+      - "missing sha1; verification is unavailable"
+      - "sha1 verification failed:"
+      - "sha1 mismatch:"
+      - "dedupe path error:"
+      - "dedupe move error:"
+      - "destination path error:"
+      - "move error:"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: packages/application/rollback_command.py
+    class: maintainer-facing
+    required_substrings:
+      - "strict_integrity=true requires FILEYARD_ROLLBACK_HMAC_KEY"
+      - "strict_integrity validation failed: rollback candidates exist but all are invalid"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: packages/application/rollback_workflow.py
+    class: maintainer-facing
+    required_substrings:
+      - "Rollback paths changed before execution"
+      - "Overwrite backup preserved:"
+      - "Failed to restore original destination after overwrite failure:"
+      - "Rollback failed:"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: packages/infrastructure/manifest_store.py
+    class: maintainer-facing
+    required_substrings:
+      - "Invalid run_id:"
+      - "Manifest schema file not found:"
+      - "Manifest schema read failed:"
+      - "manifest schema unavailable:"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"

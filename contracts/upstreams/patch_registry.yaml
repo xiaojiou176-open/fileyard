@@ -1,0 +1,26 @@
+version: 1
+patches:
+  - id: npm-override-flatted-root
+    upstream_id: node-lock
+    surface: package.json
+    mechanism: npm-overrides
+    target: flatted
+    pinned_value: 3.4.2
+    reason: audited-transitive-fix
+    rollback: restore package.json and package-lock.json
+  - id: npm-override-flatted
+    upstream_id: node-lock
+    surface: apps/webui/package.json
+    mechanism: npm-overrides
+    target: flatted
+    pinned_value: 3.4.2
+    reason: audited-transitive-fix
+    rollback: restore apps/webui/package.json and package-lock.json
+  - id: npm-override-undici
+    upstream_id: node-lock
+    surface: apps/webui/package.json
+    mechanism: npm-overrides
+    target: undici
+    pinned_value: 7.24.1
+    reason: audited-transitive-fix
+    rollback: restore apps/webui/package.json and package-lock.json

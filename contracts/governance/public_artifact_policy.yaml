@@ -1,0 +1,67 @@
+version: 1
+provenance_contract: contracts/governance/public_asset_provenance.yaml
+require_declared_entries_cover_all_files: true
+audited_roots:
+  - path: apps/webui/public
+    expected_kinds:
+      - public-brand-asset
+    expected_statuses:
+      - repository-authored
+    expected_licenses:
+      - MIT
+    allowed_extensions:
+      - .svg
+  - path: tests/fixtures/golden_input
+    expected_kinds:
+      - public-test-fixture
+    expected_statuses:
+      - repository-maintained-synthetic
+    expected_licenses:
+      - MIT
+    allowed_extensions:
+      - .pdf
+      - .png
+global_forbidden_extensions:
+  - .db
+  - .dmp
+  - .dump
+  - .har
+  - .key
+  - .log
+  - .pcap
+  - .pem
+  - .sqlite
+  - .sql
+text_scan:
+  enabled: true
+  extensions:
+    - .csv
+    - .html
+    - .json
+    - .log
+    - .md
+    - .svg
+    - .txt
+    - .xml
+    - .yaml
+    - .yml
+  forbidden_regex:
+    - "-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----"
+    - "(?i)authorization\\s*:"
+    - "(?i)set-cookie\\s*:"
+    - "gh[pousr]_[A-Za-z0-9]+"
+    - "AKIA[0-9A-Z]{16}"
+    - "(?i)bearer\\s+[A-Za-z0-9._-]{8,}"
+    - "/Users/[A-Za-z0-9._-]+/"
+    - "/home/[A-Za-z0-9._-]+/"
+    - "(?i)[A-Z]:\\\\Users\\\\[A-Za-z0-9._-]+\\\\"
+    - "(?i)\\b[A-Za-z0-9._%+-]+@(gmail|outlook|hotmail|qq|icloud|163|126|yahoo)\\.com\\b"
+    - "\\b(?:\\+?1[-. ]?)?\\(?[2-9]\\d{2}\\)?[-. ]\\d{3}[-. ]\\d{4}\\b"
+documentation_surfaces:
+  - path: docs/open_source_runbook.md
+    required_substrings:
+      - bash tooling/gates/public_artifact_audit.sh
+  - path: THIRD_PARTY_NOTICES.md
+    required_substrings:
+      - contracts/governance/public_asset_provenance.yaml
+      - bash tooling/gates/public_artifact_audit.sh

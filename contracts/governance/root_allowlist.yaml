@@ -1,0 +1,114 @@
+version: 1
+canonical_tracked_entries:
+  - .clusterfuzzlite
+  - .devcontainer
+  - .env.example
+  - .github
+  - .gitignore
+  - .nvmrc
+  - .pre-commit-config.yaml
+  - AGENTS.md
+  - CHANGELOG.md
+  - CLAUDE.md
+  - CODE_OF_CONDUCT.md
+  - CONTRIBUTING.md
+  - DISTRIBUTION.md
+  - INTEGRATIONS.md
+  - LICENSE
+  - NOTICE
+  - README.md
+  - SECURITY.md
+  - server.json
+  - SUPPORT.md
+  - THIRD_PARTY_NOTICES.md
+  - apps
+  - contracts
+  - docs
+  - examples
+  - manifest.yaml
+  - ops
+  - package-lock.json
+  - package.json
+  - packages
+  - pyproject.toml
+  - sitecustomize.py
+  - tests
+  - tooling
+local_only_entries:
+  - .agents
+  - .env
+  - .runtime-cache
+  - .serena
+local_only_tracking:
+  mode: fail-close
+  enforcement_target: git-tracked-surface
+  require_change_control_tracked_policy: true
+  entries:
+    - .agents
+    - .env
+    - .runtime-cache
+    - .serena
+entry_purposes:
+  .agents: repo-local execution plans and governance control boards
+  .clusterfuzzlite: ClusterFuzzLite build and run entrypoints
+  .devcontainer: devcontainer and runtime image sources
+  .env: local-only runtime secret file that must remain untracked
+  .env.example: runtime env template
+  .github: CI workflows and automation
+  .gitignore: repository hygiene ignore contract
+  .nvmrc: local Node major-line pin for operator and CI parity
+  .pre-commit-config.yaml: local hook contract
+  .runtime-cache: the only repo-side runtime noise root
+  .serena: repo-local Serena caches and project metadata that must remain untracked
+  AGENTS.md: repo governance constitution
+  CHANGELOG.md: release history
+  CLAUDE.md: repo execution memory
+  CODE_OF_CONDUCT.md: public community behavior expectations
+  CONTRIBUTING.md: public contribution policy
+  DISTRIBUTION.md: public distribution boundary and current published-surface contract
+  INTEGRATIONS.md: public integration-fit boundary and current client-surface contract
+  LICENSE: repository license grant
+  NOTICE: public repository notice summary
+  README.md: public repo entry document
+  SECURITY.md: public security reporting policy
+  server.json: canonical machine-readable MCP descriptor for the public pure-MCP lane
+  SUPPORT.md: public support boundary
+  THIRD_PARTY_NOTICES.md: third-party dependency and asset notices
+  apps: repo entry applications
+  contracts: machine-enforced contracts and governance truth
+  docs: repo-level human documentation
+  examples: submission-ready public bundle examples and install packets
+  manifest.yaml: top-level submission manifest for public distribution truth
+  ops: operational collateral
+  package-lock.json: root workspace node lock
+  package.json: root workspace scripts
+  packages: domain/application/infrastructure/observability code
+  pyproject.toml: python package truth
+  sitecustomize.py: repo-wide Python runtime hygiene hook for machine-cache pycache redirection
+  tests: verification surfaces
+  tooling: scripts and tooling helpers
+required_non_empty_dirs:
+  - apps
+  - contracts
+  - docs
+  - examples
+  - ops
+  - packages
+  - tests
+  - tooling
+forbidden_runtime_roots:
+  - artifacts
+  - build
+  - coverage
+  - data
+  - dist
+  - htmlcov
+  - logs
+forbidden_name_patterns:
+  - "*backup*"
+  - "*organized*"
+  - "*.log"
+  - "final*"
+  - "tmp*"
+  - "misc*"
+  - "demo*"

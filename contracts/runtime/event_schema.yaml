@@ -1,0 +1,42 @@
+version: 1
+required_fields:
+  - timestamp
+  - level
+  - event
+  - trace_id
+  - span_id
+  - module
+  - service
+  - component
+  - action
+  - status
+  - duration_ms
+  - failure_domain
+  - workspace_id
+optional_fields:
+  - request_id
+  - session_id
+  - user_id
+  - run_id
+  - gate_run_id
+  - gate_name
+  - upstream_id
+  - manifest_id
+  - target_path
+failure_domains:
+  - repo_logic
+  - repo_config
+  - workspace_input
+  - cache_state
+  - ci_environment
+  - upstream_python
+  - upstream_node
+  - upstream_image
+  - upstream_browser
+  - upstream_model
+status_values:
+  - start
+  - success
+  - fail
+  - retry
+  - skipped

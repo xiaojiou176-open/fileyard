@@ -1,0 +1,46 @@
+version: 1
+ownership:
+  python-runtime-lock:
+    owner: repo
+    failure_owner: repo
+    escalation: refresh python lockfiles and re-run quality-gate-full plus test
+  node-lock:
+    owner: repo
+    failure_owner: repo
+    escalation: refresh package-lock and re-run webui-build-test
+  devcontainer-base-python311:
+    owner: repo
+    failure_owner: repo
+    escalation: refresh pinned base image digest and re-run runner-contract plus ci-image-build
+  node-runtime-image:
+    owner: repo
+    failure_owner: repo
+    escalation: refresh pinned node runtime image digest and re-run webui-build-test plus ci-image-build
+  playwright-browser-bundle:
+    owner: repo
+    failure_owner: repo
+    escalation: refresh playwright version and re-run live-integration plus e2e
+  gemini-sdk:
+    owner: repo
+    failure_owner: repo
+    escalation: refresh SDK pin and re-run functional-gate plus live-smoke-preflight
+  gemini-model-contract:
+    owner: repo
+    failure_owner: repo
+    escalation: update model contract and re-run functional-gate plus live-smoke-preflight plus gemini-ui-ux-audit
+  gitleaks-release-binary:
+    owner: repo
+    failure_owner: repo
+    escalation: refresh binary checksum/version pair and re-run secrets-supply-chain-gate
+  ffmpeg-system-binary:
+    owner: repo
+    failure_owner: repo
+    escalation: verify host ffmpeg installation contract and refresh declaration if the optional audio path changes
+  document-conversion-system-binary:
+    owner: repo
+    failure_owner: repo
+    escalation: verify host LibreOffice or unoconv installation contract and refresh declaration if document conversion behavior changes
+  ocr-capability-contract:
+    owner: repo
+    failure_owner: repo
+    escalation: keep OCR unsupported until a separately governed OCR upstream is introduced and verified

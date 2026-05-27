@@ -1,0 +1,162 @@
+version: 1
+entries:
+  .agents:
+    owner: repo
+    change_class: local-only
+    approval_rule: architecture-review
+    tracked_policy: must-remain-untracked
+    tracked_policy_reason: repo-local plans and conversations must never enter git tracked public surface
+  .clusterfuzzlite:
+    owner: repo
+    change_class: platform
+    approval_rule: architecture-review
+  .env:
+    owner: repo
+    change_class: local-only
+    approval_rule: architecture-review
+    tracked_policy: must-remain-untracked
+    tracked_policy_reason: local runtime secrets may exist for operator convenience but must never enter git tracked public surface
+  .devcontainer:
+    owner: repo
+    change_class: platform
+    approval_rule: architecture-review
+  .env.example:
+    owner: repo
+    change_class: public-config
+    approval_rule: architecture-review
+  .github:
+    owner: repo
+    change_class: platform
+    approval_rule: architecture-review
+  .gitignore:
+    owner: repo
+    change_class: hygiene
+    approval_rule: architecture-review
+  .nvmrc:
+    owner: repo
+    change_class: public-config
+    approval_rule: architecture-review
+  .pre-commit-config.yaml:
+    owner: repo
+    change_class: policy
+    approval_rule: architecture-review
+  .runtime-cache:
+    owner: repo
+    change_class: local-only
+    approval_rule: architecture-review
+    tracked_policy: must-remain-untracked
+    tracked_policy_reason: runtime receipts and caches must never enter git tracked public surface
+  .serena:
+    owner: repo
+    change_class: local-only
+    approval_rule: architecture-review
+    tracked_policy: must-remain-untracked
+    tracked_policy_reason: Serena caches and project metadata are repo-local tooling residue and must never enter git tracked public surface
+  AGENTS.md:
+    owner: repo
+    change_class: governance
+    approval_rule: architecture-review
+  CHANGELOG.md:
+    owner: repo
+    change_class: public-doc
+    approval_rule: architecture-review
+  CLAUDE.md:
+    owner: repo
+    change_class: governance
+    approval_rule: architecture-review
+  CODE_OF_CONDUCT.md:
+    owner: repo
+    change_class: public-doc
+    approval_rule: architecture-review
+  CONTRIBUTING.md:
+    owner: repo
+    change_class: public-doc
+    approval_rule: architecture-review
+  DISTRIBUTION.md:
+    owner: repo
+    change_class: public-doc
+    approval_rule: architecture-review
+  INTEGRATIONS.md:
+    owner: repo
+    change_class: public-doc
+    approval_rule: architecture-review
+  LICENSE:
+    owner: repo
+    change_class: legal
+    approval_rule: architecture-review
+  NOTICE:
+    owner: repo
+    change_class: legal
+    approval_rule: architecture-review
+  README.md:
+    owner: repo
+    change_class: public-doc
+    approval_rule: architecture-review
+  SECURITY.md:
+    owner: repo
+    change_class: security
+    approval_rule: architecture-review
+  server.json:
+    owner: repo
+    change_class: public-doc
+    approval_rule: architecture-review
+  SUPPORT.md:
+    owner: repo
+    change_class: public-doc
+    approval_rule: architecture-review
+  THIRD_PARTY_NOTICES.md:
+    owner: repo
+    change_class: legal
+    approval_rule: architecture-review
+  apps:
+    owner: repo
+    change_class: canonical-root
+    approval_rule: architecture-review
+  contracts:
+    owner: repo
+    change_class: canonical-root
+    approval_rule: architecture-review
+  docs:
+    owner: repo
+    change_class: canonical-root
+    approval_rule: architecture-review
+  examples:
+    owner: repo
+    change_class: canonical-root
+    approval_rule: architecture-review
+  manifest.yaml:
+    owner: repo
+    change_class: public-doc
+    approval_rule: architecture-review
+  ops:
+    owner: repo
+    change_class: canonical-root
+    approval_rule: architecture-review
+  package-lock.json:
+    owner: repo
+    change_class: dependency-root
+    approval_rule: architecture-review
+  package.json:
+    owner: repo
+    change_class: public-entrypoint
+    approval_rule: architecture-review
+  packages:
+    owner: repo
+    change_class: canonical-root
+    approval_rule: architecture-review
+  pyproject.toml:
+    owner: repo
+    change_class: dependency-root
+    approval_rule: architecture-review
+  sitecustomize.py:
+    owner: repo
+    change_class: runtime-hygiene
+    approval_rule: architecture-review
+  tests:
+    owner: repo
+    change_class: canonical-root
+    approval_rule: architecture-review
+  tooling:
+    owner: repo
+    change_class: canonical-root
+    approval_rule: architecture-review

@@ -1,0 +1,56 @@
+version: 1
+default_language: en
+fail_close: true
+notes:
+  - This policy governs the thin English-first public surface.
+targets:
+  - path: README.md
+    required_substrings:
+      - "# Fileyard"
+      - "## Minimal Truth Routes"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: THIRD_PARTY_NOTICES.md
+    required_substrings:
+      - "# Third-Party Notices"
+      - "This file records the most important third-party dependencies"
+      - "It is not a full SBOM"
+      - "bash tooling/gates/public_artifact_audit.sh"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: docs/open_source_runbook.md
+    required_substrings:
+      - "# Open Source Runbook"
+      - "This runbook is canonical for public, release, and platform-boundary semantics."
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: docs/usage.md
+    required_substrings:
+      - "# Fileyard Detailed Operator Guide"
+      - "This file is the detailed operator guide."
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: docs/required_checks_matrix.md
+    required_substrings:
+      - "# Required Checks Matrix"
+      - "## Required Checks Alignment Matrix"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: docs/reference/governance_truth.generated.md
+    required_substrings:
+      - "# Governance Truth Reference"
+      - "## Public Readiness / Platform Alignment"
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: docs/runner_contract.md
+    required_substrings:
+      - "# Golden Runner / Capability Contract"
+      - "This document explains why the runner contract exists."
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"
+  - path: docs/logging_observability.md
+    required_substrings:
+      - "# Logging And Observability Policy (No Logs No Merge)"
+      - "Structured logs must remain diagnosable, correlated, and safe to publish."
+    forbidden_regex:
+      - "[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3040-\\u30ff]"

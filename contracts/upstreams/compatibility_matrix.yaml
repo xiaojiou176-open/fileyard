@@ -1,0 +1,119 @@
+version: 1
+matrix:
+  - upstream_id: python-runtime-lock
+    supported_pairs:
+      - python: "3.10"
+        verification_suite: quality-gate-full + test
+        verification_mode: ci-upstream-receipt
+        verification_artifact: .runtime-cache/ci/upstream-receipts/python-runtime-lock-3-10.json
+        verification_max_age_hours: 168
+        rollback_baseline: restore previous python lockfiles
+      - python: "3.11"
+        verification_suite: quality-gate-full + test
+        verification_mode: ci-upstream-receipt
+        verification_artifact: .runtime-cache/ci/upstream-receipts/python-runtime-lock-3-11.json
+        verification_max_age_hours: 168
+        rollback_baseline: restore previous python lockfiles
+      - python: "3.12"
+        verification_suite: quality-gate-full + test
+        verification_mode: ci-upstream-receipt
+        verification_artifact: .runtime-cache/ci/upstream-receipts/python-runtime-lock-3-12.json
+        verification_max_age_hours: 168
+        rollback_baseline: restore previous python lockfiles
+  - upstream_id: node-lock
+    supported_pairs:
+      - node: "24.x"
+        verification_suite: webui-build-test
+        verification_mode: ci-upstream-receipt
+        verification_artifact: .runtime-cache/ci/upstream-receipts/node-lock-24-x.json
+        verification_max_age_hours: 168
+        rollback_baseline: restore previous package-lock.json
+  - upstream_id: devcontainer-base-python311
+    supported_pairs:
+      - python: "3.11"
+        verification_suite: runner-contract + ci-image-build
+        verification_mode: ci-upstream-receipt
+        verification_artifact: .runtime-cache/ci/upstream-receipts/devcontainer-base-python311-3-11.json
+        verification_max_age_hours: 168
+        rollback_baseline: restore previous pinned digest
+  - upstream_id: node-runtime-image
+    supported_pairs:
+      - node: "24.8.0"
+        verification_suite: webui-build-test + ci-image-build
+        verification_mode: ci-upstream-receipt
+        verification_artifact: .runtime-cache/ci/upstream-receipts/node-runtime-image-24-8-0.json
+        verification_max_age_hours: 168
+        rollback_baseline: restore previous pinned digest
+  - upstream_id: playwright-browser-bundle
+    supported_pairs:
+      - node: "24.x"
+        python: "3.11"
+        verification_suite: live-integration
+        verification_mode: ci-upstream-receipt
+        verification_artifact: .runtime-cache/ci/upstream-receipts/playwright-browser-bundle-24-x-3-11.json
+        verification_max_age_hours: 168
+        rollback_baseline: restore previous playwright version
+  - upstream_id: gemini-sdk
+    supported_pairs:
+      - sdk: "1.65.0"
+        model: gemini-3-flash-preview
+        verification_suite: functional-gate + live-smoke-preflight
+        verification_mode: ci-upstream-receipt
+        verification_artifact: .runtime-cache/ci/upstream-receipts/gemini-sdk-1-65-0-gemini-3-flash-preview.json
+        verification_max_age_hours: 168
+        rollback_baseline: restore previous sdk pin
+  - upstream_id: gemini-model-contract
+    supported_pairs:
+      - model: gemini-3-flash-preview
+        verification_suite: functional-gate + live-smoke-preflight + gemini-ui-ux-audit
+        verification_mode: ci-upstream-receipt
+        verification_artifact: .runtime-cache/ci/upstream-receipts/gemini-model-contract-gemini-3-flash-preview.json
+        verification_max_age_hours: 168
+        rollback_baseline: restore previous model id
+  - upstream_id: gitleaks-release-binary
+    supported_pairs:
+      - version: "8.24.2"
+        verification_suite: secrets-supply-chain-gate
+        verification_mode: ci-upstream-receipt
+        verification_artifact: .runtime-cache/ci/upstream-receipts/gitleaks-release-binary-8-24-2.json
+        verification_max_age_hours: 168
+        rollback_baseline: restore previous gitleaks version/checksum pair
+  - upstream_id: ffmpeg-system-binary
+    supported_pairs:
+      - binary: ffmpeg
+        state: host-managed-optional
+        verification_suite: upstream-governance-system-binary
+        verification_mode: governed-host-binary-declaration
+        verification_artifact: contracts/upstreams/declarations/ffmpeg-system-binary.json
+        verification_max_age_hours: 8760
+        rollback_baseline: restore previous ffmpeg installation or allow no-ffmpeg fallback
+        assurance_tier: host-preflight-optional
+        repo_preflight_gate: bash tooling/gates/host_capability_preflight.sh ffmpeg-system-binary
+        allowed_missing_behavior: allow-and-report
+        preflight_policy: trusted-binary-resolution
+  - upstream_id: document-conversion-system-binary
+    supported_pairs:
+      - binary_contract: soffice-or-libreoffice-or-unoconv
+        state: host-managed-optional
+        verification_suite: upstream-governance-system-binary
+        verification_mode: governed-host-binary-declaration
+        verification_artifact: contracts/upstreams/declarations/document-conversion-system-binary.json
+        verification_max_age_hours: 8760
+        rollback_baseline: restore previous LibreOffice or unoconv installation, or accept document-conversion failure paths
+        assurance_tier: host-preflight-optional
+        repo_preflight_gate: bash tooling/gates/host_capability_preflight.sh document-conversion-system-binary
+        allowed_missing_behavior: allow-and-report
+        preflight_policy: trusted-binary-resolution
+  - upstream_id: ocr-capability-contract
+    supported_pairs:
+      - capability: ocr
+        state: unsupported
+        verification_suite: upstream-governance-system-binary
+        verification_mode: governed-unsupported-capability-declaration
+        verification_artifact: contracts/upstreams/declarations/ocr-capability-contract.json
+        verification_max_age_hours: 8760
+        rollback_baseline: keep OCR disabled until a separately governed OCR upstream is introduced
+        assurance_tier: unsupported-declaration
+        repo_preflight_gate: bash tooling/gates/host_capability_preflight.sh ocr-capability-contract
+        allowed_missing_behavior: declared-unsupported
+        preflight_policy: declared-unsupported
