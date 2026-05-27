@@ -5,7 +5,7 @@ from pathlib import Path
 
 def test_config_unknown_key_fail_fast(tmp_path: Path):
     repo_root = Path(__file__).resolve().parents[2]
-    entry = repo_root / "apps" / "cli" / "movi_organizer.py"
+    entry = repo_root / "apps" / "cli" / "fileyard.py"
 
     input_dir = tmp_path / "input"
     input_dir.mkdir()

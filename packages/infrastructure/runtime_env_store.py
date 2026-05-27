@@ -5,7 +5,7 @@ import os
 from collections.abc import Mapping
 from pathlib import Path
 
-DEFAULT_WORKSPACE_ROOT = "~/.movi-organizer/workspaces/default"
+DEFAULT_WORKSPACE_ROOT = "~/.fileyard/workspaces/default"
 RUNTIME_ENV_RELATIVE_PATH = Path(".movi") / "env" / "runtime.env"
 
 

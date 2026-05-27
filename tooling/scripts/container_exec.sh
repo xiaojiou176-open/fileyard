@@ -368,10 +368,10 @@ fi
 RUNTIME_VENV_VOLUME="$(runtime_volume_name venv)"
 RUNTIME_PLAYWRIGHT_VOLUME="$(runtime_volume_name playwright)"
 RUNTIME_WEBUI_NODE_MODULES_VOLUME="$(runtime_volume_name node-modules)"
-CONTAINER_VENV_DIR="/root/.cache/movi-organizer/venv/default"
-CONTAINER_XDG_CACHE_HOME="/root/.cache/movi-organizer/xdg"
-CONTAINER_PIP_CACHE_DIR="/root/.cache/movi-organizer/pip"
-CONTAINER_PLAYWRIGHT_CACHE_DIR="/root/.cache/movi-organizer/playwright"
+CONTAINER_VENV_DIR="/root/.cache/fileyard/venv/default"
+CONTAINER_XDG_CACHE_HOME="/root/.cache/fileyard/xdg"
+CONTAINER_PIP_CACHE_DIR="/root/.cache/fileyard/pip"
+CONTAINER_PLAYWRIGHT_CACHE_DIR="/root/.cache/fileyard/playwright"
 
 ci_passthrough_args=()
 for passthrough_var in \
@@ -407,7 +407,7 @@ RESTORE_TREE_HELPER="${RESTORE_TREE_HELPER:-/workspace/tooling/scripts/restore_p
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-'"$CONTAINER_XDG_CACHE_HOME"'}"
 export PIP_CACHE_DIR="${PIP_CACHE_DIR:-'"$CONTAINER_PIP_CACHE_DIR"'}"
 # Inside the container, the persistent Playwright browser cache is backed by a
-# dedicated volume mounted at /root/.cache/movi-organizer/playwright. Keep the
+# dedicated volume mounted at /root/.cache/fileyard/playwright. Keep the
 # runtime env aligned with that mount so browser installs and browser launches
 # resolve the same path.
 export PLAYWRIGHT_BROWSERS_PATH="${PLAYWRIGHT_BROWSERS_PATH:-'"$CONTAINER_PLAYWRIGHT_CACHE_DIR"'}"

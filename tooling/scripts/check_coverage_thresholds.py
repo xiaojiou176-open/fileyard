@@ -25,7 +25,7 @@ IMPORTANT_MODULE_MINIMUMS: dict[str, float] = {
 }
 
 IMPORTANT_MODULE_ALIASES: dict[str, tuple[str, ...]] = {
-    "cli_app.py": ("apps/cli/movi_organizer.py",),
+    "cli_app.py": ("apps/cli/fileyard.py",),
 }
 
 

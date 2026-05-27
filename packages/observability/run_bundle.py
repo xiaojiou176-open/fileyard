@@ -32,7 +32,7 @@ def _now_iso() -> str:
 
 
 def _workspace_root() -> Path:
-    return Path(os.environ.get("MOVI_WORKSPACE_ROOT", "~/.movi-organizer/workspaces/default")).expanduser()
+    return Path(os.environ.get("MOVI_WORKSPACE_ROOT", "~/.fileyard/workspaces/default")).expanduser()
 
 
 def run_bundle_root() -> Path:

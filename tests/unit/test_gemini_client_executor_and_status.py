@@ -496,7 +496,7 @@ def test_cli_main_config_load_fail_logs_and_exits(monkeypatch, tmp_path: Path):
         lambda *_args, **kwargs: events.append(kwargs.get("error_code")),
     )
 
-    monkeypatch.setattr(sys, "argv", ["movi_organizer", "--config", str(tmp_path / "bad.toml"), "report", "--manifest", "m", "--out", "o"])
+    monkeypatch.setattr(sys, "argv", ["fileyard", "--config", str(tmp_path / "bad.toml"), "report", "--manifest", "m", "--out", "o"])
 
     with pytest.raises(SystemExit, match="Failed to load config"):
         cli_app.main()
@@ -511,7 +511,7 @@ def test_cli_main_invalid_crash_inject(monkeypatch):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "apply",
             "--manifest",
             "/tmp/m.jsonl",
@@ -551,7 +551,7 @@ def test_cli_main_collects_analyze_and_apply_lock_targets(monkeypatch, tmp_path:
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "analyze",
             "--manifest",
             str(manifest),
@@ -567,7 +567,7 @@ def test_cli_main_collects_analyze_and_apply_lock_targets(monkeypatch, tmp_path:
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "apply",
             "--manifest",
             str(manifest),
@@ -607,7 +607,7 @@ def test_cli_main_lock_fail_releases_previously_acquired(monkeypatch, tmp_path: 
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "report",
             "--manifest",
             str(tmp_path / "m.jsonl"),

@@ -45,11 +45,11 @@ def _repo_root() -> Path:
 
 
 def _workspace_input_root() -> Path:
-    return Path(os.environ.get("MOVI_INPUT_ROOT", "~/.movi-organizer/workspaces/default/data/raw")).expanduser()
+    return Path(os.environ.get("MOVI_INPUT_ROOT", "~/.fileyard/workspaces/default/data/raw")).expanduser()
 
 
 def _workspace_output_root() -> Path:
-    return Path(os.environ.get("MOVI_OUTPUT_ROOT", "~/.movi-organizer/workspaces/default/data/organized")).expanduser()
+    return Path(os.environ.get("MOVI_OUTPUT_ROOT", "~/.fileyard/workspaces/default/data/organized")).expanduser()
 
 
 def _find_free_port() -> int:

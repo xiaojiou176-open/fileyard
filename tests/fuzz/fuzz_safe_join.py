@@ -9,7 +9,7 @@ with atheris.instrument_imports():
     from packages.domain.normalization import safe_join
 
 
-ROOT = Path("/tmp/movi-organizer-fuzz-root")
+ROOT = Path("/tmp/fileyard-fuzz-root")
 
 
 def TestOneInput(data: bytes) -> None:

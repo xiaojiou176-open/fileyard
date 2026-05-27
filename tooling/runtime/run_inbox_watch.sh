@@ -32,7 +32,7 @@ from pathlib import Path
 from packages.application.inbox_watch import scan_watch_sources_once
 from packages.infrastructure.watch_source_store import load_watch_sources
 
-workspace_root = Path(os.environ.get("MOVI_WORKSPACE_ROOT", "~/.movi-organizer/workspaces/default")).expanduser()
+workspace_root = Path(os.environ.get("MOVI_WORKSPACE_ROOT", "~/.fileyard/workspaces/default")).expanduser()
 batches = [batch.to_dict() for batch in scan_watch_sources_once(load_watch_sources(workspace_root))]
 print(json.dumps({"count": len(batches), "items": batches}, ensure_ascii=False, indent=2))
 PY

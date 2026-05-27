@@ -46,12 +46,12 @@ dev = [
 ]
 
 [project.scripts]
-movi-organizer = "apps.cli.movi_organizer:main"
+fileyard = "apps.cli.fileyard:main"
 movi-web-api = "apps.api.server:main"
 movi-mcp = "apps.mcp.server:main"
 
-[tool.movi_organizer.package_smoke]
-required_entrypoints = ["movi-organizer", "movi-web-api", "movi-mcp"]
+[tool.fileyard.package_smoke]
+required_entrypoints = ["fileyard", "movi-web-api", "movi-mcp"]
 
 [tool.setuptools]
 include-package-data = true

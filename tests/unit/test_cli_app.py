@@ -17,7 +17,7 @@ def test_cli_analyze_parses_categories(monkeypatch):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "analyze",
             "--manifest",
             "/tmp/manifest.jsonl",
@@ -46,7 +46,7 @@ def test_cli_apply_parses_flags(monkeypatch):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "apply",
             "--manifest",
             "/tmp/manifest.jsonl",
@@ -83,7 +83,7 @@ def test_cli_rollback_parses(monkeypatch):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "rollback",
             "--manifest",
             "/tmp/manifest.jsonl",
@@ -103,7 +103,7 @@ def test_cli_apply_rejects_crash_inject_outside_test_mode(monkeypatch):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "apply",
             "--manifest",
             "/tmp/manifest.jsonl",
@@ -132,7 +132,7 @@ def test_cli_apply_accepts_crash_inject_in_test_mode(monkeypatch):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "apply",
             "--manifest",
             "/tmp/manifest.jsonl",
@@ -233,7 +233,7 @@ GEMINI_MODEL_PRIMARY = "deprecated-model"
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "--config",
             str(config),
             "analyze",
@@ -366,7 +366,7 @@ def test_cli_apply_rejects_unknown_crash_inject(monkeypatch):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "apply",
             "--manifest",
             "/tmp/manifest.jsonl",
@@ -400,7 +400,7 @@ def test_cli_config_type_error_maps_to_type_invalid_code(monkeypatch):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "--config",
             "/tmp/fake.toml",
             "analyze",
@@ -435,7 +435,7 @@ def test_cli_config_chinese_unknown_section_and_key_map_to_unknown_key_code(monk
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "--config",
             "/tmp/fake.toml",
             "analyze",
@@ -471,7 +471,7 @@ def test_cli_config_generic_error_uses_config_invalid_code(monkeypatch):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "--config",
             "/tmp/fake.toml",
             "analyze",
@@ -498,7 +498,7 @@ def test_cli_config_load_failure_emits_error_log(monkeypatch):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "--config",
             "/tmp/fake.toml",
             "analyze",
@@ -526,7 +526,7 @@ def test_cli_analyze_uses_strategy_pack_defaults_from_config(monkeypatch):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "--config",
             "/tmp/fake.toml",
             "analyze",
@@ -561,7 +561,7 @@ def test_cli_lock_failure_releases_acquired_locks(tmp_path, monkeypatch):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "analyze",
             "--manifest",
             str(tmp_path / "manifest.jsonl"),
@@ -594,7 +594,7 @@ def test_cli_report_locks_manifest_and_out(tmp_path, monkeypatch):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "report",
             "--manifest",
             str(tmp_path / "manifest.jsonl"),
@@ -621,7 +621,7 @@ def test_cli_main_finalizes_run_bundle_as_fail_when_command_raises(monkeypatch):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "analyze",
             "--manifest",
             "/tmp/manifest.jsonl",

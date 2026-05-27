@@ -11,7 +11,7 @@ CONFIG_LIB="$ROOT/scripts/lib_config.sh"
 load_governance_defaults "$REPO_ROOT"
 apply_runtime_env_defaults "$REPO_ROOT"
 VENV="$(governance_runtime_venv_path "$REPO_ROOT")"
-CLI_ENTRYPOINT="$REPO_ROOT/apps/cli/movi_organizer.py"
+CLI_ENTRYPOINT="$REPO_ROOT/apps/cli/fileyard.py"
 
 if [ "${MOVI_IN_CONTAINER:-0}" != "1" ] && [ "${MOVI_ALLOW_HOST_EXECUTION:-0}" != "1" ]; then
   exec bash "$ROOT/scripts/container_exec.sh" --label run-rollback -- bash tooling/runtime/run_rollback.sh "$@"

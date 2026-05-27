@@ -54,7 +54,7 @@ def _is_test_hooks_enabled() -> bool:
 
 
 def _default_report_out() -> str:
-    workspace_root = Path(os.environ.get("MOVI_WORKSPACE_ROOT", "~/.movi-organizer/workspaces/default")).expanduser()
+    workspace_root = Path(os.environ.get("MOVI_WORKSPACE_ROOT", "~/.fileyard/workspaces/default")).expanduser()
     return str(workspace_root / ".movi" / "artifacts" / "report" / "report_summary.json")
 
 

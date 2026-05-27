@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 def _default_machine_cache_root() -> Path:
-    return Path(os.environ.get("GOVERNANCE_MACHINE_CACHE_ROOT", "~/.cache/movi-organizer")).expanduser()
+    return Path(os.environ.get("GOVERNANCE_MACHINE_CACHE_ROOT", "~/.cache/fileyard")).expanduser()
 
 
 def _repo_root() -> Path:

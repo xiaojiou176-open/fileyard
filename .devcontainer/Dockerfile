@@ -12,7 +12,7 @@ ARG GITLEAKS_SHA256_AMD64
 ARG GITLEAKS_SHA256_ARM64
 ARG TARGETARCH
 
-LABEL org.opencontainers.image.source="https://github.com/xiaojiou176-open/movi-organizer"
+LABEL org.opencontainers.image.source="https://github.com/xiaojiou176-open/fileyard"
 
 RUN rm -f /etc/apt/sources.list.d/yarn.list /etc/apt/sources.list.d/yarn.list.save
 

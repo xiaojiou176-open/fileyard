@@ -337,7 +337,7 @@ def _build_upgrade_pack_summary(proof_contract: dict[str, Any]) -> dict[str, Any
 
 
 def _external_tmp_root() -> Path:
-    root = Path("/tmp/movi-organizer-ai-eval")
+    root = Path("/tmp/fileyard-ai-eval")
     root.mkdir(parents=True, exist_ok=True)
     return root
 

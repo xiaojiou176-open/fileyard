@@ -4,8 +4,8 @@ services:
     working_dir: /workspace
     volumes:
       - ../..:/workspace
-      - movi_venv:/root/.cache/movi-organizer/venv/default
-      - movi_playwright:/root/.cache/movi-organizer/playwright
+      - movi_venv:/root/.cache/fileyard/venv/default
+      - movi_playwright:/root/.cache/fileyard/playwright
       - movi_webui_node_modules:/workspace/apps/webui/node_modules
     environment:
       PIP_DISABLE_PIP_VERSION_CHECK: "1"
@@ -29,7 +29,7 @@ services:
     working_dir: /workspace
     volumes:
       - ../..:/workspace
-      - movi_venv:/root/.cache/movi-organizer/venv/default
+      - movi_venv:/root/.cache/fileyard/venv/default
       - movi_webui_node_modules:/workspace/apps/webui/node_modules
     environment:
       PIP_DISABLE_PIP_VERSION_CHECK: "1"

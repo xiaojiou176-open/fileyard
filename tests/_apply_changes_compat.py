@@ -51,7 +51,7 @@ def install_apply_changes_test_compat() -> None:
             return path_norm == root_norm or path_norm.startswith(root_norm + os.sep)
         except Exception as exc:  # pragma: no cover - tests-only compatibility
             compat.log_event(
-                compat.logging.getLogger("movi_organizer"),
+                compat.logging.getLogger("fileyard"),
                 compat.logging.WARNING,
                 "path_boundary_check_failed",
                 "Path boundary check failed during canonicalization",

@@ -20,7 +20,7 @@
     "MOVI_IN_CONTAINER": "1",
     "MOVI_ALLOW_HOST_EXECUTION": "0"
   },
-  "postCreateCommand": "bash tooling/runtime/bootstrap_env.sh && ~/.cache/movi-organizer/venv/default/bin/python -m playwright install --with-deps chromium",
+  "postCreateCommand": "bash tooling/runtime/bootstrap_env.sh && ~/.cache/fileyard/venv/default/bin/python -m playwright install --with-deps chromium",
   "customizations": {
     "vscode": {
       "extensions": [

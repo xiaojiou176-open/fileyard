@@ -4,7 +4,7 @@
       "movi": {
         "command": "bash",
         "args": [
-          "/absolute/path/to/movi-organizer/tooling/runtime/run_mcp_stdio.sh"
+          "/absolute/path/to/fileyard/tooling/runtime/run_mcp_stdio.sh"
         ]
       }
     }

@@ -22,7 +22,7 @@ def _repo_root() -> Path:
 
 
 def _read_runtime_env_value(name: str) -> str:
-    workspace_root = Path(os.getenv("MOVI_WORKSPACE_ROOT", "~/.movi-organizer/workspaces/default")).expanduser()
+    workspace_root = Path(os.getenv("MOVI_WORKSPACE_ROOT", "~/.fileyard/workspaces/default")).expanduser()
     env_path = workspace_root / ".movi" / "env" / "runtime.env"
     if not env_path.exists():
         return ""

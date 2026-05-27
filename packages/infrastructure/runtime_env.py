@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 from typing import Mapping
 
-DEFAULT_WORKSPACE_ROOT = "~/.movi-organizer/workspaces/default"
+DEFAULT_WORKSPACE_ROOT = "~/.fileyard/workspaces/default"
 
 
 def workspace_root() -> Path:

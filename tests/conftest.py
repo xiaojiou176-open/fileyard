@@ -44,7 +44,7 @@ def _prune_repo_bytecode_residue() -> None:
 
 
 def _apply_test_runtime_hygiene() -> None:
-    pycache_prefix = Path(os.environ.get("PYTHONPYCACHEPREFIX", "~/.cache/movi-organizer/pycache")).expanduser()
+    pycache_prefix = Path(os.environ.get("PYTHONPYCACHEPREFIX", "~/.cache/fileyard/pycache")).expanduser()
     coverage_dir = REPO_ROOT / ".runtime-cache" / "test" / "coverage"
     pycache_prefix.mkdir(parents=True, exist_ok=True)
     coverage_dir.mkdir(parents=True, exist_ok=True)

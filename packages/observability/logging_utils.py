@@ -18,7 +18,7 @@ from typing import Any, Dict
 # -----------------------------
 
 _CONFIG_CONTEXT_DEFAULTS: Dict[str, str] = {}
-APP_NAME = "movi_organizer"
+APP_NAME = "fileyard"
 
 
 class JsonFormatter(logging.Formatter):
@@ -62,7 +62,7 @@ class JsonFormatter(logging.Formatter):
 
 
 def setup_logger(level: str, json_mode: bool) -> logging.Logger:
-    logger = logging.getLogger("movi_organizer")
+    logger = logging.getLogger("fileyard")
     for existing_handler in list(logger.handlers):
         logger.removeHandler(existing_handler)
         try:

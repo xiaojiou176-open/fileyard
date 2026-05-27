@@ -166,7 +166,7 @@ def test_log_event_auto_enriches_core_observability_fields(capsys):
     assert payload["request_id"] == "apply_001"
     assert payload["session_id"] == "apply_001"
     assert payload["span_id"].startswith("spn_")
-    assert payload["service"] == "movi_organizer"
+    assert payload["service"] == "fileyard"
     assert payload["component"]
     assert payload["workspace_id"] == "default"
     assert payload["failure_domain"] == "repo_logic"

@@ -80,9 +80,9 @@ Client-specific entry pages:
 Use these commands when you want to prove the MCP surface exists before wiring a client:
 
 ```bash
-~/.cache/movi-organizer/venv/default/bin/movi-mcp --help
-~/.cache/movi-organizer/venv/default/bin/movi-mcp --print-tools
-~/.cache/movi-organizer/venv/default/bin/movi-mcp --print-resources
+~/.cache/fileyard/venv/default/bin/movi-mcp --help
+~/.cache/fileyard/venv/default/bin/movi-mcp --print-tools
+~/.cache/fileyard/venv/default/bin/movi-mcp --print-resources
 ```
 
 ## Current V1 Tool Families
@@ -124,7 +124,7 @@ Most MCP-capable clients want a stdio command plus arguments. The exact config f
 {
   "name": "movi",
   "command": "bash",
-  "args": ["/absolute/path/to/movi-organizer/tooling/runtime/run_mcp_stdio.sh"]
+  "args": ["/absolute/path/to/fileyard/tooling/runtime/run_mcp_stdio.sh"]
 }
 ```
 

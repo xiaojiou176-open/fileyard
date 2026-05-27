@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://movi-organizer/contracts/runtime/run_bundle.schema.json",
+  "$id": "https://fileyard/contracts/runtime/run_bundle.schema.json",
   "title": "Movi Run Bundle Summary",
   "type": "object",
   "required": [

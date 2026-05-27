@@ -9,7 +9,7 @@ def test_full_pipeline_offline(tmp_path: Path):
     repo_root = Path(__file__).resolve().parents[2]
     venv_python = repo_root / ".runtime-cache" / "venv" / "default" / "bin" / "python"
     python_bin = venv_python if venv_python.exists() else Path(sys.executable)
-    entry = repo_root / "apps" / "cli" / "movi_organizer.py"
+    entry = repo_root / "apps" / "cli" / "fileyard.py"
 
     input_dir = tmp_path / "input"
     output_dir = tmp_path / "output"

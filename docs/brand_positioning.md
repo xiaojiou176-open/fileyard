@@ -5,7 +5,7 @@ This note freezes the current naming baseline for the public docs, README, WebUI
 ## Core Positioning
 
 - **Primary brand**: `Movi`
-- **Repository and CLI/runtime identity**: `movi-organizer`
+- **Repository and CLI/runtime identity**: `fileyard`
 - **Current product promise**: review-first, AI-assisted, dry-run before execute, rollback-ready, local-first
 
 Short product sentence:
@@ -63,5 +63,5 @@ Disallowed phrasing:
 
 - Prefer `AI-assisted` over `AI-powered` when the sentence could imply autonomy.
 - Prefer `Apply approved changes` or `dry-run before execute` over marketing verbs that hide the review boundary.
-- Keep `Movi` as the outward-facing brand, but keep `movi-organizer` for repo, CLI, package, and runtime references.
+- Keep `Movi` as the outward-facing brand, but keep `fileyard` for repo, CLI, package, and runtime references.
 - When in doubt, describe the current product as a **workbench** or **workspace**, not a cloud service.

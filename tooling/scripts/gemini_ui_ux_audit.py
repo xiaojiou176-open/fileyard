@@ -100,7 +100,7 @@ def _resolve_api_key(repo_root: Path) -> str:
     env_key = os.getenv("GEMINI_API_KEY", "").strip()
     if env_key:
         return env_key
-    workspace_root = Path(os.getenv("MOVI_WORKSPACE_ROOT", "~/.movi-organizer/workspaces/default")).expanduser()
+    workspace_root = Path(os.getenv("MOVI_WORKSPACE_ROOT", "~/.fileyard/workspaces/default")).expanduser()
     return _read_dotenv_value(workspace_root / ".movi" / "env" / "runtime.env", "GEMINI_API_KEY")
 
 

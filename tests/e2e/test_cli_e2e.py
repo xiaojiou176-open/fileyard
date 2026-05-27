@@ -9,7 +9,7 @@ from pathlib import Path
 
 def test_cli_apply_rollback(tmp_path: Path):
     repo_root = Path(__file__).resolve().parents[2]
-    movi_organizer = repo_root / "apps" / "cli" / "movi_organizer.py"
+    fileyard = repo_root / "apps" / "cli" / "fileyard.py"
 
     input_dir = tmp_path / "input"
     output_dir = tmp_path / "output"
@@ -43,7 +43,7 @@ def test_cli_apply_rollback(tmp_path: Path):
 
     apply_cmd = [
         sys.executable,
-        str(movi_organizer),
+        str(fileyard),
         "apply",
         "--manifest",
         str(manifest),
@@ -61,7 +61,7 @@ def test_cli_apply_rollback(tmp_path: Path):
 
     rollback_cmd = [
         sys.executable,
-        str(movi_organizer),
+        str(fileyard),
         "rollback",
         "--manifest",
         str(manifest),
@@ -76,7 +76,7 @@ def test_cli_apply_rollback(tmp_path: Path):
 
 def test_cli_analyze_fails_on_manifest_lock_contention(tmp_path: Path):
     repo_root = Path(__file__).resolve().parents[2]
-    movi_organizer = repo_root / "apps" / "cli" / "movi_organizer.py"
+    fileyard = repo_root / "apps" / "cli" / "fileyard.py"
 
     input_dir = tmp_path / "input"
     input_dir.mkdir()
@@ -91,7 +91,7 @@ def test_cli_analyze_fails_on_manifest_lock_contention(tmp_path: Path):
 
     cmd = [
         sys.executable,
-        str(movi_organizer),
+        str(fileyard),
         "analyze",
         "--input",
         str(input_dir),
@@ -107,7 +107,7 @@ def test_cli_analyze_fails_on_manifest_lock_contention(tmp_path: Path):
 
 def test_cli_apply_trust_manifest_input_root_rejects_row_outside_allowlist(tmp_path: Path):
     repo_root = Path(__file__).resolve().parents[2]
-    movi_organizer = repo_root / "apps" / "cli" / "movi_organizer.py"
+    fileyard = repo_root / "apps" / "cli" / "fileyard.py"
 
     outside_root = tmp_path / "outside"
     outside_root.mkdir()
@@ -142,7 +142,7 @@ def test_cli_apply_trust_manifest_input_root_rejects_row_outside_allowlist(tmp_p
 
     cmd = [
         sys.executable,
-        str(movi_organizer),
+        str(fileyard),
         "apply",
         "--manifest",
         str(manifest),

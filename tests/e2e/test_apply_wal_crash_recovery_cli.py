@@ -37,7 +37,7 @@ def _run_apply(
 ) -> subprocess.CompletedProcess[str]:
     cmd = [
         sys.executable,
-        str(repo_root / "apps" / "cli" / "movi_organizer.py"),
+        str(repo_root / "apps" / "cli" / "fileyard.py"),
         "apply",
         "--manifest",
         str(manifest),

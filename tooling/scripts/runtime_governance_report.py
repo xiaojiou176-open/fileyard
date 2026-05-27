@@ -135,7 +135,7 @@ def _prepare_logger(events_path: Path, run_id: str) -> logging.Logger:
         request_id=run_id,
         session_id=run_id,
         user_id="runtime_governance",
-        service="movi_organizer",
+        service="fileyard",
         component="runtime_governance",
     )
     return logger

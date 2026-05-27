@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "movi_organizer_manifest",
+  "title": "fileyard_manifest",
   "type": "object",
   "properties": {
     "schema_version": {

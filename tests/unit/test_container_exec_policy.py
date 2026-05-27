@@ -210,8 +210,8 @@ def test_container_exec_image_path_mounts_isolated_runtime_and_keeps_ci_env_pass
 
     runtime_mounts = {mount.split(":", 1)[1]: mount.split(":", 1)[0] for mount in mounts if ":" in mount}
     assert f"{repo_root}:/workspace" in mounts
-    assert runtime_mounts["/root/.cache/movi-organizer/venv/default"].startswith("movi-venv-")
-    assert runtime_mounts["/root/.cache/movi-organizer/playwright"].startswith("movi-playwright-")
+    assert runtime_mounts["/root/.cache/fileyard/venv/default"].startswith("movi-venv-")
+    assert runtime_mounts["/root/.cache/fileyard/playwright"].startswith("movi-playwright-")
     assert runtime_mounts["/workspace/apps/webui/node_modules"].startswith("movi-node-modules-")
     assert f"{repo_root}/.venv:/workspace/.venv" not in mounts
 

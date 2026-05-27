@@ -404,11 +404,11 @@ def _toml_data(path: Path) -> dict[str, Any]:
 def _sanitize_public_runtime_value(value: str) -> str:
     sanitized = str(value)
     replacements = [
-        ("~/.movi-organizer/workspaces/default/.movi", "<workspace-root>/.movi"),
-        ("~/.movi-organizer/workspaces/default/data/raw", "<workspace-root>/data/raw"),
-        ("~/.movi-organizer/workspaces/default/data/organized", "<workspace-root>/data/organized"),
-        ("~/.movi-organizer/workspaces/default/data", "<workspace-root>/data"),
-        ("~/.movi-organizer/workspaces/default", "<workspace-root>"),
+        ("~/.fileyard/workspaces/default/.movi", "<workspace-root>/.movi"),
+        ("~/.fileyard/workspaces/default/data/raw", "<workspace-root>/data/raw"),
+        ("~/.fileyard/workspaces/default/data/organized", "<workspace-root>/data/organized"),
+        ("~/.fileyard/workspaces/default/data", "<workspace-root>/data"),
+        ("~/.fileyard/workspaces/default", "<workspace-root>"),
         (".runtime-cache", "<repo-runtime-cache>"),
     ]
     for old, new in replacements:
@@ -465,7 +465,7 @@ def runtime_topology_snapshot(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
     }
 
     project_scripts = dict(pyproject.get("project", {}).get("scripts", {}))
-    package_smoke = dict(pyproject.get("tool", {}).get("movi_organizer", {}).get("package_smoke", {}))
+    package_smoke = dict(pyproject.get("tool", {}).get("fileyard", {}).get("package_smoke", {}))
     npm_scripts = dict(package.get("scripts", {}))
     docker_runtime = dict(runtime_layout.get("docker_runtime", {})) if isinstance(runtime_layout, dict) else {}
     return {

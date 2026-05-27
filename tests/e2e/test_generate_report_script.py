@@ -58,7 +58,7 @@ def test_generate_report_script(tmp_path: Path):
 
 def test_report_subcommand(tmp_path: Path):
     repo_root = Path(__file__).resolve().parents[2]
-    entry = repo_root / "apps" / "cli" / "movi_organizer.py"
+    entry = repo_root / "apps" / "cli" / "fileyard.py"
     venv_python = repo_root / ".runtime-cache" / "venv" / "default" / "bin" / "python"
     python_bin = venv_python if venv_python.exists() else Path(sys.executable)
 
@@ -101,7 +101,7 @@ def test_report_subcommand(tmp_path: Path):
 def test_generate_report_script_rejects_external_paths_by_default(tmp_path: Path):
     repo_root = Path(__file__).resolve().parents[2]
     script = repo_root / "tooling" / "runtime" / "generate_report.sh"
-    with tempfile.TemporaryDirectory(prefix="movi-organizer-report-external-", dir="/var/tmp") as external_dir:
+    with tempfile.TemporaryDirectory(prefix="fileyard-report-external-", dir="/var/tmp") as external_dir:
         external_root = Path(external_dir)
         manifest = external_root / "manifest.jsonl"
         out = external_root / "report.json"

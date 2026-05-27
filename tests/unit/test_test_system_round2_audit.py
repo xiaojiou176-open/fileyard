@@ -551,7 +551,7 @@ def test_ci_change_detection_expands_heavy_scope_and_catches_deletions() -> None
     assert "AGENTS.md" in heavy_globs, "change-detection high-risk governance file AGENTS.md"
     assert "CLAUDE.md" in heavy_globs, "change-detection high-risk governance file CLAUDE.md"
     assert ".env.example" in heavy_globs, "change-detection high-risk env template"
-    assert "apps/cli/movi_organizer.py" in heavy_globs, "change-detection core CLI entrypoint"
+    assert "apps/cli/fileyard.py" in heavy_globs, "change-detection core CLI entrypoint"
     assert "contracts/runtime/config.example.toml" in heavy_globs, "change-detection config template"
     assert "contracts/runtime/manifest.schema.json" in heavy_globs, "change-detection manifest schema"
     assert "tooling/requirements*.txt" in heavy_globs, "change-detection dependency lock/dev requirements"

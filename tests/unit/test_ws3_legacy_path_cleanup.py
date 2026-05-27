@@ -15,14 +15,14 @@ def test_observability_baseline_targets_current_logging_module() -> None:
 def test_rollback_rto_uses_current_cli_entrypoint_and_repo_root() -> None:
     script = (REPO_ROOT / "tooling" / "gates" / "check_rollback_rto.sh").read_text(encoding="utf-8")
 
-    assert '"$REPO_ROOT/apps/cli/movi_organizer.py"' in script
+    assert '"$REPO_ROOT/apps/cli/fileyard.py"' in script
     assert "repo_root = Path(sys.argv[1]).resolve()" in script
     assert "sys.path.insert(0, str(repo_root))" in script
     assert 'runtime_temp_root = repo_root / ".runtime-cache" / "temp"' in script
     assert "runtime_temp_root.mkdir(parents=True, exist_ok=True)" in script
     assert "dir=str(runtime_temp_root)" in script
     assert "cwd=str(repo_root)" in script
-    assert '"$ROOT/movi_organizer.py"' not in script
+    assert '"$ROOT/fileyard.py"' not in script
     assert 'Path.cwd() / "脚本"' not in script
 
 

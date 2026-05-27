@@ -50,7 +50,7 @@ Movi does **not** currently let Codex:
 Codex already ships a first-party MCP command surface, so the shortest current route is:
 
 ```bash
-codex mcp add movi -- bash /absolute/path/to/movi-organizer/tooling/runtime/run_mcp_stdio.sh
+codex mcp add movi -- bash /absolute/path/to/fileyard/tooling/runtime/run_mcp_stdio.sh
 ```
 
 If you want to inspect the saved MCP configuration or remove it later:
@@ -66,7 +66,7 @@ The portable core is still just a stdio command. If you are wiring Movi into a C
 {
   "name": "movi",
   "command": "bash",
-  "args": ["/absolute/path/to/movi-organizer/tooling/runtime/run_mcp_stdio.sh"]
+  "args": ["/absolute/path/to/fileyard/tooling/runtime/run_mcp_stdio.sh"]
 }
 ```
 

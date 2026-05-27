@@ -23,7 +23,7 @@ first.
 
 Private reporting URL:
 
-- https://github.com/xiaojiou176-open/movi-organizer/security/advisories/new
+- https://github.com/xiaojiou176-open/fileyard/security/advisories/new
 
 No separate fallback private email is currently configured for this
 repository. Repository owners must publish a real private reporting channel

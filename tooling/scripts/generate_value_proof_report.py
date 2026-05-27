@@ -56,7 +56,7 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 
 
 def _external_tmp_root() -> Path:
-    root = Path("/tmp/movi-organizer-value-proof")
+    root = Path("/tmp/fileyard-value-proof")
     root.mkdir(parents=True, exist_ok=True)
     return root
 

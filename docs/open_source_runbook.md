@@ -2,7 +2,7 @@
 
 This runbook is canonical for public, release, and platform-boundary semantics.
 Repository docs are not a live platform dashboard.
-Product-positioning shorthand in public surfaces should stay: `Movi` as the brand, `movi-organizer` as the repo/CLI, a local-first review-first workbench rather than a hosted SaaS or autonomous organizer, and `Movi MCP v1` as a repo-local stdio extension surface rather than a hosted agent platform.
+Product-positioning shorthand in public surfaces should stay: `Movi` as the brand, `fileyard` as the repo/CLI, a local-first review-first workbench rather than a hosted SaaS or autonomous organizer, and `Movi MCP v1` as a repo-local stdio extension surface rather than a hosted agent platform.
 
 The target public shape is:
 

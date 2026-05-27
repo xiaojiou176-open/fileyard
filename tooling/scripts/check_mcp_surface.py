@@ -14,7 +14,7 @@ def main() -> int:
     repo_root = Path(__file__).resolve().parents[2]
     pyproject = tomllib.loads((repo_root / "pyproject.toml").read_text(encoding="utf-8"))
     scripts = pyproject.get("project", {}).get("scripts", {})
-    required_entrypoints = pyproject.get("tool", {}).get("movi_organizer", {}).get("package_smoke", {}).get("required_entrypoints", [])
+    required_entrypoints = pyproject.get("tool", {}).get("fileyard", {}).get("package_smoke", {}).get("required_entrypoints", [])
 
     issues: list[str] = []
     if scripts.get("movi-mcp") != "apps.mcp.server:main":

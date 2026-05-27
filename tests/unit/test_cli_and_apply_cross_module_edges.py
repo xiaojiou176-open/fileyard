@@ -32,7 +32,7 @@ def test_cli_main_logs_config_warnings_and_errors(monkeypatch, tmp_path: Path):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "report",
             "--manifest",
             str(tmp_path / "m.jsonl"),
@@ -70,7 +70,7 @@ def test_cli_main_lock_fail_exits(monkeypatch, tmp_path: Path):
         sys,
         "argv",
         [
-            "movi_organizer",
+            "fileyard",
             "report",
             "--manifest",
             str(tmp_path / "m.jsonl"),

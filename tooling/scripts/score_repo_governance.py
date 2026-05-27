@@ -110,7 +110,7 @@ WEIGHTS = {"architecture": 30, "cache": 20, "logging": 20, "root": 10, "upstream
 def _governance_python_env() -> dict[str, str]:
     env = dict(os.environ)
     env.setdefault("PYTHONDONTWRITEBYTECODE", "1")
-    pycache_prefix = str(Path(env.get("PYTHONPYCACHEPREFIX", "~/.cache/movi-organizer/pycache")).expanduser())
+    pycache_prefix = str(Path(env.get("PYTHONPYCACHEPREFIX", "~/.cache/fileyard/pycache")).expanduser())
     Path(pycache_prefix).mkdir(parents=True, exist_ok=True)
     env.setdefault("PYTHONPYCACHEPREFIX", pycache_prefix)
     return env

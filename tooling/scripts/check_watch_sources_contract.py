@@ -9,7 +9,7 @@ from pathlib import Path
 def main() -> int:
     parser = argparse.ArgumentParser(description="Validate watch-source durable path contract")
     parser.add_argument("--root", default=".")
-    parser.add_argument("--workspace-root", default="~/.movi-organizer/workspaces/default")
+    parser.add_argument("--workspace-root", default="~/.fileyard/workspaces/default")
     args = parser.parse_args()
 
     path = Path(args.workspace_root).expanduser() / ".movi" / "preferences" / "watch_sources.json"

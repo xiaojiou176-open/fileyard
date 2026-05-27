@@ -1,9 +1,9 @@
 version: 1
-id: movi-organizer
+id: fileyard
 technical_name: Movi
 status: listed_live
-canonical_repo: xiaojiou176-open/movi-organizer
-homepage: https://xiaojiou176-open.github.io/movi-organizer/
+canonical_repo: xiaojiou176-open/fileyard
+homepage: https://xiaojiou176-open.github.io/fileyard/
 current_release: v4.0.5
 published_surfaces:
   - github-repo

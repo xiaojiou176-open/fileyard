@@ -41,11 +41,11 @@ def _repo_root() -> Path:
 
 
 def _workspace_input_root() -> Path:
-    return Path(os.environ.get("MOVI_INPUT_ROOT", "~/.movi-organizer/workspaces/default/data/raw")).expanduser()
+    return Path(os.environ.get("MOVI_INPUT_ROOT", "~/.fileyard/workspaces/default/data/raw")).expanduser()
 
 
 def _workspace_output_root() -> Path:
-    return Path(os.environ.get("MOVI_OUTPUT_ROOT", "~/.movi-organizer/workspaces/default/data/organized")).expanduser()
+    return Path(os.environ.get("MOVI_OUTPUT_ROOT", "~/.fileyard/workspaces/default/data/organized")).expanduser()
 
 
 def _is_live_env_requested() -> bool:
@@ -260,7 +260,7 @@ _activate_live_coverage_guard()
 
 
 def _read_runtime_env_value(name: str) -> str:
-    workspace_root = Path(os.getenv("MOVI_WORKSPACE_ROOT", "~/.movi-organizer/workspaces/default")).expanduser()
+    workspace_root = Path(os.getenv("MOVI_WORKSPACE_ROOT", "~/.fileyard/workspaces/default")).expanduser()
     env_path = workspace_root / ".movi" / "env" / "runtime.env"
     if not env_path.exists():
         return ""

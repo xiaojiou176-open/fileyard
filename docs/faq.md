@@ -17,7 +17,7 @@ No. Movi is a limited-maintenance open-source repository with a local-first work
 
 ## Where should I ask questions
 
-- Usage or workflow questions: [GitHub Discussions](https://github.com/xiaojiou176-open/movi-organizer/discussions)
+- Usage or workflow questions: [GitHub Discussions](https://github.com/xiaojiou176-open/fileyard/discussions)
 - Bug reports with fresh evidence: GitHub Issues
 - Security problems: [SECURITY.md](../SECURITY.md)
 

@@ -8,14 +8,14 @@ repo_runtime:
   test_dir: .runtime-cache/test
   build_dir: .runtime-cache/build
   codegen_dir: .runtime-cache/codegen
-  venv_dir: ~/.cache/movi-organizer/venv/default
+  venv_dir: ~/.cache/fileyard/venv/default
   mutmut_cache_file: .runtime-cache/test/mutation/.mutmut-cache
   webui_lock_hash_file: .runtime-cache/build/apps/webui/.movi_webui_lock_hash
 workspace_runtime:
-  workspace_root: ~/.movi-organizer/workspaces/default
-  input_dir: ~/.movi-organizer/workspaces/default/data/raw
-  output_dir: ~/.movi-organizer/workspaces/default/data/organized
-  manifest_root: ~/.movi-organizer/workspaces/default/.movi/manifests
-  artifact_root: ~/.movi-organizer/workspaces/default/.movi/artifacts
-  evidence_bundle_path: ~/.movi-organizer/workspaces/default/.movi/artifacts/evidence-bundle.json
-  run_bundle_root: ~/.movi-organizer/workspaces/default/.movi/runs
+  workspace_root: ~/.fileyard/workspaces/default
+  input_dir: ~/.fileyard/workspaces/default/data/raw
+  output_dir: ~/.fileyard/workspaces/default/data/organized
+  manifest_root: ~/.fileyard/workspaces/default/.movi/manifests
+  artifact_root: ~/.fileyard/workspaces/default/.movi/artifacts
+  evidence_bundle_path: ~/.fileyard/workspaces/default/.movi/artifacts/evidence-bundle.json
+  run_bundle_root: ~/.fileyard/workspaces/default/.movi/runs

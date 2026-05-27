@@ -95,11 +95,11 @@ DEFAULT_WORKERS = 1
 DEFAULT_LOG_LEVEL = "INFO"
 DEFAULT_LOG_JSON = False
 
-DEFAULT_WORKSPACE_ROOT = Path(os.environ.get("MOVI_WORKSPACE_ROOT", "~/.movi-organizer/workspaces/default")).expanduser()
+DEFAULT_WORKSPACE_ROOT = Path(os.environ.get("MOVI_WORKSPACE_ROOT", "~/.fileyard/workspaces/default")).expanduser()
 DEFAULT_INPUT_DIR = DEFAULT_WORKSPACE_ROOT / "data" / "raw"
 DEFAULT_OUTPUT_PARENT = DEFAULT_WORKSPACE_ROOT / "data" / "organized"
 
-APP_NAME = "movi_organizer"
+APP_NAME = "fileyard"
 # Keep this aligned with pyproject.toml [project].version until version loading is centralized.
 APP_VERSION = "4.0.5"
 MANIFEST_SCHEMA_VERSION = 2

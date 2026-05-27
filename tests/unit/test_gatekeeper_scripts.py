@@ -436,7 +436,7 @@ def test_docs_smoke_install_smoke_uses_entrypoint_wrapper() -> None:
 
 def test_docs_smoke_install_smoke_uses_machine_temp_root() -> None:
     script = (_script_root() / "docs" / "docs_smoke.sh").read_text(encoding="utf-8")
-    assert 'install_root="${DOCS_SMOKE_INSTALL_ROOT:-${XDG_CACHE_HOME:-$HOME/.cache}/movi-organizer/docs-smoke-install}"' in script
+    assert 'install_root="${DOCS_SMOKE_INSTALL_ROOT:-${XDG_CACHE_HOME:-$HOME/.cache}/fileyard/docs-smoke-install}"' in script
     assert '".runtime-cache/tmp/docs-smoke.' not in script
     assert 'TMPDIR="$install_runtime_tmp" TMP="$install_runtime_tmp" TEMP="$install_runtime_tmp"' in script
 
@@ -2717,12 +2717,12 @@ jobs:
           path: ${{ runner.temp }}/venv
           key: ok
       - run: bash tooling/runtime/bootstrap_env.sh
-      - run: ~/.cache/movi-organizer/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
+      - run: ~/.cache/fileyard/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
   pre-commit-hosted-retry:
     runs-on: ubuntu-latest
     steps:
       - run: bash tooling/runtime/bootstrap_env.sh
-      - run: ~/.cache/movi-organizer/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
+      - run: ~/.cache/fileyard/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
   pre-commit:
     runs-on: ubuntu-latest
 """.strip()
@@ -3357,7 +3357,7 @@ jobs:
           clean: false
       - run: bash tooling/ci/gha_self_hosted_hygiene.sh
       - run: bash tooling/runtime/bootstrap_env.sh
-      - run: ~/.cache/movi-organizer/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
+      - run: ~/.cache/fileyard/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
   pre-commit-hosted-retry:
     runs-on: ubuntu-latest
     steps:
@@ -3367,7 +3367,7 @@ jobs:
           clean: false
       - run: bash tooling/ci/gha_self_hosted_hygiene.sh
       - run: bash tooling/runtime/bootstrap_env.sh
-      - run: ~/.cache/movi-organizer/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
+      - run: ~/.cache/fileyard/venv/default/bin/pre-commit run --all-files --show-diff-on-failure --color=always
   pre-commit:
     runs-on: ubuntu-latest
 """.strip()

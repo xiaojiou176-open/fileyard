@@ -226,7 +226,7 @@ def main() -> int:
 
     machine_root = resolve_path(
         repo_root,
-        str(machine_cache.get("root", "~/.cache/movi-organizer")),
+        str(machine_cache.get("root", "~/.cache/fileyard")),
         env_name="GOVERNANCE_MACHINE_CACHE_ROOT",
     )
     machine_targets = {
@@ -240,12 +240,12 @@ def main() -> int:
 
     run_root = resolve_path(
         repo_root,
-        str(workspace_runtime.get("run_bundle_root", "~/.movi-organizer/workspaces/default/.movi/runs")),
+        str(workspace_runtime.get("run_bundle_root", "~/.fileyard/workspaces/default/.movi/runs")),
         env_name="MOVI_RUN_BUNDLE_ROOT",
     )
     artifact_root = resolve_path(
         repo_root,
-        str(workspace_runtime.get("artifact_root", "~/.movi-organizer/workspaces/default/.movi/artifacts")),
+        str(workspace_runtime.get("artifact_root", "~/.fileyard/workspaces/default/.movi/artifacts")),
         env_name="MOVI_ARTIFACT_ROOT",
     )
 

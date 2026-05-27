@@ -26,7 +26,7 @@ def test_score_governance_env_sets_repo_safe_python_cache(monkeypatch, tmp_path:
 
     env = _governance_python_env()
 
-    expected = tmp_path / ".cache" / "movi-organizer" / "pycache"
+    expected = tmp_path / ".cache" / "fileyard" / "pycache"
     assert env["PYTHONDONTWRITEBYTECODE"] == "1"
     assert env["PYTHONPYCACHEPREFIX"] == str(expected)
     assert expected.exists()
@@ -41,7 +41,7 @@ def test_tooling_sitecustomize_redirects_pycache_to_machine_cache(monkeypatch, t
     try:
         module = _load_sitecustomize_module()
         applied = module.apply_runtime_hygiene()
-        expected = tmp_path / ".cache" / "movi-organizer" / "pycache"
+        expected = tmp_path / ".cache" / "fileyard" / "pycache"
         assert applied == str(expected)
         assert os.environ["PYTHONDONTWRITEBYTECODE"] == "1"
         assert os.environ["PYTHONPYCACHEPREFIX"] == str(expected)
@@ -69,7 +69,7 @@ def test_repo_root_sitecustomize_redirects_pycache_to_machine_cache(monkeypatch,
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         applied = module.apply_runtime_hygiene()
-        expected = tmp_path / ".cache" / "movi-organizer" / "pycache"
+        expected = tmp_path / ".cache" / "fileyard" / "pycache"
         assert applied == str(expected)
         assert os.environ["PYTHONDONTWRITEBYTECODE"] == "1"
         assert os.environ["PYTHONPYCACHEPREFIX"] == str(expected)

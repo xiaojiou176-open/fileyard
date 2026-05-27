@@ -8,7 +8,7 @@ from pathlib import Path
 
 def test_apply_generates_rollback_manifest(tmp_path: Path):
     repo_root = Path(__file__).resolve().parents[2]
-    entry = repo_root / "apps" / "cli" / "movi_organizer.py"
+    entry = repo_root / "apps" / "cli" / "fileyard.py"
 
     input_dir = tmp_path / "input"
     output_dir = tmp_path / "output"

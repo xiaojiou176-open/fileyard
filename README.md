@@ -2,7 +2,7 @@
 
 Movi is a review-first local file organizer and workbench for messy photos, screenshots, documents, and audio. It lets AI assist with the manifest first, then lets you inspect, label, and approve the plan before deterministic `apply` or `rollback` touches your files.
 
-[Safe First Look](#safe-first-look) · [10-Second Tour](#10-second-tour) · [Good Fit / Not A Fit](#good-fit--not-a-fit) · [Public Proof](docs/public_proof.md) · [Docs](docs/index.md) · [Distribution](DISTRIBUTION.md) · [Integrations](INTEGRATIONS.md) · [Submission Manifest](manifest.yaml) · [MCP Descriptor](server.json) · [Review-First Skill Packet](examples/skills/README.md) · [OpenClaw Bundle](examples/openclaw/README.md) · [Browser Surface](#browser-surface) · [Releases](https://github.com/xiaojiou176-open/movi-organizer/releases) · [Discussions](https://github.com/xiaojiou176-open/movi-organizer/discussions) · [Security](SECURITY.md) · [Movi MCP v1](docs/mcp.md) · [Codex Integration](docs/codex_mcp.md) · [Claude Code Integration](docs/claude_code_mcp.md) · [Developer Guide](docs/developer_guide.md)
+[Safe First Look](#safe-first-look) · [10-Second Tour](#10-second-tour) · [Good Fit / Not A Fit](#good-fit--not-a-fit) · [Public Proof](docs/public_proof.md) · [Docs](docs/index.md) · [Distribution](DISTRIBUTION.md) · [Integrations](INTEGRATIONS.md) · [Submission Manifest](manifest.yaml) · [MCP Descriptor](server.json) · [Review-First Skill Packet](examples/skills/README.md) · [OpenClaw Bundle](examples/openclaw/README.md) · [Browser Surface](#browser-surface) · [Releases](https://github.com/xiaojiou176-open/fileyard/releases) · [Discussions](https://github.com/xiaojiou176-open/fileyard/discussions) · [Security](SECURITY.md) · [Movi MCP v1](docs/mcp.md) · [Codex Integration](docs/codex_mcp.md) · [Claude Code Integration](docs/claude_code_mcp.md) · [Developer Guide](docs/developer_guide.md)
 
 ![Movi overview showing mixed files flowing into manifest review and organized output](docs/assets/storefront/hero-movi-overview.svg)
 
@@ -48,8 +48,8 @@ Think of it like moving house: AI makes the packing list, but the moving crew st
 
 If you are asking, "is this a real product surface or just a careful README," the shortest honest answer is:
 
-- **Public source repo + GitHub Releases**: the release trail is public on [GitHub Releases](https://github.com/xiaojiou176-open/movi-organizer/releases).
-- **Live Pages front door**: the current public landing route is [xiaojiou176-open.github.io/movi-organizer](https://xiaojiou176-open.github.io/movi-organizer/).
+- **Public source repo + GitHub Releases**: the release trail is public on [GitHub Releases](https://github.com/xiaojiou176-open/fileyard/releases).
+- **Live Pages front door**: the current public landing route is [xiaojiou176-open.github.io/fileyard](https://xiaojiou176-open.github.io/fileyard/).
 - **Review-first proof, not autonomy theater**: the repo ships a fixture-backed safe first look, dry-run apply, rollback boundaries, and a real MCP surface that still stays behind review-safe semantics.
 - **Honest boundary language**: Movi does not claim hosted SaaS, zero-review file mutation, or public benchmark-grade proof that the repo has not actually earned yet.
 
@@ -67,7 +67,7 @@ For external readers, Movi keeps one simple language rule:
 ## Product Surface Baseline
 
 - **Movi**: the main product brand.
-- **`movi-organizer`**: the repository name and CLI/runtime identity.
+- **`fileyard`**: the repository name and CLI/runtime identity.
 - **Movi Review**: the review queue and manifest-approval layer you use before execution.
 - **Movi Rules**: the rule authoring surface for reusable review logic and rule drafts.
 - **Movi Inbox**: the intake and scan surface for watch sources and incoming batches. It can hand a batch into Analyze, but it is not an autonomous organizer.
@@ -190,7 +190,7 @@ Inside the current browser flow, Inbox can hand a batch into Analyze, Analyze ca
 
 ## Release Trail
 
-If you want the public release storyline instead of the repo history, start with the latest [GitHub Releases](https://github.com/xiaojiou176-open/movi-organizer/releases) and use [CHANGELOG.md](CHANGELOG.md) for the unreleased lane.
+If you want the public release storyline instead of the repo history, start with the latest [GitHub Releases](https://github.com/xiaojiou176-open/fileyard/releases) and use [CHANGELOG.md](CHANGELOG.md) for the unreleased lane.
 
 ## Why You Can Trust The Workflow
 
@@ -244,21 +244,21 @@ No. Movi is a limited-maintenance open-source repository with a local-first work
 Movi now keeps runtime cleanup on four separate rails so a small cache cleanup never turns into a destructive workspace reset or an accidental Docker-wide prune.
 
 - **Repo-local residue**: use `bash tooling/cleanup/prune_repo_runtime.sh` when you only want to trim repo-side runtime noise such as `.runtime-cache` and forbidden residue under the checkout.
-- **Machine cache**: use `bash tooling/cleanup/prune_machine_cache.sh --safe` for the lowest-risk cleanup, `--rebuildable` for governed host caches, or `--aggressive-host` when you intentionally want to reclaim the host-side fallback venv under `~/.cache/movi-organizer`.
+- **Machine cache**: use `bash tooling/cleanup/prune_machine_cache.sh --safe` for the lowest-risk cleanup, `--rebuildable` for governed host caches, or `--aggressive-host` when you intentionally want to reclaim the host-side fallback venv under `~/.cache/fileyard`.
 - **Docker runtime**: use `bash tooling/cleanup/prune_docker_runtime.sh --dry-run` to audit the container-first runtime surface, `--rebuildable` to prune repo-related build cache, and `--aggressive` only when you explicitly mean to consider current image or named volumes.
 - **Destructive workspace reset**: `bash tooling/runtime/runtime_reset.sh --confirm-workspace-reset` is intentionally separate because it also clears workspace `.movi` state. Treat it like resetting a workbench, not like emptying a cache folder.
 
 Container-first default:
 
 - The canonical runtime lane is Docker-backed (`movi-ci:local` plus `movi-web-stack_*` volumes).
-- The host-side governed venv under `~/.cache/movi-organizer/venv/default` is treated as a rebuildable fallback surface, not the long-term primary runtime asset.
+- The host-side governed venv under `~/.cache/fileyard/venv/default` is treated as a rebuildable fallback surface, not the long-term primary runtime asset.
 
 ## Contributing, Support, And Security
 
 - Contribution rules: [CONTRIBUTING.md](CONTRIBUTING.md)
 - Support routing: [SUPPORT.md](SUPPORT.md)
 - Security reporting: [SECURITY.md](SECURITY.md)
-- Questions and ideas: [GitHub Discussions](https://github.com/xiaojiou176-open/movi-organizer/discussions)
+- Questions and ideas: [GitHub Discussions](https://github.com/xiaojiou176-open/fileyard/discussions)
 - License: [LICENSE](LICENSE)
 
 If review-first cleanup is the workflow you keep wishing existed, star the repo so you can find Movi again when the next messy folder lands.

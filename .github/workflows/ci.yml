@@ -997,7 +997,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-doc-drift -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_doc_drift.py \
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_doc_drift.py \
             --mode diff-range \
             --diff-base "'"$LINT_DIFF_BASE"'" \
             --diff-head HEAD \
@@ -1009,7 +1009,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-scope -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_docs_scope.py --root .
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_scope.py --root .
           '
       - name: Docs manual facts gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1017,7 +1017,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-manual-facts -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_docs_manual_facts.py --root .
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_manual_facts.py --root .
           '
       - name: Docs SSOT hash gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1025,7 +1025,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-ssot-hash -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_docs_ssot_hash.py --root .
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_ssot_hash.py --root .
           '
       - name: No Logs No Merge gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1033,7 +1033,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-no-logs-no-merge -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_no_logs_no_merge.py \
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_no_logs_no_merge.py \
             --root . \
             --mode diff-range \
             --diff-base "'"$LINT_DIFF_BASE"'" \
@@ -1045,7 +1045,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-write-before-search -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_write_before_search.py \
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_write_before_search.py \
             --root . \
             --mode diff-range \
             --diff-base "'"$LINT_DIFF_BASE"'" \
@@ -1057,7 +1057,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-env-contract -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_env_contract.py \
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_env_contract.py \
             --root . \
             --mode diff-range \
             --max-contract-size 59 \
@@ -1070,7 +1070,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-required-checks -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_required_checks_matrix.py
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_required_checks_matrix.py
           '
       - name: Docs render state gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1078,7 +1078,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-render-state -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_docs_render_state.py --root .
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_render_state.py --root .
           '
       - name: Env contract report
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1086,7 +1086,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-env-contract-report -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/generate_env_contract_report.py \
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/generate_env_contract_report.py \
             --root . \
             --output .runtime-cache/logs/env-contract-report.json
           '
@@ -1185,7 +1185,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-doc-drift -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_doc_drift.py \
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_doc_drift.py \
             --mode diff-range \
             --diff-base "'"$LINT_DIFF_BASE"'" \
             --diff-head HEAD \
@@ -1197,7 +1197,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-scope -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_docs_scope.py --root .
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_scope.py --root .
           '
       - name: Docs manual facts gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1205,7 +1205,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-manual-facts -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_docs_manual_facts.py --root .
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_manual_facts.py --root .
           '
       - name: Docs SSOT hash gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1213,7 +1213,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-ssot-hash -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_docs_ssot_hash.py --root .
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_ssot_hash.py --root .
           '
       - name: No Logs No Merge gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1221,7 +1221,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-no-logs-no-merge -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_no_logs_no_merge.py \
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_no_logs_no_merge.py \
             --root . \
             --mode diff-range \
             --diff-base "'"$LINT_DIFF_BASE"'" \
@@ -1233,7 +1233,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-write-before-search -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_write_before_search.py \
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_write_before_search.py \
             --root . \
             --mode diff-range \
             --diff-base "'"$LINT_DIFF_BASE"'" \
@@ -1245,7 +1245,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-env-contract -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_env_contract.py \
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_env_contract.py \
             --root . \
             --mode diff-range \
             --max-contract-size 59 \
@@ -1258,7 +1258,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-required-checks -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_required_checks_matrix.py
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_required_checks_matrix.py
           '
       - name: Docs render state gate
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1266,7 +1266,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-docs-render-state -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_docs_render_state.py --root .
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_docs_render_state.py --root .
           '
       - name: Env contract report
         if: needs.change-detection.outputs.run-heavy == 'true'
@@ -1274,7 +1274,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label ci-env-contract-report -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/generate_env_contract_report.py \
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/generate_env_contract_report.py \
             --root . \
             --output .runtime-cache/logs/env-contract-report.json
           '
@@ -1389,7 +1389,7 @@ jobs:
             echo "❌ ci semantic UI/UX audit: GEMINI_API_KEY is required when frontend files exist"
             exit 1
           fi
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/gemini_ui_ux_audit.py --model "${GEMINI_UI_AUDIT_MODEL}" "${ui_files[@]}"
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/gemini_ui_ux_audit.py --model "${GEMINI_UI_AUDIT_MODEL}" "${ui_files[@]}"
             '
       - name: Upload lint diagnostics
         if: always() && needs.change-detection.outputs.run-heavy == 'true'
@@ -1482,7 +1482,7 @@ jobs:
             echo "❌ ci semantic UI/UX audit: GEMINI_API_KEY is required when frontend files exist"
             exit 1
           fi
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/gemini_ui_ux_audit.py --model "${GEMINI_UI_AUDIT_MODEL}" "${ui_files[@]}"
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/gemini_ui_ux_audit.py --model "${GEMINI_UI_AUDIT_MODEL}" "${ui_files[@]}"
             '
       - name: Upload lint diagnostics
         if: always() && needs.change-detection.outputs.run-heavy == 'true'
@@ -1921,7 +1921,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label mutation-canary -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_mutation_canary.py \
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_mutation_canary.py \
             --repo-root . \
             --json-output .runtime-cache/logs/mutation-canary-summary.json
           '
@@ -1973,7 +1973,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label mutation-canary -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python tooling/scripts/check_mutation_canary.py \
+          $HOME/.cache/fileyard/venv/default/bin/python tooling/scripts/check_mutation_canary.py \
             --repo-root . \
             --json-output .runtime-cache/logs/mutation-canary-summary.json
           '
@@ -2071,7 +2071,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label live-smoke-preflight -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
+          $HOME/.cache/fileyard/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
             tests/e2e/test_live_llm_integration.py::test_live_llm_env_preflight \
             tests/e2e/test_live_external_site_playwright.py::test_live_browser_env_preflight
           '
@@ -2161,7 +2161,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label live-smoke-preflight -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
+          $HOME/.cache/fileyard/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
             tests/e2e/test_live_llm_integration.py::test_live_llm_env_preflight \
             tests/e2e/test_live_external_site_playwright.py::test_live_browser_env_preflight
           '
@@ -2358,7 +2358,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label test-gates -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
+          $HOME/.cache/fileyard/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
             --strict-config --strict-markers \
             --junitxml=.runtime-cache/ci/pytest-junit-unit.xml \
             tests/unit
@@ -2425,7 +2425,7 @@ jobs:
           set -euo pipefail
           bash tooling/scripts/container_exec.sh --label test-gates -- bash -lc '
           set -euo pipefail
-          $HOME/.cache/movi-organizer/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
+          $HOME/.cache/fileyard/venv/default/bin/python -m pytest -q -o addopts= --maxfail=1 \
             --strict-config --strict-markers \
             --junitxml=.runtime-cache/ci/pytest-junit-unit.xml \
             tests/unit

@@ -48,7 +48,7 @@ done
 
 mkdir -p "$(dirname "$SUMMARY_PATH")"
 
-"$VENV/bin/python" - "$VENV/bin/python" "$ROOT/movi_organizer.py" "$MANIFEST_PATH" "$BUDGET_MS" "$SUMMARY_PATH" <<'PY'
+"$VENV/bin/python" - "$VENV/bin/python" "$ROOT/fileyard.py" "$MANIFEST_PATH" "$BUDGET_MS" "$SUMMARY_PATH" <<'PY'
 import json
 import subprocess
 import sys
@@ -89,7 +89,7 @@ summary = {
     "actual_ms": elapsed_ms,
     "status": "pass" if elapsed_ms <= budget_ms and proc.returncode == 0 else "fail",
     "manifest": str(manifest),
-    "command": "movi-organizer report --manifest <manifest> --out <tmp> --validate --chunk-size 200",
+    "command": "fileyard report --manifest <manifest> --out <tmp> --validate --chunk-size 200",
 }
 summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 print(json.dumps(summary, ensure_ascii=False))

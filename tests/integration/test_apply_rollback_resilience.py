@@ -28,7 +28,7 @@ def _prepare_offline_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -
     _run_cli(
         monkeypatch,
         [
-            "movi_organizer",
+            "fileyard",
             "analyze",
             "--input",
             str(input_dir),
@@ -52,7 +52,7 @@ def test_apply_trusted_manifest_root_allowlist_boundary(monkeypatch: pytest.Monk
     _run_cli(
         monkeypatch,
         [
-            "movi_organizer",
+            "fileyard",
             "apply",
             "--manifest",
             str(manifest_path),
@@ -83,7 +83,7 @@ def test_rollback_strict_integrity_requires_hmac_key(monkeypatch: pytest.MonkeyP
     _run_cli(
         monkeypatch,
         [
-            "movi_organizer",
+            "fileyard",
             "apply",
             "--manifest",
             str(manifest_path),
@@ -109,7 +109,7 @@ def test_rollback_strict_integrity_requires_hmac_key(monkeypatch: pytest.MonkeyP
         _run_cli(
             monkeypatch,
             [
-                "movi_organizer",
+                "fileyard",
                 "rollback",
                 "--manifest",
                 str(rollback_manifest),
@@ -134,7 +134,7 @@ def test_apply_crash_then_resume_recovers_rollback_manifest(monkeypatch: pytest.
         _run_cli(
             monkeypatch,
             [
-                "movi_organizer",
+                "fileyard",
                 "apply",
                 "--manifest",
                 str(manifest_path),
@@ -153,7 +153,7 @@ def test_apply_crash_then_resume_recovers_rollback_manifest(monkeypatch: pytest.
     _run_cli(
         monkeypatch,
         [
-            "movi_organizer",
+            "fileyard",
             "apply",
             "--manifest",
             str(manifest_path),

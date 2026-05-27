@@ -49,7 +49,7 @@ def _python_candidates() -> list[Path]:
     env_venv = os.environ.get("MOVI_VENV_DIR", "").strip()
     if env_venv:
         candidates.append(Path(env_venv).expanduser() / "bin" / "python")
-    candidates.append(Path.home() / ".cache" / "movi-organizer" / "venv" / "default" / "bin" / "python")
+    candidates.append(Path.home() / ".cache" / "fileyard" / "venv" / "default" / "bin" / "python")
     candidates.append(Path(sys.executable).resolve())
 
     deduped: list[Path] = []

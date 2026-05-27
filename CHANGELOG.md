@@ -124,7 +124,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 - Follow the release runbook and the executable release evidence surfaces for step-by-step migration and release evidence.
 - N-1 manifest compatibility evidence source:
-  - `~/.cache/movi-organizer/venv/default/bin/python -m pytest -q tests/e2e/test_apply_schema_newer_warning.py`
-  - `~/.cache/movi-organizer/venv/default/bin/python -m pytest -q tests/unit/test_manifest_store_writer_and_schema_versions.py`
+  - `~/.cache/fileyard/venv/default/bin/python -m pytest -q tests/e2e/test_apply_schema_newer_warning.py`
+  - `~/.cache/fileyard/venv/default/bin/python -m pytest -q tests/unit/test_manifest_store_writer_and_schema_versions.py`
 
 - Ops: retried CI execution due to transient GitHub Actions scheduler instability (no functional code change).

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-cd "$SRC/movi-organizer"
-export PYTHONPATH="${PYTHONPATH:-$SRC/movi-organizer}"
+cd "$SRC/fileyard"
+export PYTHONPATH="${PYTHONPATH:-$SRC/fileyard}"
 
 compile_python_fuzzer tests/fuzz/fuzz_safe_join.py

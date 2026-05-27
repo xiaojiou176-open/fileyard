@@ -7,8 +7,8 @@ Use this when the host runtime does not already have Movi connected.
 1. Clone the public repo:
 
 ```bash
-git clone https://github.com/xiaojiou176-open/movi-organizer.git
-cd movi-organizer
+git clone https://github.com/xiaojiou176-open/fileyard.git
+cd fileyard
 npm install
 ```
 

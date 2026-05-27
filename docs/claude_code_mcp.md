@@ -50,7 +50,7 @@ Do **not** describe the current Claude Code integration as:
 Claude Code already exposes a first-party MCP management command, so the shortest current route is:
 
 ```bash
-claude mcp add movi -- bash /absolute/path/to/movi-organizer/tooling/runtime/run_mcp_stdio.sh
+claude mcp add movi -- bash /absolute/path/to/fileyard/tooling/runtime/run_mcp_stdio.sh
 ```
 
 If you want to inspect or remove the entry later:
@@ -66,7 +66,7 @@ If your Claude Code setup wants the raw stdio shape instead of the helper comman
 {
   "name": "movi",
   "command": "bash",
-  "args": ["/absolute/path/to/movi-organizer/tooling/runtime/run_mcp_stdio.sh"]
+  "args": ["/absolute/path/to/fileyard/tooling/runtime/run_mcp_stdio.sh"]
 }
 ```
 

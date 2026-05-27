@@ -111,7 +111,7 @@ from packages.infrastructure.watch_source_store import WatchSource, load_watch_s
 def _discover_repo_root() -> Path:
     candidates = [Path.cwd().resolve(), *Path(__file__).resolve().parents]
     for candidate in candidates:
-        has_cli = (candidate / "apps" / "cli" / "movi_organizer.py").exists()
+        has_cli = (candidate / "apps" / "cli" / "fileyard.py").exists()
         has_schema = (candidate / "contracts" / "runtime" / "manifest.schema.json").exists()
         if has_cli and has_schema:
             return candidate
@@ -121,8 +121,8 @@ def _discover_repo_root() -> Path:
 PIPELINE_ROOT = Path(__file__).resolve().parent
 PACKAGES_ROOT = PIPELINE_ROOT.parent
 REPO_ROOT = _discover_repo_root()
-CLI_ENTRYPOINT = REPO_ROOT / "apps" / "cli" / "movi_organizer.py"
-WORKSPACE_ROOT = Path(os.environ.get("MOVI_WORKSPACE_ROOT", "~/.movi-organizer/workspaces/default")).expanduser()
+CLI_ENTRYPOINT = REPO_ROOT / "apps" / "cli" / "fileyard.py"
+WORKSPACE_ROOT = Path(os.environ.get("MOVI_WORKSPACE_ROOT", "~/.fileyard/workspaces/default")).expanduser()
 DEFAULT_INPUT_ROOT = Path(os.environ.get("MOVI_INPUT_ROOT", str(WORKSPACE_ROOT / "data" / "raw"))).expanduser()
 DEFAULT_OUTPUT_ROOT = Path(os.environ.get("MOVI_OUTPUT_ROOT", str(WORKSPACE_ROOT / "data" / "organized"))).expanduser()
 MANIFEST_ROOT = Path(os.environ.get("MOVI_MANIFEST_ROOT", str(WORKSPACE_ROOT / ".movi" / "manifests"))).expanduser()

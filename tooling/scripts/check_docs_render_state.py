@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 def _apply_runtime_hygiene() -> None:
-    pycache_prefix = str(Path(os.environ.get("PYTHONPYCACHEPREFIX", "~/.cache/movi-organizer/pycache")).expanduser())
+    pycache_prefix = str(Path(os.environ.get("PYTHONPYCACHEPREFIX", "~/.cache/fileyard/pycache")).expanduser())
     Path(pycache_prefix).mkdir(parents=True, exist_ok=True)
     os.environ.setdefault("PYTHONDONTWRITEBYTECODE", "1")
     os.environ.setdefault("PYTHONPYCACHEPREFIX", pycache_prefix)

@@ -28,7 +28,7 @@
 | `GOVERNANCE_RUNTIME_MUTMUT_CACHE_FILE` | `<repo-runtime-cache>/test/mutation/.mutmut-cache` |
 | `GOVERNANCE_RUNTIME_TEMP_DIR` | `<repo-runtime-cache>/tmp` |
 | `GOVERNANCE_RUNTIME_TEST_DIR` | `<repo-runtime-cache>/test` |
-| `GOVERNANCE_RUNTIME_VENV_DIR` | `~/.cache/movi-organizer/venv/default` |
+| `GOVERNANCE_RUNTIME_VENV_DIR` | `~/.cache/fileyard/venv/default` |
 | `GOVERNANCE_WEBUI_LOCK_HASH_FILE` | `<repo-runtime-cache>/build/apps/webui/.movi_webui_lock_hash` |
 
 ## Default Runtime Knobs
@@ -59,13 +59,13 @@
 
 ### Python entrypoints
 
-- `movi-organizer` -> `apps.cli.movi_organizer:main`
+- `fileyard` -> `apps.cli.fileyard:main`
 - `movi-web-api` -> `apps.api.server:main`
 - `movi-mcp` -> `apps.mcp.server:main`
 
 ### Package smoke required entrypoints
 
-- `movi-organizer`
+- `fileyard`
 - `movi-web-api`
 - `movi-mcp`
 

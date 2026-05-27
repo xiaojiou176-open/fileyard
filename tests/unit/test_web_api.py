@@ -163,7 +163,7 @@ def _prepare_env(monkeypatch, tmp_path: Path) -> None:
     manifests = workspace / ".movi" / "manifests"
     input_root = workspace / "data" / "raw"
     output_root = workspace / "data" / "organized"
-    cli_entrypoint = repo / "apps" / "cli" / "movi_organizer.py"
+    cli_entrypoint = repo / "apps" / "cli" / "fileyard.py"
     frontend_dist = repo / ".runtime-cache" / "apps" / "webui" / "build"
     cli_entrypoint.parent.mkdir(parents=True, exist_ok=True)
     cli_entrypoint.write_text("# test fixture entrypoint\n", encoding="utf-8")
@@ -1364,7 +1364,7 @@ def test_web_api_validation_errors_and_static_hosting(monkeypatch, tmp_path: Pat
 
     invalid_mode = client.post(
         "/api/jobs/analyze",
-        data={"input_mode": "weird", "input_directory": "~/.movi-organizer/workspaces/default/data/raw"},
+        data={"input_mode": "weird", "input_directory": "~/.fileyard/workspaces/default/data/raw"},
     )
     assert invalid_mode.status_code == 400
 

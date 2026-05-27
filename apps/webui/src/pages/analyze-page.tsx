@@ -28,7 +28,7 @@ export function AnalyzePage() {
   const [searchParams] = useSearchParams()
   const [step, setStep] = useState(1)
   const [mode, setMode] = useState<InputMode>('directory')
-  const [directoryPath, setDirectoryPath] = useState('~/.movi-organizer/workspaces/default/data/raw')
+  const [directoryPath, setDirectoryPath] = useState('~/.fileyard/workspaces/default/data/raw')
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const [model, setModel] = useState('gemini-3-flash-preview')
   const [workers, setWorkers] = useState('1')

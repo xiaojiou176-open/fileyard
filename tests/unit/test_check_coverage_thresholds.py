@@ -142,7 +142,7 @@ def test_check_coverage_thresholds_prefers_exact_match_over_alias(tmp_path: Path
     <package name="pipeline">
       <classes>
         <class name="cli_app.py" filename="apps/cli/cli_app.py" line-rate="0.9900" />
-        <class name="cli_app.py" filename="apps/cli/movi_organizer.py" line-rate="0.4000" />
+        <class name="cli_app.py" filename="apps/cli/fileyard.py" line-rate="0.4000" />
         <class name="apply_command.py" filename="packages/application/apply_command.py" line-rate="0.9900" />
         <class name="analyze_media.py" filename="packages/application/analyze_media.py" line-rate="0.9900" />
         <class name="config_loader.py" filename="packages/infrastructure/config_loader.py" line-rate="0.9900" />
@@ -183,7 +183,7 @@ def test_check_coverage_thresholds_prefers_exact_match_over_alias(tmp_path: Path
 def test_check_coverage_thresholds_ignores_transient_fixture_paths_for_module_resolution(tmp_path: Path):
     coverage_xml = tmp_path / "coverage.xml"
     transient_apply_path = (
-        "/root/.cache/movi-organizer/xdg/pytest-runtime/run.Xe4qrF/"
+        "/root/.cache/fileyard/xdg/pytest-runtime/run.Xe4qrF/"
         "pytest-of-root/pytest-0/test_hotspot_budget_gate_rejec0/"
         "repo/packages/application/apply_command.py"
     )
@@ -197,7 +197,7 @@ def test_check_coverage_thresholds_ignores_transient_fixture_paths_for_module_re
         <class name="apply_command.py" filename="packages/application/apply_command.py" line-rate="0.9900" />
         <class name="analyze_media.py" filename="packages/application/analyze_media.py" line-rate="0.9900" />
         <class name="cli_app.py" filename="apps/cli/cli_app.py" line-rate="0.9900" />
-        <class name="cli_app.py" filename="apps/cli/movi_organizer.py" line-rate="0.4000" />
+        <class name="cli_app.py" filename="apps/cli/fileyard.py" line-rate="0.4000" />
         <class name="config_loader.py" filename="packages/infrastructure/config_loader.py" line-rate="0.9900" />
         <class name="gemini_client.py" filename="packages/infrastructure/gemini_client.py" line-rate="0.9900" />
         <class name="logging_utils.py" filename="packages/observability/logging_utils.py" line-rate="0.9900" />

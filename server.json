@@ -4,9 +4,9 @@
   "title": "Movi MCP v1",
   "description": "Local-first, review-first stdio MCP surface for Movi that exposes analyze, review, overlay editing, and dry-run preview without bypassing execute safeguards.",
   "repository": {
-    "url": "https://github.com/xiaojiou176-open/movi-organizer",
+    "url": "https://github.com/xiaojiou176-open/fileyard",
     "source": "github"
   },
-  "websiteUrl": "https://github.com/xiaojiou176-open/movi-organizer/blob/main/docs/mcp.md",
+  "websiteUrl": "https://github.com/xiaojiou176-open/fileyard/blob/main/docs/mcp.md",
   "version": "4.0.5"
 }

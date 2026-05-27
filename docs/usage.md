@@ -53,7 +53,7 @@ When you use the browser surface, the practical route is a little more guided:
 ## Naming Baseline
 
 - **Movi** is the product brand.
-- **`movi-organizer`** is the repository and CLI/runtime identity.
+- **`fileyard`** is the repository and CLI/runtime identity.
 - **Movi Review**, **Movi Rules**, and **Movi Inbox** are the current stable product-surface names.
 - **Movi Copilot** is the current review-only guidance layer.
 - **Movi MCP v1** is the current local-first stdio surface for agent/developer integrations.
@@ -139,7 +139,7 @@ Start with [docs/mcp.md](./mcp.md) for the capability map and [docs/developer_gu
 Think of Movi's runtime footprint as four primary rails, plus one infrastructure-only surface:
 
 - `repo-local residue`: checkout-local runtime noise such as `.runtime-cache`
-- `machine cache`: governed host-side caches under `~/.cache/movi-organizer`; in the container-first model this is the fallback lane, not the canonical runtime lane
+- `machine cache`: governed host-side caches under `~/.cache/fileyard`; in the container-first model this is the fallback lane, not the canonical runtime lane
 - `docker runtime`: the canonical container-first runtime surface, including `movi-ci:local`, named volumes, and repo-related build cache
 - `workspace evidence`: run bundles and durable artifacts under `<workspace-root>/.movi`
 - `shared runner workdir`: shared CI infrastructure workdirs outside single-repo ownership; this is infrastructure maintenance, not normal single-repo cleanup

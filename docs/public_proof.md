@@ -18,9 +18,9 @@ Use these routes when you want current public evidence instead of marketing pros
 
 | What you want to verify | Live route |
 | :-- | :-- |
-| Public source repo | [GitHub repository](https://github.com/xiaojiou176-open/movi-organizer) |
-| Public release trail | [GitHub Releases](https://github.com/xiaojiou176-open/movi-organizer/releases) |
-| Public front door | [GitHub Pages site](https://xiaojiou176-open.github.io/movi-organizer/) |
+| Public source repo | [GitHub repository](https://github.com/xiaojiou176-open/fileyard) |
+| Public release trail | [GitHub Releases](https://github.com/xiaojiou176-open/fileyard/releases) |
+| Public front door | [GitHub Pages site](https://xiaojiou176-open.github.io/fileyard/) |
 | Current docs landing page | [docs/index.md](./index.md) |
 | Safe first-look workflow | [Quickstart](./quickstart.md) |
 | Review-first operator contract | [README.md](../README.md) and [Operator Guide](./usage.md) |

@@ -2,7 +2,7 @@ version: 1
 id: movi-agent-bundle
 display_name: Movi Review-First Bundle
 status: listed_live
-canonical_repo: xiaojiou176-open/movi-organizer
+canonical_repo: xiaojiou176-open/fileyard
 entrypoint: SKILL.md
 package_shape: skill-folder
 registry_targets:

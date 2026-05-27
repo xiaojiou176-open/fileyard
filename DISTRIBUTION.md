@@ -12,7 +12,7 @@ shipped yet.
 
 | Surface | Current status | What we can truthfully claim |
 | :-- | :-- | :-- |
-| GitHub repository | Published | The canonical public source and collaboration surface is `xiaojiou176-open/movi-organizer`. |
+| GitHub repository | Published | The canonical public source and collaboration surface is `xiaojiou176-open/fileyard`. |
 | GitHub Releases | Published | GitHub Releases is the canonical release trail for this repository. |
 | GitHub Pages | Published | GitHub Pages is the current public front door and discovery page. |
 | ClawHub listing | Listed live, still suspicious | Movi is listed live on ClawHub, and the current page still shows `Moderation verdict: suspicious` plus `Detected: suspicious.vt_suspicious`. |
@@ -22,7 +22,7 @@ shipped yet.
 
 | Surface | Current status | What we can truthfully claim |
 | :-- | :-- | :-- |
-| Source install from this repository | Ready | The repository ships Python package metadata and console entrypoints such as `movi-organizer`, `movi-web-api`, and `movi-mcp`. |
+| Source install from this repository | Ready | The repository ships Python package metadata and console entrypoints such as `fileyard`, `movi-web-api`, and `movi-mcp`. |
 | Movi MCP v1 stdio server | Ready | The MCP surface is a local-first stdio integration that can be launched from this repository or an installed environment. |
 | Codex / Claude Code setup docs | Ready | The repository ships setup pages for Codex and Claude Code, but those docs describe local wiring, not a separate public distribution channel. |
 | Skills / agent bundle shelf | Ready in-repo | The repository ships repo-owned skill bundle examples and install/proof notes, but a separate public skills marketplace listing is not claimed here. |

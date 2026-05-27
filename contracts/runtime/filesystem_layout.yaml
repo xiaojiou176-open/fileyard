@@ -71,21 +71,21 @@ repo_runtime:
     - "**/.mypy_cache"
     - "**/.ruff_cache"
 workspace_runtime:
-  workspace_root: ~/.movi-organizer/workspaces/default
-  movi_root: ~/.movi-organizer/workspaces/default/.movi
-  manifest_root: ~/.movi-organizer/workspaces/default/.movi/manifests
-  artifact_root: ~/.movi-organizer/workspaces/default/.movi/artifacts
-  run_bundle_root: ~/.movi-organizer/workspaces/default/.movi/runs
-  env_root: ~/.movi-organizer/workspaces/default/.movi/env
+  workspace_root: ~/.fileyard/workspaces/default
+  movi_root: ~/.fileyard/workspaces/default/.movi
+  manifest_root: ~/.fileyard/workspaces/default/.movi/manifests
+  artifact_root: ~/.fileyard/workspaces/default/.movi/artifacts
+  run_bundle_root: ~/.fileyard/workspaces/default/.movi/runs
+  env_root: ~/.fileyard/workspaces/default/.movi/env
 machine_cache:
-  root: ~/.cache/movi-organizer
+  root: ~/.cache/fileyard
   required_paths:
-    - ~/.cache/movi-organizer/venv/default
-    - ~/.cache/movi-organizer/pip
-    - ~/.cache/movi-organizer/npm
-    - ~/.cache/movi-organizer/xdg
-    - ~/.cache/movi-organizer/playwright
-    - ~/.cache/movi-organizer/pycache
+    - ~/.cache/fileyard/venv/default
+    - ~/.cache/fileyard/pip
+    - ~/.cache/fileyard/npm
+    - ~/.cache/fileyard/xdg
+    - ~/.cache/fileyard/playwright
+    - ~/.cache/fileyard/pycache
 docker_runtime:
   compose_project: movi-web-stack
   canonical_image: movi-ci:local
